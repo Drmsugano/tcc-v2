@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rosfield
+    environment:
+      - "TZ=America/Sao_Paulo"
+    entrypoint: ./.docker/entrypoint.sh
+    ports:
+      - "8080:80"  # acessa em http://localhost:8080
+    volumes:
+      - .:/var/www/html
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: rosfield_mysql_db
+    environment:
+      - "MYSQL_ROOT_PASSWORD=senhaForte"
+      - "MYSQL_DATABASE=TC"
+      - "MYSQL_USER=drmsugano"
+      - "MYSQL_PASSWORD=senhaForte"
+    ports:
+      - "3307:3306"  # acessa externamente pela 3307, mas MySQL interno na 3306
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  db_data:

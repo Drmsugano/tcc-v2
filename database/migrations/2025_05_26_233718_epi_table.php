@@ -8,13 +8,13 @@ return new class extends Migration
 {
      public function up()
     {
-        Schema::create('epis', function (Blueprint $table) {
+        Schema::create('EPI', function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->text('descricao')->nullable();
-            $table->integer('validade')->nullable();
-            $table->string('ca');
-            $table->integer('quantidade_estoque')->default(0);
+            $table->string('NOME');
+            $table->text('DESCRICAO')->nullable();
+            $table->integer('VALIDADE')->nullable();
+            $table->string('CAT');
+            $table->integer('QUANTIDADE_ESTOQUE')->default(0);
             $table->timestamps();
         });
     }

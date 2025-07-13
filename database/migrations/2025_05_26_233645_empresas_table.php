@@ -8,15 +8,15 @@ return new class extends Migration
 {
       public function up()
     {
-        Schema::create('empresas', function (Blueprint $table) {
+        Schema::create('EMPRESAS', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 100)->unique();
-            $table->string('email', 100)->nullable();
-            $table->string('razao_social', 100)->nullable();
-            $table->string('nome_fantasia', 100)->nullable();
-            $table->string('cnpj', 20)->unique();
-            $table->string('endereco')->nullable();
-            $table->string('telefone', 20)->nullable();
+            $table->string('NOME', 100)->unique();
+            $table->string('EMAIL', 100)->nullable();
+            $table->string('RAZAO_SOCIAL', 100)->nullable();
+            $table->string('NOME_FANTASIA', 100)->nullable();
+            $table->string('CNPJ', 20)->unique();
+            $table->string('ENDERECO')->nullable();
+            $table->string('TELEFONE', 20)->nullable();
             $table->timestamps();
         });
     }

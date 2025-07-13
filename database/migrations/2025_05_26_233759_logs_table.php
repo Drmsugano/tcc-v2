@@ -8,9 +8,9 @@ return new class extends Migration {
 
     public function up()
     {
-        Schema::create('logs', function (Blueprint $table) {
+        Schema::create('LOGS', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('usuarios')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('USUARIOS')->nullOnDelete();
             $table->string('acao');
             $table->string('tabela_afetada')->nullable();
             $table->integer('registro_id')->nullable();

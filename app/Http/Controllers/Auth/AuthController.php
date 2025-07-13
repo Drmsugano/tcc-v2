@@ -13,38 +13,41 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'usuario' => 'required|string',
+            'login' => 'required|string',
             'senha' => 'required|string',
         ]);
+        try {
+            $usuario = Usuario::where('USUARIO', strtoupper($request->input('login')))->first();
 
-        $usuario = Usuario::where('NOME', $request->usuario)->first();
+            if (!$usuario) {
+                return response()->json(['error' => 'Usuário não encontrado.'], 404);
+            }
 
-        if (!$usuario) {
-            return response()->json(['error' => 'Usuário não encontrado.'], 404);
+            if (!Hash::check($request->senha, $usuario->PASSWORD)) {
+                return response()->json(['error' => 'Senha incorreta.'], 401);
+            }
+
+            // Gera o token JWT
+            $token = JWTAuth::fromUser($usuario);
+
+            if (!$token) {
+                return response()->json(['error' => 'Erro ao gerar o token.'], 500);
+            }
+            // Esconde campos sensíveis
+            $usuario->makeHidden(['password', 'remember_token']);
+
+            return response()->json([
+                'message' => 'Login realizado com sucesso.',
+                'status' => 'success',
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'usuario' => $usuario,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Erro ao processar a solicitação: ' . $e->getMessage()], 500);
         }
-
-        if (!Hash::check($request->senha, $usuario->password)) {
-            return response()->json(['error' => 'Senha incorreta.'], 401);
-        }
-
-        // Gera o token JWT
-        $token = JWTAuth::fromUser($usuario);
-
-        if (!$token) {
-            return response()->json(['error' => 'Erro ao gerar o token.'], 500);
-        }
-
-        // Esconde campos sensíveis
-        $usuario->makeHidden(['password', 'remember_token']);
-
-        return response()->json([
-            'message' => 'Login realizado com sucesso.',
-            'status' => 'success',
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'usuario' => $usuario,
-        ], 200);
     }
 
 

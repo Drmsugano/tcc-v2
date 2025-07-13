@@ -8,14 +8,14 @@ return new class extends Migration
 {
      public function up()
     {
-        Schema::create('documentos', function (Blueprint $table) {
+        Schema::create('DOCUMENTOS', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('funcionario_id')->constrained('funcionarios')->onDelete('cascade');
-            $table->enum('tipo', ['ASO', 'Treinamento NR', 'Ficha de EPI']);
-            $table->text('descricao')->nullable();
-            $table->date('data_emissao');
-            $table->date('data_validade')->nullable();
-            $table->string('arquivo')->nullable();
+            $table->foreignId('FUNCIONARIO_ID')->constrained('FUNCIONARIOS')->onDelete('cascade');
+            $table->enum('TIPO', ['ASO', 'Treinamento NR', 'Ficha de EPI']);
+            $table->text('DESCRICAO')->nullable();
+            $table->date('DATA_EMISSAO');
+            $table->date('DATA_VALIDADE')->nullable();
+            $table->string('ARQUIVO')->nullable();
             $table->timestamps();
         });
     }

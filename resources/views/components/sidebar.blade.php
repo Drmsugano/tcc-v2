@@ -35,31 +35,15 @@
                 </li>
             </ul>
         </li>
-        @if (session()->get('userPcp') === 'S' or session()->get('userExpedicao') === 'S')
-            <li>
-                <div class="iocn-link">
-                    <a href="/{{ request()->segment(1) }}/Historico/">
-                        <i><img src="/img/history.png" width="29px" style="filter:invert(100%)"></i>
-                        <span class="link_name">Histórico</span>
-                    </a>
-                </div>
-            </li>
-        @endif
         <li>
             <div class="profile-details">
                 <div class="profile-content">
                     <img src="/img/Caixa.png" alt="profileImg">
                 </div>
                 <div class="name-job">
-                    <div class='profile_name'>{{session()->get('userData')}}</div>
+                    <div class='profile_name'>{{JWTAuth::parseToken()->getPayload()->get('USUARIO')}}</div>
                     <div class='job'>
-                        @if (session()->get('userPcp') == 'S')
-                            PCP
-                        @elseif(session()->get('userExpedicao') == 'S')
-                            Expedição
-                        @else
-                            Usuario Comum
-                        @endif
+                        {{JWTAuth::parseToken()->getPayload()->get('PERFIL')}}
                     </div>
                 </div>
                 <div class="ps-3 ms-4"></div>

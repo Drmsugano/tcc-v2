@@ -8,14 +8,15 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('funcionarios', function (Blueprint $table) {
+        Schema::create('FUNCIONARIOS', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('empresa_id')->constrained('empresas')->onDelete('cascade');
-            $table->string('nome');
-            $table->string('cpf', 14)->unique();
-            $table->string('matricula', 50)->unique();
-            $table->string('cargo')->nullable();
-            $table->date('data_admissao')->nullable();
+            $table->foreignId('EMPRESA_ID')->constrained('EMPRESAS')->onDelete('cascade');
+            $table->string('NOME');
+            $table->string('CPF', 14)->unique();
+            $table->string('MATRICULA', 50)->unique();
+            $table->string('CARGO')->nullable();
+            $table->date('DATA_ADMISSAO');
+            $table->date('DATA_DEMISSAO')->nullable();
             $table->timestamps();
         });
     }

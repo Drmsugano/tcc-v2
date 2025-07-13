@@ -8,13 +8,12 @@ return new class extends Migration
 {
        public function up()
     {
-        Schema::create('notificacoes', function (Blueprint $table) {
+        Schema::create('NOTIFICACOES', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained('usuarios')->onDelete('cascade');
-            $table->string('titulo');
-            $table->text('mensagem');
-            $table->enum('tipo', ['EPI', 'Documento', 'Sistema']);
-            $table->boolean('lida')->default(false);
+            $table->foreignId('USER_ID')->nullable()->constrained('USUARIOS')->onDelete('cascade');
+            $table->string('TITULO');
+            $table->text('MENSAGEM');
+            $table->enum('TIPO', ['EPI', 'DOCUMENTO', 'SISTEMA', 'GERAL'])->default('GERAL');
             $table->timestamps();
         });
     }

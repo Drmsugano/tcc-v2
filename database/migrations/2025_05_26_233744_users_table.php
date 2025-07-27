@@ -15,11 +15,14 @@ return new class extends Migration
             $table->string('USUARIO');
             $table->string('EMAIL')->unique();
             $table->string('PASSWORD');
-            $table->enum('PERFIL', ['ADMINISTRADOR', 'SEGURANCA DO TRABALHO']);
+            $table->enum('PERFIL', ['ADMINISTRADOR', 'SEGURANCA DO TRABALHO','FUNCIONARIO'])->default('FUNCIONARIO');
             $table->foreignId('EMPRESA_ID')->nullable()->constrained('EMPRESAS')->nullOnDelete();
             $table->timestamp('EMAIL_VERIFIED_AT')->nullable();
-            $table->rememberToken();
-            $table->timestamps();
+            $table->date('DATA_NASCIMENTO');
+            $table->date('DATA_ADMISSAO');
+            $table->date('DATA_DEMISSAO')->nullable();
+            $table->date('DATA_CADASTRO')->default(now());
+            $table->softDeletes();
         });
     }
 

@@ -11,9 +11,11 @@ class HomeController extends Controller
         $token = $request->bearerToken();
         // Se não tiver no header, tenta no cookie (que você definiu no JS)
         if (!$token) {
-            $token = $request->cookie('jwt_token');
+            $token = isset($_COOKIE['jwt_token']) ? $_COOKIE['jwt_token'] : null; // Verifica se o cookie jwt_token existe
         }
-        dd($token);
+        if (!$token) {
+            return redirect()->route('login')->withErrors(['error' => 'Usuário não autenticado.']);
+        }
         try {
             $usuario = JWTAuth::setToken($token)->authenticate();
             // $usuario válido - prossiga conforme o perfil

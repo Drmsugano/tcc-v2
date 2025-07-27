@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('FUNCIONARIO_ID')->constrained('FUNCIONARIOS')->onDelete('cascade');
             $table->foreignId('EPI_ID')->constrained('EPI')->onDelete('cascade');
+            $table->foreignId('RESPONSAVEL_ID')->constrained('RESPONSAVEIS_SEGURANCA')->nullOnDelete();
             $table->date('DATA_ENTREGA');
             $table->date('VALIDADE')->nullable();
             $table->integer('QUANTIDADE')->default(1);

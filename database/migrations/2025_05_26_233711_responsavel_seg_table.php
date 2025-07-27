@@ -11,8 +11,7 @@ return new class extends Migration
         Schema::create('RESPONSAVEIS_SEGURANCA', function (Blueprint $table) {
             $table->id();
             $table->foreignId('EMPRESA_ID')->constrained('EMPRESAS')->onDelete('cascade');
-            $table->string('NOME');
-            $table->string('CPF', 14)->unique();
+            $table->foreignId('USUARIO_ID')->nullable()->constrained('USUARIOS')->nullOnDelete();
             $table->string('FORMACAO');
             $table->string('NUMERO_REGISTRO_PROFISSIONAL');
             $table->string('TELEFONE')->nullable();

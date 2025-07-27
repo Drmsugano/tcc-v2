@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('CNPJ', 20)->unique();
             $table->string('ENDERECO')->nullable();
             $table->string('TELEFONE', 20)->nullable();
+            $table->softDeletes(); 
             $table->timestamps();
         });
     }

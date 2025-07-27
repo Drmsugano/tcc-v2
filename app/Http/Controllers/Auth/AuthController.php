@@ -20,11 +20,11 @@ class AuthController extends Controller
             $usuario = Usuario::where('USUARIO', strtoupper($request->input('login')))->first();
 
             if (!$usuario) {
-                return response()->json(['error' => 'Usuário não encontrado.'], 404);
+                return response()->json(['status' => 'error', 'message' => 'Usuário ou senha incorretos.'], 401);
             }
 
             if (!Hash::check($request->senha, $usuario->PASSWORD)) {
-                return response()->json(['error' => 'Senha incorreta.'], 401);
+                return response()->json(['status' => 'error', 'message' => 'Usuário ou senha incorretos.'], 401);
             }
 
             // Gera o token JWT
@@ -35,7 +35,8 @@ class AuthController extends Controller
             }
             // Esconde campos sensíveis
             $usuario->makeHidden(['password', 'remember_token']);
-
+            // Define o token no cookie
+            setcookie('jwt_token', $token, time() + (60 * 60), '/'); // 1 hora de expiração
             return response()->json([
                 'message' => 'Login realizado com sucesso.',
                 'status' => 'success',

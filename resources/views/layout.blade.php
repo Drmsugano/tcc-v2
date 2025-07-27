@@ -19,8 +19,8 @@
             <i class='bx bx-menu position-fixed pt-4'></i>
         </div>
         <br>
-        <div class="m-4">
-            <div class="card border-dark" style="width:95%; height:auto; margin: 0 auto;">
+        <div class="m-3">
+            <div class="card border-dark" style="width:100%; height:auto; margin: 0 auto;">
                 <div class="card-body">
                     <div class="card-title">
                         <img src="" height="55rem">

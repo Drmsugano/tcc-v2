@@ -6,20 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Empresa extends Model
 {
-    protected $fillable = ['nome', 'cnpj', 'endereco', 'telefone'];
+    protected $table = 'EMPRESA';
+    protected $timestamp = false;
+    protected $fillable = [
+        'RAZAO_SOCIAL',
+        'NOME_FANTASIA',
+        'CNPJ_CPF',
+        'IS_DELETED',
+    ];
 
     public function funcionarios()
     {
-        return $this->hasMany(Funcionario::class);
+        return $this->hasMany(Funcionario::class, 'EMPRESA_ID');
     }
 
-    public function responsaveisSeguranca()
+    public function usuarios()
     {
-        return $this->hasMany(ResponsavelSeguranca::class);
+        return $this->hasMany(Usuario::class, 'EMPRESA_ID');
     }
 
-    public function users()
+    public function documentos()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(DocumentoEmpresa::class, 'EMPRESA_ID');
     }
 }

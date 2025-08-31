@@ -4,27 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EntregaEpi extends Model
+class DocumentoFuncionario extends Model
 {
-    protected $table = 'ENTREGA_EPI';
+    protected $table = 'DOCUMENTOS_FUNCIONARIO';
     protected $timestamp = false;
     protected $fillable = [
         'FUNCIONARIO_ID',
-        'EPI_ID',
-        'DATA_ENTREGA',
-        'USUARIO_ENTREGA',
-        'DATA_DEVOLUCAO',
-        'OBSERVACAO',
+        'NOME',
+        'DESCRICAO',
+        'TIPO',
+        'DATA_EMISSAO',
+        'DATA_VALIDADE',
+        'ARQUIVO_PATH',
         'IS_DELETED',
+        'USUARIO_CADASTRO',
     ];
 
     public function funcionario()
     {
         return $this->belongsTo(Funcionario::class, 'FUNCIONARIO_ID');
-    }
-
-    public function epi()
-    {
-        return $this->belongsTo(Epi::class, 'EPI_ID');
     }
 }

@@ -9,15 +9,22 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Usuario extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-
     protected $table = 'USUARIOS';
-
+    protected $primaryKey = 'ID';
+    protected $timestamp = false;
     protected $fillable = [
-        'NOME', 'EMAIL', 'PASSWORD', 'PERFIL', 'EMPRESA_ID'
+        'NOME',
+        'EMAIL',
+        'PASSWORD',
+        'ROSFIELD_CONTROLE',
+        'ROSFIELD_FINANCEIRO',
+        'ROSFIELD_GERENCIAL',
+        'ROSFIELD_ADMIN',
+        'EMPRESA_ID'
     ];
 
     protected $hidden = [
-        'password', 'remember_token'
+        'PASSWORD'
     ];
 
     public function empresa()
@@ -25,14 +32,9 @@ class Usuario extends Authenticatable implements JWTSubject
         return $this->belongsTo(Empresa::class);
     }
 
-    public function notificacoes()
-    {
-        return $this->hasMany(Notificacao::class);
-    }
-
     public function logs()
     {
-        return $this->hasMany(Log::class);
+        return $this->hasMany(LogSistema::class);
     }
 
     // Métodos exigidos pelo JWTSubject

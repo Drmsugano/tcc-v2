@@ -17,18 +17,7 @@ class HomeController extends Controller
             return redirect()->route('login')->withErrors(['error' => 'Usuário não autenticado.']);
         }
         try {
-            $usuario = JWTAuth::setToken($token)->authenticate();
-            // $usuario válido - prossiga conforme o perfil
-            switch ($usuario->PERFIL) {
-                case 'ADMINISTRADOR':
-                    return view('Admin.index', compact('usuario'));
-                case 'FUNCIONARIO':
-                    return view('Funcionario.index', compact('usuario'));
-                case 'SEGURANCA DO TRABALHO':
-                    return view('Seguranca.index', compact('usuario'));
-                default:
-                    return redirect()->route('login')->withErrors(['error' => 'Perfil não reconhecido.']);
-            }
+            return view('home.index', ['usuario' => JWTAuth::setToken($token)->authenticate()]);
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['error' => 'Token inválido ou expirado.']);
         }

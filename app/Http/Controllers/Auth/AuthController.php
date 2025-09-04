@@ -7,50 +7,44 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 
+
 class AuthController extends Controller
 {
-
     public function login(Request $request)
     {
         $request->validate([
             'login' => 'required|string',
             'senha' => 'required|string',
         ]);
-        try {
-            $usuario = Usuario::where('USUARIO', strtoupper($request->input('login')))->first();
 
-            if (!$usuario) {
-                return response()->json(['status' => 'error', 'message' => 'Usuário ou senha incorretos.'], 401);
-            }
+        $usuario = Usuario::where('USUARIO', strtoupper($request->login))->first();
 
-            if (!Hash::check($request->senha, $usuario->PASSWORD)) {
-                return response()->json(['status' => 'error', 'message' => 'Usuário ou senha incorretos.'], 401);
-            }
-
-            // Gera o token JWT
-            $token = JWTAuth::fromUser($usuario);
-
-            if (!$token) {
-                return response()->json(['error' => 'Erro ao gerar o token.'], 500);
-            }
-            // Esconde campos sensíveis
-            $usuario->makeHidden(['password', 'remember_token']);
-            // Define o token no cookie
-            setcookie('jwt_token', $token, time() + (60 * 60), '/'); // 1 hora de expiração
+        if (!$usuario || !Hash::check($request->senha, $usuario->PASSWORD)) {
             return response()->json([
-                'message' => 'Login realizado com sucesso.',
-                'status' => 'success',
-                'token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                'usuario' => $usuario,
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao processar a solicitação: ' . $e->getMessage()], 500);
+                'status' => 'error',
+                'message' => 'Usuário ou senha incorretos.'
+            ], 401);
         }
-    }
 
+        // Claims customizadas com permissões
+        $customClaims = [
+            'ROSFIELD_ADMIN' => $usuario->ROSFIELD_ADMIN,
+            'ROSFIELD_FINANCEIRO' => $usuario->ROSFIELD_FINANCEIRO,
+            'ROSFIELD_CONTROLE' => $usuario->CONTROLE,
+            'USUARIO' => $usuario->USUARIO
+        ];
+
+        $token = JWTAuth::claims($customClaims)->fromUser($usuario);
+        $request->session()->put('jwt_token', $token);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login realizado com sucesso.',
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'usuario' => $usuario->makeHidden(['PASSWORD', 'remember_token'])
+        ], 200);
+    }
 
     protected function respondWithToken($token)
     {

@@ -16,7 +16,7 @@
             <ul class="navbar-nav">
                 @if ($usuario->ROSFIELD_ADMIN == 1)
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">
+                        <a class="nav-link text-white" href="{{ route('admin.index') }}">
                             <i class='bx bx-cog'></i>
                             Administração
                         </a>
@@ -37,7 +37,7 @@
                             Controle
                         </a>
                     </li>
-                
+
                 @endif
             </ul>
             {{-- Usuário --}}

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\PermissaoMiddleware;
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Session\Middleware\StartSession;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,7 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->append(StartSession::class);
+        $middleware->alias([
+            'auth.jwt' => AuthMiddleware::class,
+            'permissao' => PermissaoMiddleware::class,
+            'inject.user' => \App\Http\Middleware\InjectUserView::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
-    })->create();
+    })
+    ->create();

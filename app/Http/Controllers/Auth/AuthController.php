@@ -20,10 +20,11 @@ class AuthController extends Controller
         $usuario = Usuario::where('USUARIO', strtoupper($request->login))->first();
 
         if (!$usuario || !Hash::check($request->senha, $usuario->PASSWORD)) {
+            session()->flush();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Usuário ou senha incorretos.'
-            ], 401);
+            ], 200);
         }
 
         // Claims customizadas com permissões
@@ -60,7 +61,8 @@ class AuthController extends Controller
     {
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
-            return response()->json(['message' => 'Logout realizado com sucesso.']);
+            session()->forget('jwt_token');
+            return redirect()->route('login');
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json(['error' => 'Erro ao fazer logout.'], 500);
         }

@@ -1,62 +1,137 @@
 @extends('layout')
 @section('conteudo')
     <div class="container mt-5">
-        <h2 class="mb-4 fw-bold text-secondary">⚙️ Área Administrativa do Sistema</h2>
+        <h2 class="mb-4 fw-bold text-secondary">⚙️ Cadastro de Usuários - Empresa ({{ $empresa->NOME_FANTASIA }})</h2>
 
-        <div class="d-flex gap-4 flex-wrap">
-            <!-- Botão de Listagem -->
-            <a href="#"
-                class="btn btn-gradient-primary btn-lg d-flex align-items-center justify-content-center shadow-sm custom-btn">
-                <i class='bx bx-list-ul me-2'></i>
-                Listagem
-            </a>
+        <!-- Card do Formulário -->
+        <div class="card shadow-lg mb-4 border-0">
+            <div class="card-body">
+                <h5 class="card-title mb-4 text-primary fw-bold">Cadastrar Novo Usuário</h5>
+                <form action="{{ route('admin.cadastrar') }}" method="POST">
+                    @csrf
+                    <div class="row g-4">
+                        <!-- Nome Completo -->
+                        <div class="col-md-4">
+                            <label for="nome" class="form-label fw-semibold text-secondary">Nome Completo</label>
+                            <input type="text" class="form-control shadow-sm border-1" id="nome" name="NOME"
+                                placeholder="Digite o nome completo" required>
+                        </div>
 
-            <!-- Botão de Cadastro -->
-            <a href="#"
-                class="btn btn-gradient-success btn-lg d-flex align-items-center justify-content-center shadow-sm custom-btn">
-                <i class='bx bx-plus-circle me-2'></i>
-                Cadastro
-            </a>
+                        <!-- Usuário -->
+                        <div class="col-md-4">
+                            <label for="usuario" class="form-label fw-semibold text-secondary">Usuário</label>
+                            <input type="text" class="form-control shadow-sm border-1" id="usuario" name="USUARIO"
+                                placeholder="Digite o nome de usuário" required>
+                        </div>
+
+                        <!-- E-mail -->
+                        <div class="col-md-4">
+                            <label for="email" class="form-label fw-semibold text-secondary">E-mail</label>
+                            <input type="email" class="form-control shadow-sm border-1" id="email" name="EMAIL"
+                                placeholder="Digite o e-mail" required>
+                        </div>
+                        <!-- Senha -->
+                        <div class="col">
+                            <label for="senha" class="form-label fw-semibold text-secondary">Senha</label>
+                            <input type="password" class="form-control shadow-sm border-1" id="senha" name="SENHA"
+                                placeholder="Digite a senha" required>
+                        </div>
+                        <!-- Permissões -->
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-secondary mb-2">Permissões</label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
+                                        value="ROSFIELD_ADMIN" id="perm-admin">
+                                    <label class="form-check-label" for="perm-admin">Administrador</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
+                                        value="ROSFIELD_FINANCEIRO" id="perm-financeiro">
+                                    <label class="form-check-label" for="perm-financeiro">Financeiro</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
+                                        value="ROSFIELD_CONTROLE" id="perm-controle">
+                                    <label class="form-check-label" for="perm-controle">Controle</label>
+                                </div>
+                                <!-- Adicione mais permissões aqui -->
+                            </div>
+                        </div>
+
+                        <!-- Botão -->
+                        <div class="col-12 d-grid mt-3">
+                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                                Cadastrar Usuário
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- Card da Tabela -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Lista de Usuários</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark text-white">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Usuário</th>
+                                <th>Email</th>
+                                <th>Permissões</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($listaUsuarios as $usuario)
+                                <tr>
+                                    <td>{{ $usuario->ID }}</td>
+                                    <td>{{ $usuario->NOME }}</td>
+                                    <td>{{ $usuario->USUARIO }}</td>
+                                    <td>{{ $usuario->EMAIL }}</td>
+                                    <td>
+                                        @php
+                                            // Lista de campos de permissões do usuário
+                                            $permissoesCampos = collect($usuario)->filter(function ($value, $key) {
+                                                return str_starts_with($key, 'ROSFIELD_') && $value;
+                                            });
+                                        @endphp
+
+                                        @if($permissoesCampos->isNotEmpty())
+                                            @foreach($permissoesCampos as $campo => $valor)
+                                                @php
+                                                    // Remove ROSFIELD_ do nome para mostrar a permissão
+                                                    $nomePermissao = str_replace('ROSFIELD_', '', $campo);
+                                                @endphp
+                                                <span class="badge bg-info text-dark me-1">{{ $nomePermissao }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="text-muted">Nenhuma</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="#" class="btn btn-sm btn-outline-warning me-1"> ✏️ Editar</a>
+                                        <form method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Excluir</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">Nenhum usuário cadastrado.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-
-    <style>
-        /* Gradientes modernos para os botões */
-        .btn-gradient-primary {
-            background: linear-gradient(135deg, #4e73df, #224abe);
-            color: #fff;
-            transition: all 0.3s ease;
-        }
-        .btn-gradient-primary:hover {
-            background: linear-gradient(135deg, #224abe, #4e73df);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        .btn-gradient-success {
-            background: linear-gradient(135deg, #1cc88a, #17a673);
-            color: #fff;
-            transition: all 0.3s ease;
-        }
-        .btn-gradient-success:hover {
-            background: linear-gradient(135deg, #17a673, #1cc88a);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        /* Padding extra e cantos arredondados */
-        .custom-btn {
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        /* Pequena animação de ícone no hover */
-        .custom-btn i {
-            transition: transform 0.3s ease;
-        }
-
-        .custom-btn:hover i {
-            transform: rotate(15deg);
-        }
-    </style>
 @endsection

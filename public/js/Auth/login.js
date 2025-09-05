@@ -42,9 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error(
-                        "Credenciais inválidas ou erro no servidor."
-                    );
+                    throw new Error("Credenciais inválidas");
                 }
                 return response.json();
             })
@@ -52,9 +50,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.status !== "success") {
                     Swal.fire({
                         title: "Erro ao fazer login",
-                        text: data.message || "Usuário ou senha incorretos.",
+                        text: data.message,
                         icon: "error",
                         confirmButtonText: "Tentar novamente",
+                        didClose: () => {
+                            document.querySelector("form").reset();
+                        }
                     });
                 } else {
                     Swal.fire({

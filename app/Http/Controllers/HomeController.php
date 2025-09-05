@@ -9,6 +9,9 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        return view("home.index");
+        if (session("jwt_token") !== null) {
+            return view("home.index");
+        }
+        return redirect()->route('login')->withErrors(['msg' => 'Usuário Não Autenticado'])->withInput();
     }
 }

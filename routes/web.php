@@ -15,13 +15,13 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login')
 Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
 /* Middleware responsável por alimentar a Navbar com o usuário */
-Route::middleware(['inject.user'])->group(function () {
+Route::middleware(['auth.jwt', 'inject.user'])->group(function () {
     Route::get('/Home', [HomeController::class, 'index'])->name('home');
-
     Route::prefix('/Admin')
         ->middleware(['auth.jwt', 'permissao:ROSFIELD_ADMIN'])
         ->group(function () {
             Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+            Route::post('/cadastrar',[AdminController::class,'store'])->name('admin.cadastrar');
         });
 });
 

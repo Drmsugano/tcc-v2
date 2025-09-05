@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,58 +17,64 @@
             align-items: center;
             justify-content: center;
         }
+
         .card {
             border: none;
             border-radius: 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
+
         .form-control:focus {
             box-shadow: none;
             border-color: #6610f2;
         }
+
         .btn-primary {
             background-color: #6610f2;
             border: none;
         }
+
         .btn-primary:hover {
             background-color: #520dc2;
         }
     </style>
 </head>
+
 <body>
 
-<div class="card p-4" style="width: 100%; max-width: 400px;">
-    <div class="text-center mb-4">
-        <h2 class="fw-bold">Login</h2>
-        <p class="text-muted">Rosfield</p>
-    </div>
-    <form>
-        <div class="mb-3">
-            <label for="login" class="form-label">Login</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-person"></i></span>
-                <input type="text" class="form-control" name="login" placeholder="Digite seu login">
+    <div class="card p-4" style="width: 100%; max-width: 400px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Login</h2>
+            <p class="text-muted">Rosfield</p>
+        </div>
+        <form>
+            <div class="mb-3">
+                <label for="login" class="form-label">Login</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input type="text" class="form-control" name="login" placeholder="Digite seu login">
+                </div>
             </div>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Senha</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                <input type="password" class="form-control" name="password" placeholder="Digite sua senha">
+            <div class="mb-3">
+                <label for="password" class="form-label">Senha</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input type="password" class="form-control" name="password" placeholder="Digite sua senha">
+                </div>
             </div>
-        </div>
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary">Entrar</button>
-        </div>
-    </form>
-</div>
-@if (session('error'))
-    <div class="alert alert-danger mt-3" role="alert">
-        {{ session('error') }}
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </div>
+        </form>
     </div>
-@endif
-<script src="/js/terceiros/bootstrap/bootstrap.bundle.min.js"></script>
-<script src="/js/Auth/login.js"></script>
-<script src="/js/terceiros/sweetalert2/sweetalert2.min.js"></script>
+    @if($errors->any())
+        <div class="alert alert-danger mt-3" role="alert">
+            {{ $errors->first() }}
+        </div>
+    @endif
+    <script src="/js/terceiros/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/js/Auth/login.js"></script>
+    <script src="/js/terceiros/sweetalert2/sweetalert2.min.js"></script>
 </body>
+
 </html>

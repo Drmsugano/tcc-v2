@@ -14,23 +14,22 @@ class AuthMiddleware
         try {
             // Checa se existe token na sessão
             if (!$request->hasSession() || !$request->session()->has('jwt_token')) {
-                return redirect()->route('login')->withErrors('Usuário não autenticado');
+                return redirect()->route('login')->withErrors(['msg' => 'Usuário não autenticado'])->withInput();
             }
             $token = $request->session()->get('jwt_token');
             if (!$token) {
-                return redirect()->route('login')->withErrors('Token inválido');
+                return redirect()->route('login')->withErrors(['msg' => 'Token inválido'])->withInput();
             }
-            // Tenta autenticar usuário via token
             $user = null;
             try {
                 $user = JWTAuth::setToken($token)->authenticate();
             } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-                return redirect()->route('login')->withErrors('Token expirado');
+                return redirect()->route('login')->withErrors(['msg' => 'Token expirado'])->withInput();
             } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-                return redirect()->route('login')->withErrors('Token inválido');
+                return redirect()->route('login')->withErrors(['msg' => 'Token inválido'])->withInput();
             }
             if (!$user) {
-                return redirect()->route('login')->withErrors('Usuário não encontrado');
+                return redirect()->route('login')->withErrors(['msg' => 'Usuário não encontrado'])->withInput();
             }
             // Injeta usuário no request para usar nos controllers
             $request->attributes->set('jwt_user', $user);

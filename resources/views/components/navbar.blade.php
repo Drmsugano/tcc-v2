@@ -3,7 +3,9 @@
         {{-- Logo --}}
         <a class="navbar-brand d-flex align-items-center" href="#">
             <img src="/img/Caixa.png" alt="Logo" width="32" height="32" class="me-2">
-            <span class="fw-bold">Rosfield ERP</span>
+            <span class="fw-bold">
+                {{ $usuarioView->NOME_FANTASIA }}
+            </span>
         </a>
 
         {{-- Botão mobile --}}
@@ -14,7 +16,7 @@
         {{-- Links --}}
         <div class="collapse navbar-collapse" id="menuERP">
             <ul class="navbar-nav">
-                @if ($usuario->ROSFIELD_ADMIN == 1)
+                @if ($usuarioView->ROSFIELD_ADMIN == 1)
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin.index') }}">
                             <i class='bx bx-cog'></i>
@@ -22,7 +24,7 @@
                         </a>
                     </li>
                 @endif
-                @if ($usuario->ROSFIELD_ADMIN == 1 || $usuario->ROSFIELD_FINANCEIRO == 1)
+                @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->ROSFIELD_FINANCEIRO == 1)
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-wallet'></i>
@@ -30,7 +32,7 @@
                         </a>
                     </li>
                 @endif
-                @if ($usuario->ROSFIELD_ADMIN == 1 || $usuario->CONTROLE == 1)
+                @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->CONTROLE == 1)
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-group'></i>
@@ -55,7 +57,7 @@
                         role="button" data-bs-toggle="dropdown">
                         <img src="https://ui-avatars.com/api/?name=Usuário" alt="Avatar" class="rounded-circle me-2"
                             width="32" height="32">
-                        <span>{{ $usuario->USUARIO }}</span>
+                        <span>{{ $usuarioView->USUARIO }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="perfilDropdown">
                         <li><a class="dropdown-item" href="#"><i class='bx bx-user me-2'></i>Perfil</a></li>

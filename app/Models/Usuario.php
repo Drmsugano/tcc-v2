@@ -11,14 +11,19 @@ class Usuario extends Authenticatable implements JWTSubject
     use Notifiable;
     protected $table = 'USUARIOS';
     protected $primaryKey = 'ID';
-    protected $timestamp = false;
+    public $timestamps = false;
     protected $fillable = [
         'NOME',
+        'USUARIO',
         'EMAIL',
         'PASSWORD',
         'ROSFIELD_CONTROLE',
+        'ROSFIELD_ENGENHARIA',
+        'ROSFIELD_COMPRAS',
         'ROSFIELD_FINANCEIRO',
         'ROSFIELD_GERENCIAL',
+        'ROSFIELD_COMPRAS',
+        'ROSFIELD_MASTER',
         'ROSFIELD_ADMIN',
         'EMPRESA_ID'
     ];
@@ -29,7 +34,7 @@ class Usuario extends Authenticatable implements JWTSubject
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Empresa::class,'EMPRESA_ID','ID');
     }
 
     public function logs()

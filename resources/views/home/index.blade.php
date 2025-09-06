@@ -4,7 +4,7 @@
         <h2 class="mb-4">📊 Bem-vindo ao Rosfield ERP</h2>
         <div class="row g-4">
             {{-- Administração --}}
-            @if ($usuario->ROSFIELD_ADMIN == 1)
+            @if ($usuarioView->ROSFIELD_ADMIN == 1)
                 <div class="col-md-4">
                     <div class="card h-100 text-center shadow-sm border-0">
                         <div class="card-body">
@@ -17,7 +17,7 @@
                 </div>
             @endif
             {{-- Financeiro --}}
-            @if ($usuario->ROSFIELD_ADMIN == 1 || $usuario->ROSFIELD_FINANCEIRO == 1)
+            @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->ROSFIELD_FINANCEIRO == 1)
                 <div class="col-md-4">
                     <div class="card h-100 text-center shadow-sm border-0">
                         <div class="card-body">
@@ -30,7 +30,7 @@
                 </div>
             @endif
             {{-- Controle --}}
-            @if ($usuario->ROSFIELD_ADMIN == 1 || $usuario->CONTROLE == 1)
+            @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->CONTROLE == 1)
                 <div class="col-md-4">
                     <div class="card h-100 text-center shadow-sm border-0">
                         <div class="card-body">

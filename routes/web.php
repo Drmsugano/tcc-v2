@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UsuarioController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -14,14 +15,19 @@ Route::get('/login', function () {
 Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/auth/logout', [AuthController::class, 'logout'])->name('auth.logout');
 
-/* Middleware responsável por alimentar a Navbar com o usuário */
 Route::middleware(['auth.jwt', 'inject.user'])->group(function () {
     Route::get('/Home', [HomeController::class, 'index'])->name('home');
-    Route::prefix('/Admin')
-        ->middleware(['auth.jwt', 'permissao:ROSFIELD_ADMIN'])
-        ->group(function () {
-            Route::get('/', [AdminController::class, 'index'])->name('admin.index');
-            Route::post('/cadastrar',[AdminController::class,'store'])->name('admin.cadastrar');
+    // Administração
+    Route::prefix('Admin')->middleware(['permissao:ROSFIELD_ADMIN'])->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        // Usuários
+        Route::prefix('Usuario')->group(function () {
+            Route::get('/', [UsuarioController::class, 'index'])->name('admin.usuarios');
+            Route::get('/getDados', [UsuarioController::class, 'getDados']);
+            Route::post('/cadastrar', [UsuarioController::class, 'cadastrar'])->name('admin.usuarios.cadastrar');
         });
+
+    });
 });
+
 

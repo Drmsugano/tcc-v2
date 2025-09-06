@@ -23,7 +23,7 @@ class PermissaoMiddleware
         }
 
         // Admin tem acesso a tudo
-        if (isset($usuario['ROSFIELD_ADMIN']) && $usuario['ROSFIELD_ADMIN'] == 1) {
+        if ((isset($usuario['ROSFIELD_ADMIN']) && $usuario['ROSFIELD_ADMIN'] == 1) || ($usuario['ROSFIELD_MASTER'] == 1)) {
             return $next($request);
         }
         // Divide permissões por vírgula

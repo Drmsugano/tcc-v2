@@ -17,7 +17,7 @@ class AuthController extends Controller
             'senha' => 'required|string',
         ]);
 
-        $usuario = Usuario::where('USUARIO', strtoupper($request->login))->first();
+        $usuario = Usuario::where('USUARIO', strtoupper($request->login))->with('empresa')->first();
 
         if (!$usuario || !Hash::check($request->senha, $usuario->PASSWORD)) {
             session()->flush();
@@ -30,8 +30,10 @@ class AuthController extends Controller
         // Claims customizadas com permissões
         $customClaims = [
             'ROSFIELD_ADMIN' => $usuario->ROSFIELD_ADMIN,
+            'ROSFIELD_COMPRAS'=> $usuario->ROSFIELD_COMPRAS,
             'ROSFIELD_FINANCEIRO' => $usuario->ROSFIELD_FINANCEIRO,
-            'ROSFIELD_CONTROLE' => $usuario->CONTROLE,
+            'ROSFIELD_ENGENHARIA' => $usuario->ROSFIELD_CONTROLE,
+            'NOME_FANTASIA' => $usuario->empresa->NOME_FANTASIA,
             'USUARIO' => $usuario->USUARIO
         ];
 
@@ -43,7 +45,7 @@ class AuthController extends Controller
             'token' => $token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'usuario' => $usuario->makeHidden(['PASSWORD', 'remember_token'])
+            'usuario' => $usuario->makeHidden(['PASSWORD'])
         ], 200);
     }
 

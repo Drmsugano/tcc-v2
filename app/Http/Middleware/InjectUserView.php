@@ -10,19 +10,17 @@ class InjectUserView
 {
     public function handle(Request $request, Closure $next)
     {
-        $usuario = null;
-        // Pega o token da session (não do cookie ou localStorage)
+        $usuarioView = null;
         if ($request->hasSession() && $request->session()->has('jwt_token')) {
             $token = $request->session()->get('jwt_token');
             try {
-                $usuario = JWTAuth::setToken($token)->authenticate();
+                $usuarioView = JWTAuth::setToken($token)->authenticate();
             } catch (\Exception $e) {
                 // Token inválido ou expirado
-                $usuario = null;
+                $usuarioView = null;
             }
         }
-        // Injeta o usuário em todas as views
-        view()->share('usuario', $usuario);
+        view()->share('usuarioView', $usuarioView);
         return $next($request);
     }
 }

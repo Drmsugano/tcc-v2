@@ -6,12 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setor extends Model
 {
+    public $timestamps = false;
     protected $table = 'SETOR';
-    protected $timestamp = false;
-    protected $fillable = ['NOME'];
+    protected $fillable = ['NOME', 'EMPRESA_ID'];
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class);
+    }
 
     public function funcoes()
     {
-        return $this->hasMany(Funcao::class, 'SETOR_ID');
+        return $this->hasMany(Funcao::class);
     }
 }

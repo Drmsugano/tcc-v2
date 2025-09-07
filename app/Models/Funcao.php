@@ -1,22 +1,26 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Funcao extends Model
 {
+    public $timestamps = false;
     protected $table = 'FUNCAO';
-    protected $timestamp = false;
-    protected $fillable = ['NOME', 'SETOR_ID'];
+    protected $fillable = ['NOME', 'SETOR_ID', 'EMPRESA_ID'];
 
     public function setor()
     {
-        return $this->belongsTo(Setor::class, 'setor_id');
+        return $this->belongsTo(Setor::class);
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class);
     }
 
     public function funcionarios()
     {
-        return $this->hasMany(Funcionario::class, 'funcao_id');
+        return $this->hasMany(Funcionario::class);
     }
 }

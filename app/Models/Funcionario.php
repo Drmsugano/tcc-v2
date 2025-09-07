@@ -1,41 +1,40 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Funcionario extends Model
 {
-    protected $table = 'FUNCIONARIOS';
-    protected $timestamp = false;
+    public $timestamps = false;
+    protected $table = 'FUNCIONARIO';
     protected $fillable = [
         'NOME',
-        'EMAIL',
-        'TELEFONE',
+        'CPF',
         'DATA_ADMISSAO',
         'DATA_DEMISSAO',
-        'IS_DELETED',
         'EMPRESA_ID',
-        'FUNCAO_ID',
+        'FUNCAO_ID'
     ];
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class, 'EMPRESA_ID');
+        return $this->belongsTo(Empresa::class);
     }
 
     public function funcao()
     {
-        return $this->belongsTo(Funcao::class, 'FUNCAO_ID');
+        return $this->belongsTo(Funcao::class);
     }
 
-    public function documentos()
+    public function obras()
     {
-        return $this->hasMany(DocumentoFuncionario::class, 'FUNCIONARIO_ID');
+        return $this->belongsToMany(Obra::class, 'FUNCIONARIO_OBRA')
+            ->withPivot(['DATA_INICIO', 'DATA_FIM']);
     }
 
     public function epis()
     {
-        return $this->hasMany(EntregaEpi::class, 'FUNCIONARIO_ID');
+        return $this->belongsToMany(EPI::class, 'FUNCIONARIO_EPI')
+            ->withPivot(['QUANTIDADE', 'DATA_ENTREGA', 'DATA_DEVOLUCAO', 'RESPONSAVEL_ENTREGA']);
     }
 }

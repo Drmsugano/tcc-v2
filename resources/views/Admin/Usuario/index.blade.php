@@ -7,7 +7,7 @@
         <div class="card shadow-lg mb-4 border-0">
             <div class="card-body">
                 <h5 class="card-title mb-4 text-primary fw-bold">Cadastrar Novo Usuário</h5>
-                <form action="{{ route('admin.cadastrar') }}" method="POST">
+                <form action="{{ route('admin.usuarios.cadastrar') }}" method="POST">
                     @csrf
                     <div class="row g-4">
                         <!-- Nome Completo -->
@@ -40,25 +40,17 @@
                         <div class="col-12">
                             <label class="form-label fw-semibold text-secondary mb-2">Permissões</label>
                             <div class="d-flex flex-wrap gap-3">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
-                                        value="ROSFIELD_ADMIN" id="perm-admin">
-                                    <label class="form-check-label" for="perm-admin">Administrador</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
-                                        value="ROSFIELD_FINANCEIRO" id="perm-financeiro">
-                                    <label class="form-check-label" for="perm-financeiro">Financeiro</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="permissoes[]"
-                                        value="ROSFIELD_CONTROLE" id="perm-controle">
-                                    <label class="form-check-label" for="perm-controle">Controle</label>
-                                </div>
-                                <!-- Adicione mais permissões aqui -->
+                                @foreach ($permissao as $permissoesCampos)
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="permissoes[]"
+                                            value="{{ $permissoesCampos->ID }}" id="perm-{{ $permissoesCampos->ID }}">
+                                        <label class="form-check-label" for="perm-{{ $permissoesCampos->ID }}">
+                                            {{ $permissoesCampos->NOME_PERMISSAO }}
+                                        </label>
+                                    </div>
+                                @endforeach
                             </div>
                         </div>
-
                         <!-- Botão -->
                         <div class="col-12 d-grid mt-3">
                             <button type="submit" class="btn btn-primary btn-lg shadow-sm">

@@ -6,40 +6,42 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 class Usuario extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    public $timestamps = false;
     protected $table = 'USUARIOS';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
-    protected $fillable = [
-        'NOME',
-        'USUARIO',
-        'EMAIL',
-        'PASSWORD',
-        'ROSFIELD_CONTROLE',
-        'ROSFIELD_ENGENHARIA',
-        'ROSFIELD_COMPRAS',
-        'ROSFIELD_FINANCEIRO',
-        'ROSFIELD_GERENCIAL',
-        'ROSFIELD_COMPRAS',
-        'ROSFIELD_MASTER',
-        'ROSFIELD_ADMIN',
-        'EMPRESA_ID'
-    ];
-
-    protected $hidden = [
-        'PASSWORD'
-    ];
+    protected $fillable = ['NOME', 'USUARIO', 'EMAIL', 'PASSWORD', 'EMPRESA_ID'];
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class,'EMPRESA_ID','ID');
+        return $this->belongsTo(Empresa::class, 'EMPRESA_ID', 'ID');
     }
 
-    public function logs()
+    public function permissoes()
     {
-        return $this->hasMany(LogSistema::class);
+        return $this->belongsToMany(
+            related: Permissao::class,
+            table: 'USUARIO_PERMISSAO',
+            foreignPivotKey: 'USUARIO_ID',
+            relatedPivotKey: 'PERMISSAO_ID'
+        );
+    }
+
+    public function permissoesArray()
+    {
+        return $this->permissoes->pluck('NOME_PERMISSAO')->toArray();
+    }
+
+    public function episCadastrados()
+    {
+        return $this->hasMany(related: EPI::class, foreignKey: 'USUARIO_CADASTRO');
+    }
+
+    public function episAlterados()
+    {
+        return $this->hasMany(related: EPI::class, foreignKey: 'USUARIO_ALTERACAO');
     }
 
     // Métodos exigidos pelo JWTSubject

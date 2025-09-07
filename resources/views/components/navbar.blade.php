@@ -1,10 +1,9 @@
 <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
     <div class="container-fluid">
         {{-- Logo --}}
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="/img/Caixa.png" alt="Logo" width="32" height="32" class="me-2">
+        <a class="navbar-brand d-flex align-items-center" href="/">
             <span class="fw-bold">
-                {{ $usuarioView->NOME_FANTASIA }}
+                {{ $usuarioView['EMPRESA'] }}
             </span>
         </a>
 
@@ -16,7 +15,7 @@
         {{-- Links --}}
         <div class="collapse navbar-collapse" id="menuERP">
             <ul class="navbar-nav">
-                @if ($usuarioView->ROSFIELD_ADMIN == 1)
+                    @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin.index') }}">
                             <i class='bx bx-cog'></i>
@@ -24,7 +23,7 @@
                         </a>
                     </li>
                 @endif
-                @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->ROSFIELD_FINANCEIRO == 1)
+                      @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-wallet'></i>
@@ -32,7 +31,7 @@
                         </a>
                     </li>
                 @endif
-                @if ($usuarioView->ROSFIELD_ADMIN == 1 || $usuarioView->CONTROLE == 1)
+                @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('CONTROLE', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-group'></i>
@@ -57,7 +56,7 @@
                         role="button" data-bs-toggle="dropdown">
                         <img src="https://ui-avatars.com/api/?name=Usuário" alt="Avatar" class="rounded-circle me-2"
                             width="32" height="32">
-                        <span>{{ $usuarioView->USUARIO }}</span>
+                        <span>{{ $usuarioView['USUARIO'] }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="perfilDropdown">
                         <li><a class="dropdown-item" href="#"><i class='bx bx-user me-2'></i>Perfil</a></li>
@@ -65,7 +64,7 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class='bx bx-log-out me-2'></i>Sair</a>
+                        <li><a class="dropdown-item text-danger" href="{{ route('auth.logout') }}"><i class='bx bx-log-out me-2'></i>Sair</a>
                         </li>
                     </ul>
                 </li>

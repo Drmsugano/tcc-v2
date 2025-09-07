@@ -1,27 +1,33 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
-
-class Epi extends Model
+class EPI extends Model
 {
+    public $timestamps = false;
     protected $table = 'EPI';
-    protected $timestamp = false;
     protected $fillable = [
         'NOME',
         'DESCRICAO',
         'CA',
         'VALIDADE_EPI',
-        'HORA_CADASTRO',
-        'DATA_CADASTRO',
         'USUARIO_CADASTRO',
-        'USUARIO_ALTERACAO',
-        'IS_DELETED',
+        'USUARIO_ALTERACAO'
     ];
 
-    public function entregas()
+    public function usuarioCadastro()
     {
-        return $this->hasMany(EntregaEpi::class, 'EPI_ID');
+        return $this->belongsTo(Usuario::class, 'USUARIO_CADASTRO');
+    }
+
+    public function usuarioAlteracao()
+    {
+        return $this->belongsTo(Usuario::class, 'USUARIO_ALTERACAO');
+    }
+
+    public function funcionarios()
+    {
+        return $this->belongsToMany(Funcionario::class, 'FUNCIONARIO_EPI')
+            ->withPivot(['QUANTIDADE', 'DATA_ENTREGA', 'DATA_DEVOLUCAO', 'RESPONSAVEL_ENTREGA']);
     }
 }
+

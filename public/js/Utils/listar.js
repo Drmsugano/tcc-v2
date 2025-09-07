@@ -71,13 +71,19 @@ class TabelaDinamica {
             this.paginaAtual = this.meta.current_page;
 
             // Salvar no cache
-            this._addCache(chaveCache, { data: this.dados, meta: this.meta, links: this.links });
+            this._addCache(chaveCache, {
+                data: this.dados,
+                meta: this.meta,
+                links: this.links,
+            });
 
             this.renderizarTabela();
             this.renderizarPaginacao();
         } catch (erro) {
             console.error("Erro ao carregar dados:", erro);
-            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
+            this.corpo.innerHTML = `<tr><td colspan="${
+                this.colunas.length + 1
+            }" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
         } finally {
             Swal.isVisible() && Swal.close();
         }
@@ -104,13 +110,20 @@ class TabelaDinamica {
                 // Status como badge
                 if (coluna.toLowerCase().includes("status")) {
                     const span = document.createElement("span");
-                    const cores = { "Ativa": "success", "Concluída": "primary", "Em Andamento": "warning" };
+                    const cores = {
+                        Ativa: "success",
+                        Concluída: "primary",
+                        "Em Andamento": "warning",
+                    };
                     const cor = cores[item[coluna]] ?? "secondary";
                     span.className = `badge bg-${cor}`;
                     span.textContent = item[coluna];
                     celula.appendChild(span);
                 } else {
-                    celula.textContent = this._formatarValor(coluna, item[coluna]);
+                    celula.textContent = this._formatarValor(
+                        coluna,
+                        item[coluna]
+                    );
                 }
 
                 linha.appendChild(celula);
@@ -123,12 +136,19 @@ class TabelaDinamica {
                     botao.id = `${item.tabela}-${item.ID}`;
                     botao.className =
                         "btn btn-sm me-1 " +
-                        (acao.cor ? `btn-outline-${acao.cor}` : "btn-outline-primary");
-                    botao.title = acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
+                        (acao.cor
+                            ? `btn-outline-${acao.cor}`
+                            : "btn-outline-primary");
+                    botao.title =
+                        acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
                     botao.innerHTML = acao.icone
-                        ? `<i class="bx ${acao.icone} me-1"></i>${acao.texto || ""}`
+                        ? `<i class="bx ${acao.icone} me-1"></i>${
+                              acao.texto || ""
+                          }`
                         : acao.texto || "";
-                    botao.addEventListener("click", () => acao.callback(item.ID, item));
+                    botao.addEventListener("click", () =>
+                        acao.callback(item.ID, item.tabela)
+                    );
                     celulaAcoes.appendChild(botao);
                 });
                 linha.appendChild(celulaAcoes);
@@ -146,7 +166,9 @@ class TabelaDinamica {
         const current = this.paginaAtual;
 
         // Botão anterior
-        this._criarBotao("«", current > 1, () => this.carregarDados(current - 1));
+        this._criarBotao("«", current > 1, () =>
+            this.carregarDados(current - 1)
+        );
 
         // Primeira página
         this._criarBotaoPagina(1, current);
@@ -161,7 +183,9 @@ class TabelaDinamica {
         if (total > 1) this._criarBotaoPagina(total, current);
 
         // Botão próximo
-        this._criarBotao("»", current < total, () => this.carregarDados(current + 1));
+        this._criarBotao("»", current < total, () =>
+            this.carregarDados(current + 1)
+        );
     }
 
     _criarBotaoPagina(pagina, atual) {
@@ -172,7 +196,9 @@ class TabelaDinamica {
     _criarBotao(texto, habilitado, callback, ativo = false) {
         const btn = document.createElement("button");
         btn.textContent = texto;
-        btn.className = "btn btn-sm me-1 " + (ativo ? "btn-primary text-white" : "btn-outline-primary");
+        btn.className =
+            "btn btn-sm me-1 " +
+            (ativo ? "btn-primary text-white" : "btn-outline-primary");
         btn.disabled = !habilitado;
         btn.addEventListener("click", callback);
         this.paginacao.appendChild(btn);

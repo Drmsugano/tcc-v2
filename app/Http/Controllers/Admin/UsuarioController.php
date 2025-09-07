@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Empresa;
+use App\Models\Permissao;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,8 +13,9 @@ class UsuarioController extends Controller
     public function index(Request $request)
     {
         $empresa = Empresa::where("ID", $request->user()->EMPRESA_ID)->first();
-        $listaUsuarios = Usuario::where("EMPRESA_ID", $request->user()->EMPRESA_ID)->get();
-        return view("Admin.usuario.index", compact("empresa", "listaUsuarios"));
+        $listaUsuarios = Usuario::with(["empresa", "permissoes"])->where("EMPRESA_ID", $empresa->ID)->get();
+        $permissao = Permissao::select('ID','NOME_PERMISSAO')->get();
+        return view("Admin.Usuario.index", compact("empresa", "listaUsuarios", "permissao"));
     }
     public function store(Request $request)
     {
@@ -23,22 +25,19 @@ class UsuarioController extends Controller
             'EMAIL' => 'required|email|max:255|unique:USUARIOS,EMAIL',
             'SENHA' => 'required|string|min:1',
             'permissoes' => 'required|array',
-            'permissoes.*' => 'string',
+            'permissoes.*' => 'integer', // IDs das permissões
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
+        $data = $validator->validated();
+        $data['PASSWORD'] = Hash::make($data['SENHA']);
+        $data['EMPRESA_ID'] = $request->user()->EMPRESA_ID;
+        unset($data['SENHA'], $data['permissoes']);
         try {
-            $data = $validator->validated();
-            $permissoes = $data['permissoes'];
-            $data['PASSWORD'] = Hash::make($data['SENHA']);
-            $data['EMPRESA_ID'] = $request->user()->EMPRESA_ID;
-            unset($data['permissoes'], $data['SENHA']);
-            $usuario = Usuario::create(array_merge($data, $permissoes));
-            foreach ($permissoes as $perm) {
-                $usuario->$perm = 1;
-            }
-            $usuario->save();
+            $usuario = Usuario::create($data);
+            // Anexando permissões
+            $usuario->permissoes()->attach($request->input('permissoes'));
             return back()->with('success', 'Usuário cadastrado com sucesso!');
         } catch (\Exception $e) {
             return response()->json($e->getMessage());
@@ -50,7 +49,7 @@ class UsuarioController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $query = Usuario::select(['ID', 'NOME','USUARIO', 'IS_DELETED']);
+        $query = Usuario::select(['ID', 'NOME', 'USUARIO', 'IS_DELETED']);
         $query->when(
             $filtros['NOME'] ?? null,
             fn($q, $v) =>

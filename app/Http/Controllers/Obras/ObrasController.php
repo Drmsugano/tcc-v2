@@ -20,6 +20,15 @@ class ObrasController extends Controller
     {
 
     }
+
+    public function trocar(Request $request)
+    {
+        $request->validate([
+            'obra_id' => 'required|exists:obras,ID',
+        ]);
+        $request->session()->put('obra_id', $request->obra_id);
+        return back();
+    }
     public function getDados(Request $request)
     {
         $perPage = $request->get('perPage', 20);

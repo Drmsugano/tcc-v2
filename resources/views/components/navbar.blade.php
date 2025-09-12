@@ -6,6 +6,19 @@
                 {{ $usuarioView['EMPRESA'] }}
             </span>
         </a>
+        {{-- Select de obras --}}
+        <form action="{{ route('admin.obras.trocar') }}" method="POST" class="ms-3">
+            @csrf
+            <select name="obra_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                @forelse($obras as $obra)
+                    <option value="{{ $obra->ID }}" {{ ($usuarioView['OBRA_ATUAL'] ?? null) == $obra->ID ? 'selected' : '' }}>
+                        {{ $obra->NOME_OBRA }}
+                    </option>
+                @empty
+                    <option disabled>Nenhuma obra disponível</option>
+                @endforelse
+            </select>
+        </form>
 
         {{-- Botão mobile --}}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuERP">
@@ -15,7 +28,7 @@
         {{-- Links --}}
         <div class="collapse navbar-collapse" id="menuERP">
             <ul class="navbar-nav">
-                    @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []))
+                @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="{{ route('admin.index') }}">
                             <i class='bx bx-cog'></i>
@@ -23,7 +36,7 @@
                         </a>
                     </li>
                 @endif
-                      @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
+                @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-wallet'></i>
@@ -38,9 +51,9 @@
                             Controle
                         </a>
                     </li>
-
                 @endif
             </ul>
+
             {{-- Usuário --}}
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item me-3">
@@ -64,7 +77,8 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="{{ route('auth.logout') }}"><i class='bx bx-log-out me-2'></i>Sair</a>
+                        <li><a class="dropdown-item text-danger" href="{{ route('auth.logout') }}"><i
+                                    class='bx bx-log-out me-2'></i>Sair</a>
                         </li>
                     </ul>
                 </li>

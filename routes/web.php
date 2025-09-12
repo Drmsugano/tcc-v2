@@ -32,6 +32,7 @@ Route::middleware(['auth.jwt', 'inject.user'])->group(function () {
         Route::prefix('Obras')->group(function () {
             Route::get('/', [ObrasController::class, 'index'])->name('admin.obras');
             Route::get('/cadastrar', [ObrasController::class, ''])->name('admin.obras.cadastrar');
+            Route::post('/trocar-obra', [ObrasController::class, ''])->name('admin.obras.trocar');
             Route::get('/getDados', [ObrasController::class, 'getDados']);
         });
     });

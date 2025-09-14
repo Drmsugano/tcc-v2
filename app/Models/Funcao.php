@@ -7,7 +7,12 @@ class Funcao extends Model
 {
     public $timestamps = false;
     protected $table = 'FUNCAO';
-    protected $fillable = ['NOME', 'SETOR_ID', 'EMPRESA_ID'];
+    protected $fillable = [
+        'NOME',
+        'SETOR_ID',
+        'EMPRESA_ID',
+        'PUBLIC_ID'
+    ];
 
     public function setor()
     {

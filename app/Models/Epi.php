@@ -11,7 +11,8 @@ class EPI extends Model
         'CA',
         'VALIDADE_EPI',
         'USUARIO_CADASTRO',
-        'USUARIO_ALTERACAO'
+        'USUARIO_ALTERACAO',
+        'PUBLIC_ID'
     ];
 
     public function usuarioCadastro()

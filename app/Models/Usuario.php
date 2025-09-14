@@ -12,7 +12,14 @@ class Usuario extends Authenticatable implements JWTSubject
     public $timestamps = false;
     protected $table = 'USUARIOS';
     protected $primaryKey = 'ID';
-    protected $fillable = ['NOME', 'USUARIO', 'EMAIL', 'PASSWORD', 'EMPRESA_ID'];
+    protected $fillable = [
+        'NOME',
+        'USUARIO',
+        'EMAIL',
+        'PASSWORD',
+        'EMPRESA_ID',
+        'PUBLIC_ID'
+    ];
 
     public function empresa()
     {

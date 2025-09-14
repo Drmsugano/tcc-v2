@@ -7,7 +7,13 @@ class Empresa extends Model
 {
     public $timestamps = false;
     protected $table = 'EMPRESA';
-    protected $fillable = ['RAZAO_SOCIAL', 'NOME_FANTASIA', 'CNPJ_CPF', 'IS_DELETED'];
+    protected $fillable = [
+        'RAZAO_SOCIAL',
+        'NOME_FANTASIA',
+        'CNPJ_CPF',
+        'IS_DELETED',
+        'PUBLIC_ID'
+    ];
 
     public function usuarios()
     {

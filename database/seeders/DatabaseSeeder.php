@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -18,6 +20,7 @@ class DatabaseSeeder extends Seeder
         // -----------------------
         DB::table('EMPRESA')->insert([
             'RAZAO_SOCIAL' => 'SHINRA ENERGIA LTDA',
+            'PUBLIC_ID' => Str::uuid(),
             'NOME_FANTASIA' => 'SHINRA ENERGIA',
             'CNPJ_CPF' => '00.000.000/0001-91'
         ]);
@@ -26,13 +29,13 @@ class DatabaseSeeder extends Seeder
         // Permissões
         // -----------------------
         DB::table('PERMISSOES')->insert([
-            ['NOME' => 'ADMIN', 'DESCRICAO' => 'Acesso total ao sistema'],
-            ['NOME' => 'USER', 'DESCRICAO' => 'Usuário comum'],
-            ['NOME' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações'],
-            ['NOME' => 'FINANCEIRO', 'DESCRICAO' => 'Acesso financeiro'],
-            ['NOME' => 'COMPRAS', 'DESCRICAO' => 'Acesso ao módulo de compras'],
-            ['NOME' => 'ENGENHARIA', 'DESCRICAO' => 'Acesso ao módulo de engenharia'],
-            ['NOME' => 'MASTER', 'DESCRICAO' => 'Permissão master']
+            ['NOME_PERMISSAO' => 'ADMIN', 'DESCRICAO' => 'Acesso total ao sistema','PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'USER', 'DESCRICAO' => 'Usuário comum','PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações','PUBLIC_ID' => Str::uuid(),],
+            ['NOME_PERMISSAO' => 'FINANCEIRO', 'DESCRICAO' => 'Acesso financeiro','PUBLIC_ID' => Str::uuid(),],
+            ['NOME_PERMISSAO' => 'COMPRAS', 'DESCRICAO' => 'Acesso ao módulo de compras','PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'ENGENHARIA', 'DESCRICAO' => 'Acesso ao módulo de engenharia','PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'MASTER', 'DESCRICAO' => 'Permissão master','PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
@@ -40,6 +43,7 @@ class DatabaseSeeder extends Seeder
         // -----------------------
         DB::table('USUARIOS')->insert([
             'NOME' => 'DOUGLAS',
+            'PUBLIC_ID' => Str::uuid(),
             'USUARIO' => 'DRMSUGANO',
             'EMAIL' => 'drmsugano@outlook.com',
             'PASSWORD' => Hash::make('123'),
@@ -63,26 +67,26 @@ class DatabaseSeeder extends Seeder
         // Setores
         // -----------------------
         DB::table('SETOR')->insert([
-            ['NOME' => 'Administração', 'EMPRESA_ID' => 1],
-            ['NOME' => 'Financeiro', 'EMPRESA_ID' => 1],
-            ['NOME' => 'Engenharia', 'EMPRESA_ID' => 1]
+            ['NOME' => 'Administração', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Financeiro', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Engenharia', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
         // Funções
         // -----------------------
         DB::table('FUNCAO')->insert([
-            ['NOME' => 'Gerente Administrativo', 'SETOR_ID' => 1, 'EMPRESA_ID' => 1],
-            ['NOME' => 'Analista Financeiro', 'SETOR_ID' => 2, 'EMPRESA_ID' => 1],
-            ['NOME' => 'Engenheiro Civil', 'SETOR_ID' => 3, 'EMPRESA_ID' => 1]
+            ['NOME' => 'Gerente Administrativo', 'SETOR_ID' => 1, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Analista Financeiro', 'SETOR_ID' => 2, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Engenheiro Civil', 'SETOR_ID' => 3, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
         // Obras
         // -----------------------
         DB::table('OBRA')->insert([
-            ['NOME_OBRA' => 'Obra Central', 'EMPRESA_ID' => 1],
-            ['NOME_OBRA' => 'Obra Norte', 'EMPRESA_ID' => 1]
+            ['NOME_OBRA' => 'Obra Central', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
+            ['NOME_OBRA' => 'Obra Norte', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
@@ -93,6 +97,7 @@ class DatabaseSeeder extends Seeder
                 'NOME' => 'Carlos Silva',
                 'CPF' => '111.111.111-11',
                 'DATA_ADMISSAO' => '2025-01-10',
+                'PUBLIC_ID' => Str::uuid(),
                 'EMPRESA_ID' => 1,
                 'FUNCAO_ID' => 1
             ],
@@ -100,12 +105,14 @@ class DatabaseSeeder extends Seeder
                 'NOME' => 'Ana Souza',
                 'CPF' => '222.222.222-22',
                 'DATA_ADMISSAO' => '2025-02-15',
+                'PUBLIC_ID' => Str::uuid(),
                 'EMPRESA_ID' => 1,
                 'FUNCAO_ID' => 2
             ],
             [
                 'NOME' => 'Pedro Lima',
                 'CPF' => '333.333.333-33',
+                'PUBLIC_ID' => Str::uuid(),
                 'DATA_ADMISSAO' => '2025-03-01',
                 'EMPRESA_ID' => 1,
                 'FUNCAO_ID' => 3
@@ -120,6 +127,7 @@ class DatabaseSeeder extends Seeder
                 'NOME' => 'Capacete',
                 'DESCRICAO' => 'Capacete de segurança tipo A',
                 'CA' => '12345',
+                'PUBLIC_ID' => Str::uuid(),
                 'VALIDADE_EPI' => '2030-12-31',
                 'USUARIO_CADASTRO' => 1,
                 'USUARIO_ALTERACAO' => 1
@@ -128,6 +136,7 @@ class DatabaseSeeder extends Seeder
                 'NOME' => 'Luvas',
                 'DESCRICAO' => 'Luvas resistentes a corte',
                 'CA' => '67890',
+                'PUBLIC_ID' => Str::uuid(),
                 'VALIDADE_EPI' => '2030-12-31',
                 'USUARIO_CADASTRO' => 1,
                 'USUARIO_ALTERACAO' => 1

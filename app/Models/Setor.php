@@ -8,7 +8,11 @@ class Setor extends Model
 {
     public $timestamps = false;
     protected $table = 'SETOR';
-    protected $fillable = ['NOME', 'EMPRESA_ID'];
+    protected $fillable = [
+        'NOME',
+        'EMPRESA_ID',
+        'PUBLIC_ID'
+    ];
     public function empresa()
     {
         return $this->belongsTo(Empresa::class);

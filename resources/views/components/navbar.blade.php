@@ -6,20 +6,6 @@
                 {{ $usuarioView['EMPRESA'] }}
             </span>
         </a>
-        {{-- Select de obras --}}
-        <form action="{{ route('admin.obras.trocar') }}" method="POST" class="ms-3">
-            @csrf
-            <select name="obra_id" class="form-select form-select-sm" onchange="this.form.submit()">
-                @forelse($obras as $obra)
-                    <option value="{{ $obra->ID }}" {{ ($usuarioView['OBRA_ATUAL'] ?? null) == $obra->ID ? 'selected' : '' }}>
-                        {{ $obra->NOME_OBRA }}
-                    </option>
-                @empty
-                    <option disabled>Nenhuma obra disponível</option>
-                @endforelse
-            </select>
-        </form>
-
         {{-- Botão mobile --}}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuERP">
             <i class='bx bx-menu'></i>
@@ -54,15 +40,23 @@
                 @endif
             </ul>
 
-            {{-- Usuário --}}
-            <ul class="navbar-nav ms-auto">
+            {{-- Usuário + Select de obras --}}
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item me-3">
-                    <a class="nav-link position-relative" href="#">
-                        <i class='bx bx-bell fs-5'></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
-                        </span>
-                    </a>
+                    {{-- Select de obras --}}
+                    <form action="{{ route('admin.obras.trocar') }}" method="POST" class="d-flex align-items-center">
+                        @csrf
+                        <select name="obra_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option selected disabled>Selecione a Obra</option>
+                            @forelse($obrasSelect as $obra)
+                                <option value="{{ $obra->ID }}" {{ ($usuarioView['OBRA_ATUAL'] ?? null) == $obra->ID ? 'selected' : '' }}>
+                                    {{ $obra->NOME_OBRA }}
+                                </option>
+                            @empty
+                                <option disabled>Nenhuma obra disponível</option>
+                            @endforelse
+                        </select>
+                    </form>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="perfilDropdown"
@@ -77,8 +71,10 @@
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item text-danger" href="{{ route('auth.logout') }}"><i
-                                    class='bx bx-log-out me-2'></i>Sair</a>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('auth.logout') }}">
+                                <i class='bx bx-log-out me-2'></i>Sair
+                            </a>
                         </li>
                     </ul>
                 </li>

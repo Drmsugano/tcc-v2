@@ -71,7 +71,6 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-dark text-white">
                             <tr>
-                                <th>ID</th>
                                 <th>Nome</th>
                                 <th>Usuário</th>
                                 <th>Email</th>
@@ -82,42 +81,36 @@
                         <tbody>
                             @forelse($listaUsuarios as $usuario)
                                 <tr>
-                                    <td>{{ $usuario->ID }}</td>
                                     <td>{{ $usuario->NOME }}</td>
                                     <td>{{ $usuario->USUARIO }}</td>
                                     <td>{{ $usuario->EMAIL }}</td>
                                     <td>
-                                        @php
-                                            // Lista de campos de permissões do usuário
-                                            $permissoesCampos = collect($usuario)->filter(function ($value, $key) {
-                                                return str_starts_with($key, 'ROSFIELD_') && $value;
-                                            });
-                                        @endphp
-
-                                        @if($permissoesCampos->isNotEmpty())
-                                            @foreach($permissoesCampos as $campo => $valor)
-                                                @php
-                                                    // Remove ROSFIELD_ do nome para mostrar a permissão
-                                                    $nomePermissao = str_replace('ROSFIELD_', '', $campo);
-                                                @endphp
-                                                <span class="badge bg-info text-dark me-1">{{ $nomePermissao }}</span>
-                                            @endforeach
-                                        @else
-                                            <span class="text-muted">Nenhuma</span>
-                                        @endif
+                                        @foreach ($usuario->permissoes as $permissaoUser)
+                                            <span class="badge text-bg-primary">
+                                                {{$permissaoUser->NOME_PERMISSAO}}
+                                            </span>
+                                        @endforeach
                                     </td>
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-sm btn-outline-warning me-1"> ✏️ Editar</a>
-                                        <form method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-outline-danger">🗑️ Excluir</button>
-                                        </form>
+                                        <div class="d-flex">
+                                            <div class="col">
+                                                <a href="{{ route('admin.usuarios.editar', $usuario->PUBLIC_ID) }}"
+                                                    class="btn btn-sm btn-outline-warning me-1">Editar</a>
+                                            </div>
+                                            <div class="col">
+                                                <form method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        Excluir</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted py-3">Nenhum usuário cadastrado.</td>
+                                    <td colspan="4" class="text-center text-muted py-3">Nenhum usuário cadastrado.</td>
                                 </tr>
                             @endforelse
                         </tbody>

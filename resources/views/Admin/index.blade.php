@@ -9,7 +9,7 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div>
                             <h5 class="card-title">Usuários Ativos</h5>
-                            <p class="display-6 fw-bold">{{ $usuario }}</p>
+                            <p class="display-6 fw-bold">{{ $usuarioCount }}</p>
                         </div>
                         <a href="{{ route('admin.usuarios') }}" class="btn btn-light btn-sm mt-2">Gerenciar Usuários</a>
                     </div>
@@ -20,7 +20,7 @@
                     <div class="card-body d-flex flex-column justify-content-between">
                         <div>
                             <h5 class="card-title">Obras</h5>
-                            <p class="display-6 fw-bold">{{ $obras }}</p>
+                            <p class="display-6 fw-bold">{{ $obraCount }}</p>
                         </div>
                         <a href="{{ route('admin.obras') }}" class="btn btn-light btn-sm mt-2">Gerenciar Obras</a>
                     </div>

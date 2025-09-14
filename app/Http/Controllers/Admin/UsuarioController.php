@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Str;
+
 class UsuarioController extends Controller
 {
     public function index(Request $request)
@@ -33,6 +35,7 @@ class UsuarioController extends Controller
         $data = $validator->validated();
         $data['PASSWORD'] = Hash::make($data['SENHA']);
         $data['EMPRESA_ID'] = $request->user()->EMPRESA_ID;
+        $data['PUBLIC_ID'] = Str::uuid();
         unset($data['SENHA'], $data['permissoes']);
         try {
             $usuario = Usuario::create($data);
@@ -49,7 +52,7 @@ class UsuarioController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $query = Usuario::select(['ID', 'NOME', 'USUARIO', 'IS_DELETED']);
+        $query = Usuario::select(['PUBLIC_ID', 'NOME', 'USUARIO', 'IS_DELETED']);
         $query->when(
             $filtros['NOME'] ?? null,
             fn($q, $v) =>
@@ -73,7 +76,7 @@ class UsuarioController extends Controller
         $usuarios = $query->paginate($perPage, ['*'], 'page', $page);
         $dados = $usuarios->map(function ($m) {
             return [
-                'ID' => $m->ID,
+                'ID' => $m->PUBLIC_ID,
                 'NOME' => $m->NOME,
                 'USUARIO' => $m->USUARIO,
                 'STATUS' => $m->IS_DELETED == 1 ? 'DESATIVADO' : 'ATIVO',

@@ -7,7 +7,11 @@ class Obra extends Model
 {
     public $timestamps = false;
     protected $table = 'OBRA';
-    protected $fillable = ['NOME_OBRA', 'EMPRESA_ID'];
+    protected $fillable = [
+        'NOME_OBRA',
+        'EMPRESA_ID',
+        'PUBLIC_ID'
+    ];
 
     public function empresa()
     {

@@ -12,8 +12,8 @@ class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        $usuario = Usuario::where("EMPRESA_ID",$request->user()->EMPRESA_ID)->where('IS_DELETED',false)->count();
-        $obras = Obra::where('EMPRESA_ID',$request->user()->EMPRESA_ID)->where('FINALIZADO',false)->count();
-        return view("Admin.index",compact("usuario",'obras'));
+        $usuarioCount = Usuario::where("EMPRESA_ID",$request->user()->EMPRESA_ID)->where('IS_DELETED',false)->count();
+        $obraCount = Obra::where('EMPRESA_ID',$request->user()->EMPRESA_ID)->where('FINALIZADO',false)->count();
+        return view("Admin.index",compact("usuarioCount",'obraCount'));
     }
 }

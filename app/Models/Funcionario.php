@@ -13,7 +13,8 @@ class Funcionario extends Model
         'DATA_ADMISSAO',
         'DATA_DEMISSAO',
         'EMPRESA_ID',
-        'FUNCAO_ID'
+        'FUNCAO_ID',
+        'PUBLIC_ID'
     ];
 
     public function empresa()

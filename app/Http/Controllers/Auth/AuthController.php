@@ -59,6 +59,7 @@ class AuthController extends Controller
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
             session()->forget('jwt_token');
+            session()->flush();
             return redirect()->route('login');
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return response()->json(['error' => 'Erro ao fazer logout.'], 500);

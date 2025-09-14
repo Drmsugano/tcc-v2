@@ -24,9 +24,10 @@ class ObrasController extends Controller
     public function trocar(Request $request)
     {
         $request->validate([
-            'obra_id' => 'required|exists:obras,ID',
+            'obra_id' => 'required|exists:OBRA,PUBLIC_ID',
         ]);
-        $request->session()->put('obra_id', $request->obra_id);
+        $obra = Obra::where('PUBLIC_ID', $request->obra_id)->first();
+        $request->session()->put('obra_id', $obra->ID);
         return back();
     }
     public function getDados(Request $request)
@@ -34,7 +35,7 @@ class ObrasController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $query = Obra::select(['ID', 'NOME_OBRA', 'PAUSA', 'FINALIZADO']);
+        $query = Obra::select(['PUBLIC_ID', 'NOME_OBRA', 'PAUSA', 'FINALIZADO']);
         $query->when(
             $filtros['NOME_OBRA'] ?? null,
             fn($q, $v) =>
@@ -63,7 +64,7 @@ class ObrasController extends Controller
         $obras = $query->paginate($perPage, ['*'], 'page', $page);
         $dados = $obras->map(function ($m) {
             return [
-                'ID' => $m->ID,
+                'ID' => $m->PUBLIC_ID,
                 'NOME_OBRAS' => $m->NOME_OBRA,
                 'STATUS' => $m->PAUSA === 1 && $m->FINALIZADO == 0
                     ? 'PAUSADA'

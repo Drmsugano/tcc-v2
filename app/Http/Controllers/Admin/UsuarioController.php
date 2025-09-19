@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Empresa;
 use App\Models\Permissao;
 use App\Models\Usuario;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
@@ -16,7 +17,7 @@ class UsuarioController extends Controller
     {
         $empresa = Empresa::where("ID", $request->user()->EMPRESA_ID)->first();
         $listaUsuarios = Usuario::with(["empresa", "permissoes"])->where("EMPRESA_ID", $empresa->ID)->get();
-        $permissao = Permissao::select('ID','NOME_PERMISSAO')->get();
+        $permissao = Permissao::select('PUBLIC_ID', 'NOME_PERMISSAO')->get();
         return view("Admin.Usuario.index", compact("empresa", "listaUsuarios", "permissao"));
     }
     public function store(Request $request)
@@ -27,10 +28,13 @@ class UsuarioController extends Controller
             'EMAIL' => 'required|email|max:255|unique:USUARIOS,EMAIL',
             'SENHA' => 'required|string|min:1',
             'permissoes' => 'required|array',
-            'permissoes.*' => 'integer', // IDs das permissões
+            'permissoes.*' => 'uuid|exists:PERMISSOES,PUBLIC_ID',
         ]);
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return redirect()
+                ->back()
+                ->withErrors($validator)
+                ->withInput();
         }
         $data = $validator->validated();
         $data['PASSWORD'] = Hash::make($data['SENHA']);
@@ -39,13 +43,43 @@ class UsuarioController extends Controller
         unset($data['SENHA'], $data['permissoes']);
         try {
             $usuario = Usuario::create($data);
-            // Anexando permissões
-            $usuario->permissoes()->attach($request->input('permissoes'));
+            $permissoesId = Permissao::whereIn('PUBLIC_ID', $request->input('permissoes'))
+                ->pluck('ID')
+                ->toArray();
+            $usuario->permissoes()->sync($permissoesId);
             return back()->with('success', 'Usuário cadastrado com sucesso!');
         } catch (\Exception $e) {
-            return response()->json($e->getMessage());
+            return redirect()
+                ->back()
+                ->withErrors(['erro' => 'Erro ao cadastrar usuário: ' . $e->getMessage()])
+                ->withInput();
         }
     }
+
+    public function editar($id)
+    {
+        try {
+            $usuario = Usuario::where('PUBLIC_ID', $id)
+                ->with(['empresa:ID,NOME_FANTASIA', 'permissoes'])
+                ->first();
+            if (!$usuario) {
+                return response()->json([
+                    'status' => "Erro",
+                    "mensagem" => "Usuário não encontrado",
+                ], 500);
+            }
+            return response()->json([
+                'status' => 'sucesso',
+                'usuario' => $usuario
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => "Erro",
+                "mensagem" => "Erro de Servidor: " . $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     public function getDados(Request $request)
     {

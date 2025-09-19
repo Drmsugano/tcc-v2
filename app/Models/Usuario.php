@@ -20,7 +20,13 @@ class Usuario extends Authenticatable implements JWTSubject
         'EMPRESA_ID',
         'PUBLIC_ID'
     ];
-
+    // Esconde automaticamente no JSON/array
+    protected $hidden = [
+        'ID',
+        'PASSWORD',
+        'EMPRESA_ID',
+        'IS_DELETED'
+    ];
     public function empresa()
     {
         return $this->belongsTo(Empresa::class, 'EMPRESA_ID', 'ID');

@@ -18,4 +18,8 @@ class Permissao extends Model
     {
         return $this->belongsToMany(Usuario::class, 'USUARIO_PERMISSAO', 'PERMISSAO_ID', 'USUARIO_ID');
     }
+    protected $hidden = [
+        'ID',
+        'pivot', // oculta a tabela pivô automaticamente
+    ];
 }

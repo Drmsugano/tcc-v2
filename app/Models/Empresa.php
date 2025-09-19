@@ -15,6 +15,11 @@ class Empresa extends Model
         'PUBLIC_ID'
     ];
 
+    protected $hidden = [
+        'ID',
+        'CNPJ'
+    ];
+
     public function usuarios()
     {
         return $this->hasMany(Usuario::class);

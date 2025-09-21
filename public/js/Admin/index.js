@@ -36,10 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
 function selecionar(id, tabela) {
     switch (tabela) {
         case "usuario":
-            window.location.href = `/Admin/Usuario/Editar?id=${id}`;
+            window.location.href = `/Admin/Usuario/editar/${id}`;
             break;
         case "obras":
-            window.location.href = `/Admin/Obra/Editar?id=${id}`;
+            window.location.href = `/Admin/Obra/editar/${id}`;
             break;
     }
 }

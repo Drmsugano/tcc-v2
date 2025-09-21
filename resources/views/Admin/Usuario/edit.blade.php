@@ -2,7 +2,6 @@
 @section('conteudo')
     <div class="container mt-5">
         <h2 class="mb-4 fw-bold text-secondary">⚙️ Cadastro de Usuários - Empresa ({{ $empresa->NOME_FANTASIA }})</h2>
-
         <!-- Card do Formulário -->
         <div class="card shadow-lg mb-4 border-0">
             <div class="card-body">
@@ -43,7 +42,8 @@
                                 @foreach ($permissao as $permissoesCampos)
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="checkbox" name="permissoes[]"
-                                            value="{{ $permissoesCampos->ID }}" id="perm-{{ $permissoesCampos->ID }}">
+                                            value="{{ $permissoesCampos->ID }}" id="perm-{{ $permissoesCampos->ID }}" 
+                                            {{ in_array($permissoesCampos->ID, $usuario->permissoes->pluck('ID')->toArray()) ? 'checked' : '' }}>
                                         <label class="form-check-label" for="perm-{{ $permissoesCampos->ID }}">
                                             {{ $permissoesCampos->NOME_PERMISSAO }}
                                         </label>

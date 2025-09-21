@@ -10,7 +10,6 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuERP">
             <i class='bx bx-menu'></i>
         </button>
-
         {{-- Links --}}
         <div class="collapse navbar-collapse" id="menuERP">
             <ul class="navbar-nav">
@@ -48,8 +47,9 @@
                         @csrf
                         <select name="obra_id" class="form-select form-select-sm" onchange="this.form.submit()">
                             <option selected disabled>Selecione a Obra</option>
+                            <option value="">Todos</option>
                             @forelse($obrasSelect as $obra)
-                                <option value="{{ $obra->ID }}" {{ ($usuarioView['OBRA_ATUAL'] ?? null) == $obra->ID ? 'selected' : '' }}>
+                                <option value="{{ $obra->PUBLIC_ID }}" {{ ($usuarioView['OBRA_ATUAL'] ?? null) == $obra->PUBLIC_ID ? 'selected' : '' }}>
                                     {{ $obra->NOME_OBRA }}
                                 </option>
                             @empty
@@ -66,7 +66,7 @@
                         <span>{{ $usuarioView['USUARIO'] }}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="perfilDropdown">
-                        <li><a class="dropdown-item" href="#"><i class='bx bx-user me-2'></i>Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ route('usuario.meu-perfil') }}"><i class='bx bx-user me-2'></i>Perfil</a></li>
                         <li><a class="dropdown-item" href="#"><i class='bx bx-cog me-2'></i>Configurações</a></li>
                         <li>
                             <hr class="dropdown-divider">

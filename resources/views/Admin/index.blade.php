@@ -26,7 +26,6 @@
                     </div>
                 </div>
             </div>
-            {{-- Você pode adicionar mais cards aqui para Financeiro, Controle, EPI etc --}}
         </div>
         {{-- Tabelas de Usuários e Obras --}}
         <div class="row g-4">

@@ -8,7 +8,7 @@ class UsuarioRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
     public function rules(): array
     {
@@ -18,17 +18,22 @@ class UsuarioRequest extends FormRequest
             'EMAIL' => 'required|email|max:255|unique:USUARIOS,EMAIL',
             'SENHA' => 'required|string|min:1',
             'permissoes' => 'required|array',
-            'permissoes.*' => 'string'
+            'permissoes.*' => 'uuid|exists:PERMISSOES,PUBLIC_ID'
         ];
     }
     public function messages()
     {
         return [
             'NOME.required' => 'O nome completo do usuário não foi digitado',
-            'EMAIL.required' => 'O email informado já foi encontrado na base de dados',
-            'USUARIO' => 'O usuário informado já foi encontrado na base de dados',
+            'EMAIL.required' => 'O email não foi informado',
+            'EMAIL.unique' => 'O email informado já foi encontrado na base de dados',
+            'USUARIO.required' => 'O usuário não foi informado',
+            'USUARIO.unique' => 'O usuário informado já foi encontrado na base de dados',
             'SENHA.required' => 'A senha não foi informada',
-            'permissoes' => 'As permissoes não foram informadas'
+            'permissoes.required' => 'As permissões não foram informadas',
+            'permissoes.*.uuid' => 'ID de permissão inválido',
+            'permissoes.*.exists' => 'Permissão não encontrada na base de dados',
         ];
     }
+
 }

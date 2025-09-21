@@ -72,6 +72,12 @@
             {{ $errors->first() }}
         </div>
     @endif
+    @if (session('success'))
+        <div class="alert alert-success mt-3" role="alert">
+            {{ session('success') }}
+        </div>
+    
+    @endif
     <script src="/js/terceiros/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="/js/Auth/login.js"></script>
     <script src="/js/terceiros/sweetalert2/sweetalert2.min.js"></script>

@@ -23,12 +23,18 @@ class ObrasController extends Controller
 
     public function trocar(Request $request)
     {
-        $request->validate([
-            'obra_id' => 'required|exists:OBRA,PUBLIC_ID',
+        if ($request->obra_id == '' || is_null($request->obra_id)) {
+            $request->session()->forget('obra_id');
+        } else {
+            $request->validate([
+                'obra_id' => 'required|exists:OBRA,PUBLIC_ID',
+            ]);
+            $obra = Obra::where('PUBLIC_ID', $request->obra_id)->first();
+            $request->session()->put('obra_id', $obra->PUBLIC_ID);
+        }
+        return back()->with([
+            'success' => 'Obra alterada com sucesso!'
         ]);
-        $obra = Obra::where('PUBLIC_ID', $request->obra_id)->first();
-        $request->session()->put('obra_id', $obra->ID);
-        return back();
     }
     public function getDados(Request $request)
     {

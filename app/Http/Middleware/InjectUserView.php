@@ -29,7 +29,7 @@ class InjectUserView
 
                     // Obra atual da sessão
                     $obraAtualId = $request->session()->get('obra_id');
-                    $obraAtualObj = $obraAtualId ? Obra::find($obraAtualId) : null;
+                    $obraAtualObj = $obraAtualId ? Obra::where('PUBLIC_ID', $obraAtualId)->first() : null;
 
                     // Monta array do usuário
                     $usuarioView = [
@@ -38,7 +38,7 @@ class InjectUserView
                         'USUARIO' => $usuario->USUARIO,
                         'PERMISSOES' => $usuario->permissoesArray(),
                         'EMPRESA' => $usuario->empresa->NOME_FANTASIA ?? null,
-                        'OBRA_ATUAL' => $obraAtualObj?->ID,
+                        'OBRA_ATUAL' => $obraAtualObj?->PUBLIC_ID,
                         'OBRA_ATUAL_NOME' => $obraAtualObj?->NOME_OBRA,
                     ];
                 }

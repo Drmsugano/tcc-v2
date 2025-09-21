@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         urlBase: "/Admin/Obras",
         corpoId: "corpoTabelaObras",
         paginacaoId: "paginacaoObras",
-        colunas: ["NOME_OBRAS", "STATUS"],
+        colunas: ["NOME_OBRA", "ENDERECO","QTDE_FUNCIONARIO", "STATUS"],
         acoes: [
             {
                 nome: "Editar",

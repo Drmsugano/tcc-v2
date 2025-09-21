@@ -37,10 +37,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Login realizado com sucesso.',
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'usuario' => $usuario->makeHidden(['PASSWORD'])
+            'expires_in' => JWTAuth::factory()->getTTL() * 60
         ], 200);
     }
 

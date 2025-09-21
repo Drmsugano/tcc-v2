@@ -19,7 +19,7 @@
             @endif
 
             {{-- Financeiro --}}
-            @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
+            <!-- @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
                 <div class="col-md-4">
                     <div class="card h-100 text-center shadow-sm border-0">
                         <div class="card-body">
@@ -30,7 +30,7 @@
                         </div>
                     </div>
                 </div>
-            @endif
+            @endif -->
 
             {{-- Controle --}}
             @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('CONTROLE', $usuarioView['PERMISSOES'] ?? []))
@@ -40,7 +40,7 @@
                             <i class='bx bx-group fs-1 text-primary'></i>
                             <h5 class="card-title mt-3">Controle</h5>
                             <p class="card-text">Gestão de processos internos e acompanhamento de atividades.</p>
-                            <a href="#" class="btn btn-primary">Entrar</a>
+                            <a href="/Controle" class="btn btn-primary">Entrar</a>
                         </div>
                     </div>
                 </div>

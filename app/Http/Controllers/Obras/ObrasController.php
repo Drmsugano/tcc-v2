@@ -11,9 +11,14 @@ use function PHPUnit\Framework\isNull;
 
 class ObrasController extends Controller
 {
-    public function index()
+    public function indexAdmin()
     {
+        return view('Admin.Obras.index');
+    }
 
+    public function indexControle()
+    {
+        return view('Controle.Obras.index');
     }
 
     public function store(Request $request)
@@ -41,41 +46,60 @@ class ObrasController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $query = Obra::select(['PUBLIC_ID', 'NOME_OBRA', 'PAUSA', 'FINALIZADO']);
+        $query = Obra::select(['PUBLIC_ID', 'NOME_OBRA', 'ENDERECO', 'PAUSA', 'FINALIZADO'])
+            ->withCount('funcionarios');
+        // Filtros
         $query->when(
             $filtros['NOME_OBRA'] ?? null,
             fn($q, $v) =>
             $q->where('NOME_OBRA', 'like', "%$v%")
         );
+
+        $query->when(
+            $filtros['ENDERECO'] ?? null,
+            fn($q, $v) =>
+            $q->where('ENDERECO', 'like', "%$v%")
+        );
+
         $query->when(
             ($filtros['STATUS'] ?? null) === 'FINALIZADA',
             fn($q) =>
             $q->where('FINALIZADO', 1)
         );
+
         $query->when(
             ($filtros['STATUS'] ?? null) === 'PAUSADA',
             fn($q) =>
             $q->where('PAUSA', 1)
         );
+
         $query->when(
             $filtros['dataInicio'] ?? null,
             fn($q, $v) =>
             $q->where('DATA_INICIO', '>=', $v)
         );
+
         $query->when(
             $filtros['dataFim'] ?? null,
             fn($q, $v) =>
             $q->where('DATA_FIM', '<=', $v)
         );
+
+        // Paginação
         $obras = $query->paginate($perPage, ['*'], 'page', $page);
+        // Formatação da resposta
         $dados = $obras->map(function ($m) {
             return [
                 'ID' => $m->PUBLIC_ID,
-                'NOME_OBRAS' => $m->NOME_OBRA,
-                'STATUS' => $m->PAUSA === 1 && $m->FINALIZADO == 0
-                    ? 'PAUSADA'
-                    : ($m->FINALIZADO == 1 && $m->PAUSA == 0 ? 'FINALIZADA' : 'ATIVA'),
-                'tabela' => 'obras'
+                'NOME_OBRA' => $m->NOME_OBRA,
+                'ENDERECO' => $m->ENDERECO,
+                'QTDE_FUNCIONARIO' => $m->funcionarios_count,
+                'STATUS' => match (true) {
+                    $m->FINALIZADO == 1 && $m->PAUSA == 0 => 'FINALIZADA',
+                    $m->PAUSA == 1 && $m->FINALIZADO == 0 => 'PAUSADA',
+                    default => 'ATIVA',
+                },
+                'tabela' => 'obras',
             ];
         });
         return response()->json([
@@ -88,4 +112,5 @@ class ObrasController extends Controller
             'links' => $obras->linkCollection()->all(),
         ]);
     }
+    
 }

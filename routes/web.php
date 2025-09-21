@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Controle\ControleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -13,28 +14,32 @@ Route::middleware(['web'])->group(function () {
     Route::get('/login', fn() => view('login'))->name('login')->middleware('web');
     Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login')->middleware('web');
     Route::middleware(['auth.jwt', 'inject.user'])->group(function () {
+        Route::post('/Obras/trocar-obras', [ObrasController::class, 'trocar'])->name('obras.trocar');
         Route::get('/Home', [HomeController::class, 'index'])->name('home');
         Route::get('/Auth/Logout', [AuthController::class, 'logout'])->name('auth.logout');
         Route::get('/Meu-Perfil', [UsuarioController::class, 'meuPerfil'])->name('usuario.meu-perfil');
-        // Administração
         Route::prefix('Admin')->middleware('permissao:ADMIN')->group(function () {
             Route::get('/', [AdminController::class, 'index'])->name('admin.index');
-            // Usuários
             Route::prefix('Usuario')->group(function () {
                 Route::get('/', [UsuarioController::class, 'index'])->name('admin.usuarios');
                 Route::get('/getDados', [UsuarioController::class, 'getDados']);
                 Route::get('/editar/{id}', [UsuarioController::class, 'editar'])->name('admin.usuarios.editar');
                 Route::post('/cadastrar', [UsuarioController::class, 'store'])->name('admin.usuarios.cadastrar');
             });
-
-            // Obras
             Route::prefix('Obras')->group(function () {
                 Route::get('/', [ObrasController::class, 'index'])->name('admin.obras');
                 Route::get('/cadastrar', [ObrasController::class, 'create'])->name('admin.obras.cadastrar');
                 Route::post('/cadastrar', [ObrasController::class, 'store'])->name('admin.obras.store');
-                Route::post('/trocar-obra', [ObrasController::class, 'trocar'])->name('admin.obras.trocar');
                 Route::get('/getDados', [ObrasController::class, 'getDados']);
             });
+        });
+        Route::prefix('Controle')->middleware('permissao:CONTROLE')->group(function(){
+                Route::get('/', [ControleController::class,'index'])->name('controle.index');
+                Route::prefix('Obras')->group(function(){
+                    Route::get('/', [ObrasController::class,'indexControle'])->name('controle.obras');
+                    Route::get('/getDados', [ObrasController::class,'getDados']);
+                    Route::get('/{id}', [ObrasController::class,'verDetalhes'])->name('controle.obras.verDetalhes');
+                });
         });
     });
 });

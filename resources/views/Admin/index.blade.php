@@ -66,6 +66,8 @@
                             <thead class="table-light">
                                 <tr>
                                     <th>Nome da Obra</th>
+                                    <th>Endereço</th>
+                                    <th>Num.Funcionários</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>

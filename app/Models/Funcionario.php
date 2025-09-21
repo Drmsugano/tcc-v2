@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 class Funcionario extends Model
 {
     public $timestamps = false;
-    protected $table = 'FUNCIONARIO';
+    protected $table = 'FUNCIONARIOS';
     protected $fillable = [
         'NOME',
         'CPF',

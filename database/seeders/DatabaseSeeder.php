@@ -29,13 +29,13 @@ class DatabaseSeeder extends Seeder
         // Permissões
         // -----------------------
         DB::table('PERMISSOES')->insert([
-            ['NOME_PERMISSAO' => 'ADMIN', 'DESCRICAO' => 'Acesso total ao sistema','PUBLIC_ID' => Str::uuid()],
-            ['NOME_PERMISSAO' => 'USER', 'DESCRICAO' => 'Usuário comum','PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações','PUBLIC_ID' => Str::uuid(),],
-            ['NOME_PERMISSAO' => 'FINANCEIRO', 'DESCRICAO' => 'Acesso financeiro','PUBLIC_ID' => Str::uuid(),],
-            ['NOME_PERMISSAO' => 'COMPRAS', 'DESCRICAO' => 'Acesso ao módulo de compras','PUBLIC_ID' => Str::uuid()],
-            ['NOME_PERMISSAO' => 'ENGENHARIA', 'DESCRICAO' => 'Acesso ao módulo de engenharia','PUBLIC_ID' => Str::uuid()],
-            ['NOME_PERMISSAO' => 'MASTER', 'DESCRICAO' => 'Permissão master','PUBLIC_ID' => Str::uuid()]
+            ['NOME_PERMISSAO' => 'ADMIN', 'DESCRICAO' => 'Acesso total ao sistema', 'PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'USER', 'DESCRICAO' => 'Usuário comum', 'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações', 'PUBLIC_ID' => Str::uuid(),],
+            ['NOME_PERMISSAO' => 'FINANCEIRO', 'DESCRICAO' => 'Acesso financeiro', 'PUBLIC_ID' => Str::uuid(),],
+            ['NOME_PERMISSAO' => 'COMPRAS', 'DESCRICAO' => 'Acesso ao módulo de compras', 'PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'ENGENHARIA', 'DESCRICAO' => 'Acesso ao módulo de engenharia', 'PUBLIC_ID' => Str::uuid()],
+            ['NOME_PERMISSAO' => 'MASTER', 'DESCRICAO' => 'Permissão master', 'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
@@ -67,26 +67,26 @@ class DatabaseSeeder extends Seeder
         // Setores
         // -----------------------
         DB::table('SETOR')->insert([
-            ['NOME' => 'Administração', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'Financeiro', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'Engenharia', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
+            ['NOME' => 'Administração', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Financeiro', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Engenharia', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
         // Funções
         // -----------------------
         DB::table('FUNCAO')->insert([
-            ['NOME' => 'Gerente Administrativo', 'SETOR_ID' => 1, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'Analista Financeiro', 'SETOR_ID' => 2, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'Engenheiro Civil', 'SETOR_ID' => 3, 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
+            ['NOME' => 'Gerente Administrativo', 'SETOR_ID' => 1, 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Analista Financeiro', 'SETOR_ID' => 2, 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME' => 'Engenheiro Civil', 'SETOR_ID' => 3, 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
         // Obras
         // -----------------------
         DB::table('OBRA')->insert([
-            ['NOME_OBRA' => 'Obra Central', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()],
-            ['NOME_OBRA' => 'Obra Norte', 'EMPRESA_ID' => 1,'PUBLIC_ID' => Str::uuid()]
+            ['NOME_OBRA' => 'Obra Central', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME_OBRA' => 'Obra Norte', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------
@@ -170,6 +170,14 @@ class DatabaseSeeder extends Seeder
                 'DATA_ENTREGA' => '2025-04-02',
                 'RESPONSAVEL_ENTREGA' => 1
             ]
+        ]);
+        DB::table('TIPO_DOCUMENTO')->insert([
+            ['NOME' => 'PDF', 'DESCRICAO' => 'Documento em formato PDF'],
+            ['NOME' => 'WORD', 'DESCRICAO' => 'Documento em formato Word (.doc ou .docx)'],
+            ['NOME' => 'EXCEL', 'DESCRICAO' => 'Planilha em formato Excel (.xls ou .xlsx)'],
+            ['NOME' => 'IMAGEM', 'DESCRICAO' => 'Arquivo de imagem (JPG, PNG, etc.)'],
+            ['NOME' => 'TXT', 'DESCRICAO' => 'Arquivo de texto simples'],
+            ['NOME' => 'PPT', 'DESCRICAO' => 'Apresentação em PowerPoint'],
         ]);
     }
 }

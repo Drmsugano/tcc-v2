@@ -15,12 +15,11 @@ class Obra extends Model
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Empresa::class,'EMPRESA_ID','ID');
     }
 
     public function funcionarios()
     {
-        return $this->belongsToMany(Funcionario::class, 'FUNCIONARIO_OBRA')
-            ->withPivot(['DATA_INICIO', 'DATA_FIM']);
+        return $this->belongsToMany(Funcionario::class, 'FUNCIONARIO_OBRA', 'OBRA_ID', 'FUNCIONARIO_ID');
     }
 }

@@ -44,7 +44,7 @@
                         <i class="bi bi-building text-warning fs-1 mb-3"></i>
                         <h5 class="fw-bold">Obras</h5>
                         <p class="text-muted">Controle documentos e informações de cada obra.</p>
-                        <a href="" class="btn btn-outline-warning mt-2">
+                        <a href="{{ route('controle.obras') }}" class="btn btn-outline-warning mt-2">
                             Acessar
                         </a>
                     </div>
@@ -85,6 +85,7 @@
         .hover-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
+
         .hover-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);

@@ -29,8 +29,7 @@ class Funcionario extends Model
 
     public function obras()
     {
-        return $this->belongsToMany(Obra::class, 'FUNCIONARIO_OBRA')
-            ->withPivot(['DATA_INICIO', 'DATA_FIM']);
+        return $this->belongsToMany(Obra::class, 'FUNCIONARIO_OBRA', 'FUNCIONARIO_ID', 'OBRA_ID');
     }
 
     public function epis()

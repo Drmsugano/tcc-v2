@@ -3,15 +3,21 @@
 namespace App\Http\Controllers\Obras;
 
 use App\Models\DocumentacaoObra;
+use App\Models\TipoDocumento;
 use App\Http\Controllers\Controller;
+use App\Models\Obra;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class DocumentacaoObraController extends Controller
 {
-    public function index()
+    public function indexDocumentos(Request $request)
     {
-        return view('controle.obras.documentos');
+        cache()->set('obra_id', $request->query('id'));
+        return view('Documentos.Obras.index', [
+            'obras' => Obra::select(['*'])->where('PUBLIC_ID', '=', $request->query('id'))->get(),
+            'tipos' => TipoDocumento::all(),
+        ]);
     }
 
     public function getDados(Request $request)

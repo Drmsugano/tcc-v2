@@ -65,7 +65,8 @@
                     <i class="bi bi-file-earmark-text text-primary" style="font-size: 3rem;"></i>
                     <h5 class="mt-3 fw-bold">Documentos</h5>
                     <p class="text-muted">Acesse os documentos relacionados à obra.</p>
-                    <a href="#" class="btn btn-outline-primary rounded-pill px-4">
+                    <a href="{{ route('documentos.obras', ['id' => $obra->PUBLIC_ID]) }}"
+                        class="btn btn-outline-primary rounded-pill px-4">
                         Ver Documentos
                     </a>
                 </div>

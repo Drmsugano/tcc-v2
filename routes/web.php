@@ -6,6 +6,7 @@ use App\Http\Controllers\Controle\ControleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Obras\DocumentacaoObraController;
 use App\Http\Controllers\Obras\ObrasController;
 Route::middleware(['web'])->group(function () {
     Route::get('/', function () {
@@ -27,19 +28,25 @@ Route::middleware(['web'])->group(function () {
                 Route::post('/cadastrar', [UsuarioController::class, 'store'])->name('admin.usuarios.cadastrar');
             });
             Route::prefix('Obras')->group(function () {
-                Route::get('/', [ObrasController::class, 'index'])->name('admin.obras');
+                Route::get('/', [ObrasController::class, 'indexAdmin'])->name('admin.obras');
                 Route::get('/cadastrar', [ObrasController::class, 'create'])->name('admin.obras.cadastrar');
                 Route::post('/cadastrar', [ObrasController::class, 'store'])->name('admin.obras.store');
                 Route::get('/getDados', [ObrasController::class, 'getDados']);
             });
         });
-        Route::prefix('Controle')->middleware('permissao:CONTROLE')->group(function(){
-                Route::get('/', [ControleController::class,'index'])->name('controle.index');
-                Route::prefix('Obras')->group(function(){
-                    Route::get('/', [ObrasController::class,'indexControle'])->name('controle.obras');
-                    Route::get('/getDados', [ObrasController::class,'getDados']);
-                    Route::get('/{id}', [ObrasController::class,'verDetalhes'])->name('controle.obras.verDetalhes');
-                });
+        Route::prefix('Controle')->middleware('permissao:CONTROLE')->group(function () {
+            Route::get('/', [ControleController::class, 'index'])->name('controle.index');
+            Route::prefix('Obras')->group(function () {
+                Route::get('/', [ObrasController::class, 'indexControle'])->name('controle.obras');
+                Route::get('/getDados', [ObrasController::class, 'getDados']);
+                Route::get('/{id}', [ObrasController::class, 'verDetalhes'])->name('controle.obras.verDetalhes');
+            });
+        });
+        Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
+            Route::prefix('Obras')->group(function () {
+                Route::get('/', [DocumentacaoObraController::class, 'indexDocumentos'])->name('documentos.obras');
+                Route::get('/getDados', [ObrasController::class, 'getDados']);
+            });
         });
     });
 });

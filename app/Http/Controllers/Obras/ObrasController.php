@@ -41,11 +41,9 @@ class ObrasController extends Controller
             'success' => 'Obra alterada com sucesso!'
         ]);
     }
-    public function verDetalhes($id){
+    public function verDetalhes($id)
+    {
         $obra = Obra::where('PUBLIC_ID', $id)->with('empresa')->with('funcionarios')->withCount('funcionarios')->first();
-        if(!$obra){
-            return redirect()->route('obras.index.admin')->withErrors(['error' => 'Obra não encontrada.']);
-        }
         return view('Controle.Obras.detalhes', compact('obra'));
     }
     public function getDados(Request $request)
@@ -119,5 +117,5 @@ class ObrasController extends Controller
             'links' => $obras->linkCollection()->all(),
         ]);
     }
-    
+
 }

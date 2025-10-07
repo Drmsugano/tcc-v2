@@ -8,6 +8,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Obras\DocumentacaoObraController;
 use App\Http\Controllers\Obras\ObrasController;
+use App\Models\DocumentacaoObra;
+
 Route::middleware(['web'])->group(function () {
     Route::get('/', function () {
         return session()->get('jwt_token') === null ? view('login') : redirect()->route('home');
@@ -45,7 +47,8 @@ Route::middleware(['web'])->group(function () {
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
             Route::prefix('Obras')->group(function () {
                 Route::get('/', [DocumentacaoObraController::class, 'indexDocumentos'])->name('documentos.obras');
-                Route::get('/getDados', [ObrasController::class, 'getDados']);
+                Route::get('/getDados', [DocumentacaoObraController::class, 'getDados']);
+                Route::post('/store', [DocumentacaoObraController::class, 'store']);
             });
         });
     });

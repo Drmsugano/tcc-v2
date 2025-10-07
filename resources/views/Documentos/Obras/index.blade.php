@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('Documentos.Obras.layout')
 @section('conteudo')
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -53,6 +53,7 @@
                                 <th>Obra</th>
                                 <th>Descricao</th>
                                 <th>Arquivo</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabelaBody">

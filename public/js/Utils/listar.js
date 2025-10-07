@@ -1,13 +1,5 @@
 class TabelaDinamica {
-    constructor({
-        urlBase,
-        corpoId,
-        paginacaoId,
-        colunas = [],
-        acoes = [],
-        itensPorPagina = 10,
-        cacheMax = 50,
-    }) {
+    constructor({ urlBase, corpoId, paginacaoId, colunas = [], acoes = [], itensPorPagina = 10, cacheMax = 50 }) {
         this.urlBase = urlBase;
         this.corpo = document.getElementById(corpoId);
         this.paginacao = document.getElementById(paginacaoId);
@@ -39,7 +31,6 @@ class TabelaDinamica {
             return;
         }
 
-        // Mostrar loader apenas se não houver
         if (!Swal.isVisible()) {
             Swal.fire({
                 title: "Carregando...",
@@ -52,38 +43,27 @@ class TabelaDinamica {
         }
 
         try {
-            const params = new URLSearchParams({
-                page: pagina,
-                perPage: this.itensPorPagina,
-                ...filtros,
-            });
+            const params = new URLSearchParams({ page: pagina, perPage: this.itensPorPagina, ...filtros });
             const response = await fetch(`${this.urlBase}/getDados?${params}`);
             const json = await response.json();
 
             this.dados = json.data || [];
             this.meta = {
-                current_page: json.current_page,
-                last_page: json.last_page,
-                per_page: json.per_page,
-                total: json.total,
+                current_page: json.current_page || 1,
+                last_page: Math.max(1, json.last_page || 1),
+                per_page: json.per_page || 10,
+                total: json.total || this.dados.length,
             };
             this.links = json.links || [];
             this.paginaAtual = this.meta.current_page;
 
-            // Salvar no cache
-            this._addCache(chaveCache, {
-                data: this.dados,
-                meta: this.meta,
-                links: this.links,
-            });
+            this._addCache(chaveCache, { data: this.dados, meta: this.meta, links: this.links });
 
             this.renderizarTabela();
             this.renderizarPaginacao();
         } catch (erro) {
             console.error("Erro ao carregar dados:", erro);
-            this.corpo.innerHTML = `<tr><td colspan="${
-                this.colunas.length + 1
-            }" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
+            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
         } finally {
             Swal.isVisible() && Swal.close();
         }
@@ -99,31 +79,30 @@ class TabelaDinamica {
 
     renderizarTabela() {
         this.corpo.innerHTML = "";
-        this.dados.forEach((item) => {
+        if (this.dados.length === 0) {
+            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-center">Nenhum dado encontrado.</td></tr>`;
+            return;
+        }
+
+        this.dados.forEach(item => {
             const linha = document.createElement("tr");
             linha.id = `${item.tabela}-${item.ID}`;
 
-            this.colunas.forEach((coluna) => {
+            this.colunas.forEach(coluna => {
                 const celula = document.createElement("td");
                 celula.className = "align-middle";
 
-                // Status como badge
+                const valor = item[coluna] ?? "—";
+
                 if (coluna.toLowerCase().includes("status")) {
                     const span = document.createElement("span");
-                    const cores = {
-                        Ativa: "success",
-                        Concluída: "primary",
-                        "Em Andamento": "warning",
-                    };
-                    const cor = cores[item[coluna]] ?? "secondary";
+                    const cores = { Ativa: "success", Concluída: "primary", "Em Andamento": "warning" };
+                    const cor = cores[valor] ?? "secondary";
                     span.className = `badge bg-${cor}`;
-                    span.textContent = item[coluna];
+                    span.textContent = valor;
                     celula.appendChild(span);
                 } else {
-                    celula.textContent = this._formatarValor(
-                        coluna,
-                        item[coluna]
-                    );
+                    celula.textContent = this._formatarValor(coluna, valor);
                 }
 
                 linha.appendChild(celula);
@@ -131,24 +110,13 @@ class TabelaDinamica {
 
             if (this.acoes.length) {
                 const celulaAcoes = document.createElement("td");
-                this.acoes.forEach((acao) => {
+                this.acoes.forEach(acao => {
                     const botao = document.createElement("button");
                     botao.id = `${item.tabela}-${item.ID}`;
-                    botao.className =
-                        "btn btn-sm me-1 " +
-                        (acao.cor
-                            ? `btn-outline-${acao.cor}`
-                            : "btn-outline-primary");
-                    botao.title =
-                        acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
-                    botao.innerHTML = acao.icone
-                        ? `<i class="bx ${acao.icone} me-1"></i>${
-                              acao.texto || ""
-                          }`
-                        : acao.texto || "";
-                    botao.addEventListener("click", () =>
-                        acao.callback(item.ID, item.tabela)
-                    );
+                    botao.className = `btn btn-sm me-1 ${acao.cor ? `btn-outline-${acao.cor}` : "btn-outline-primary"}`;
+                    botao.title = acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
+                    botao.innerHTML = acao.icone ? `<i class="bx ${acao.icone} me-1"></i>${acao.texto || ""}` : acao.texto || "";
+                    botao.addEventListener("click", () => acao.callback(item.ID, item.tabela));
                     celulaAcoes.appendChild(botao);
                 });
                 linha.appendChild(celulaAcoes);
@@ -160,17 +128,12 @@ class TabelaDinamica {
 
     renderizarPaginacao() {
         this.paginacao.innerHTML = "";
-        if (!this.meta.last_page || this.meta.last_page <= 1) return;
-
         const total = this.meta.last_page;
         const current = this.paginaAtual;
 
-        // Botão anterior
-        this._criarBotao("«", current > 1, () =>
-            this.carregarDados(current - 1)
-        );
+        if (!total || total < 1) return;
 
-        // Primeira página
+        this._criarBotao("«", current > 1, () => this.carregarDados(1));
         this._criarBotaoPagina(1, current);
 
         let start = Math.max(2, current - 2);
@@ -181,24 +144,17 @@ class TabelaDinamica {
         if (end < total - 1) this._adicionarEllipsis();
 
         if (total > 1) this._criarBotaoPagina(total, current);
-
-        // Botão próximo
-        this._criarBotao("»", current < total, () =>
-            this.carregarDados(current + 1)
-        );
+        this._criarBotao("»", current < total, () => this.carregarDados(total));
     }
 
     _criarBotaoPagina(pagina, atual) {
-        const ativo = pagina === atual;
-        this._criarBotao(pagina, true, () => this.carregarDados(pagina), ativo);
+        this._criarBotao(pagina, true, () => this.carregarDados(pagina), pagina === atual);
     }
 
     _criarBotao(texto, habilitado, callback, ativo = false) {
         const btn = document.createElement("button");
         btn.textContent = texto;
-        btn.className =
-            "btn btn-sm me-1 " +
-            (ativo ? "btn-primary text-white" : "btn-outline-primary");
+        btn.className = `btn btn-sm me-1 ${ativo ? "btn-primary text-white" : "btn-outline-primary"}`;
         btn.disabled = !habilitado;
         btn.addEventListener("click", callback);
         this.paginacao.appendChild(btn);
@@ -212,7 +168,7 @@ class TabelaDinamica {
     }
 
     _formatarValor(coluna, valor) {
-        if (!valor) return "";
+        if (!valor) return "—";
         if (coluna.toLowerCase().includes("data")) {
             const d = new Date(valor);
             if (!isNaN(d)) return d.toLocaleDateString();

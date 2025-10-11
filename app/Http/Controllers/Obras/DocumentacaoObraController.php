@@ -41,10 +41,9 @@ class DocumentacaoObraController extends Controller
         $docs = $query->paginate($perPage, ['*'], 'page', $page);
         $dados = $docs->getCollection()->map(function ($m) {
             return [
-                'ID' => $m->ID,
+                'ID' => $m->PUBLIC_ID,
                 'NOME_ARQUIVO' => $m->NOME_ARQUIVO,
                 'DESCRICAO' => $m->DESCRICAO,
-                'CAMINHO' => $m->CAMINHO,
                 'OBRA' => $m->obra->NOME_OBRA ?? null,
                 'tabela' => 'documentacao_obras',
             ];
@@ -74,13 +73,14 @@ class DocumentacaoObraController extends Controller
                 return response()->json(['errors' => $validate->errors()], 422);
             }
             $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
-            $path = $request->file('arquivo')->store("public/obras/{$obraId}/documentos");
+            $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
             $url = Storage::url($path);
+            dd($url);
             $doc = DocumentacaoObra::create([
                 'OBRA_ID' => $obraId,
                 'TIPO_DOCUMENTO_ID' => $request->TIPO_DOCUMENTO_ID,
                 'NOME_ARQUIVO' => $request->file('arquivo')->getClientOriginalName(),
-                'CAMINHO' => $url,
+                'CAMINHO' => str_replace('http://localhost/storage', '', $url),
                 'DESCRICAO' => $request->DESCRICAO,
                 'PUBLIC_ID' => Str::uuid(),
                 'DATA_UPLOAD' => date('Y-m-d'),
@@ -90,6 +90,26 @@ class DocumentacaoObraController extends Controller
             return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
+
+    public function baixar(string $publicId)
+    {
+        $documento = DocumentacaoObra::where('PUBLIC_ID', $publicId)->firstOrFail();
+        // O CAMINHO vem com "/storage/..." → precisamos só do trecho após isso
+        $relativePath =  $documento->CAMINHO;
+        // Verifica se o arquivo realmente existe no disco público
+        if (!Storage::disk('public')->exists($relativePath)) {
+            return response()->json([
+                'error' => 'Arquivo não encontrado.',
+                'path' => $relativePath, // útil pra depurar
+            ], 404);
+        }
+        $fileName = $documento->NOME_ARQUIVO ?? 'documento.xlsx';
+        $filePath = Storage::disk('public')->path($relativePath);
+        return response()->download($filePath, $fileName);
+    }
+
+
 
     public function destroy($id)
     {

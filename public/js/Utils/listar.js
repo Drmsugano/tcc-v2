@@ -1,5 +1,13 @@
 class TabelaDinamica {
-    constructor({ urlBase, corpoId, paginacaoId, colunas = [], acoes = [], itensPorPagina = 10, cacheMax = 50 }) {
+    constructor({
+        urlBase,
+        corpoId,
+        paginacaoId,
+        colunas = [],
+        acoes = [],
+        itensPorPagina = 10,
+        cacheMax = 50,
+    }) {
         this.urlBase = urlBase;
         this.corpo = document.getElementById(corpoId);
         this.paginacao = document.getElementById(paginacaoId);
@@ -43,7 +51,11 @@ class TabelaDinamica {
         }
 
         try {
-            const params = new URLSearchParams({ page: pagina, perPage: this.itensPorPagina, ...filtros });
+            const params = new URLSearchParams({
+                page: pagina,
+                perPage: this.itensPorPagina,
+                ...filtros,
+            });
             const response = await fetch(`${this.urlBase}/getDados?${params}`);
             const json = await response.json();
 
@@ -57,13 +69,19 @@ class TabelaDinamica {
             this.links = json.links || [];
             this.paginaAtual = this.meta.current_page;
 
-            this._addCache(chaveCache, { data: this.dados, meta: this.meta, links: this.links });
+            this._addCache(chaveCache, {
+                data: this.dados,
+                meta: this.meta,
+                links: this.links,
+            });
 
             this.renderizarTabela();
             this.renderizarPaginacao();
         } catch (erro) {
             console.error("Erro ao carregar dados:", erro);
-            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
+            this.corpo.innerHTML = `<tr><td colspan="${
+                this.colunas.length + 1
+            }" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
         } finally {
             Swal.isVisible() && Swal.close();
         }
@@ -80,15 +98,17 @@ class TabelaDinamica {
     renderizarTabela() {
         this.corpo.innerHTML = "";
         if (this.dados.length === 0) {
-            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-center">Nenhum dado encontrado.</td></tr>`;
+            this.corpo.innerHTML = `<tr><td colspan="${
+                this.colunas.length + 1
+            }" class="text-center">Nenhum dado encontrado.</td></tr>`;
             return;
         }
 
-        this.dados.forEach(item => {
+        this.dados.forEach((item) => {
             const linha = document.createElement("tr");
             linha.id = `${item.tabela}-${item.ID}`;
 
-            this.colunas.forEach(coluna => {
+            this.colunas.forEach((coluna) => {
                 const celula = document.createElement("td");
                 celula.className = "align-middle";
 
@@ -96,7 +116,11 @@ class TabelaDinamica {
 
                 if (coluna.toLowerCase().includes("status")) {
                     const span = document.createElement("span");
-                    const cores = { Ativa: "success", Concluída: "primary", "Em Andamento": "warning" };
+                    const cores = {
+                        Ativa: "success",
+                        Concluída: "primary",
+                        "Em Andamento": "warning",
+                    };
                     const cor = cores[valor] ?? "secondary";
                     span.className = `badge bg-${cor}`;
                     span.textContent = valor;
@@ -110,13 +134,24 @@ class TabelaDinamica {
 
             if (this.acoes.length) {
                 const celulaAcoes = document.createElement("td");
-                this.acoes.forEach(acao => {
+                this.acoes.forEach((acao) => {
                     const botao = document.createElement("button");
                     botao.id = `${item.tabela}-${item.ID}`;
-                    botao.className = `btn btn-sm me-1 ${acao.cor ? `btn-outline-${acao.cor}` : "btn-outline-primary"}`;
-                    botao.title = acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
-                    botao.innerHTML = acao.icone ? `<i class="bx ${acao.icone} me-1"></i>${acao.texto || ""}` : acao.texto || "";
-                    botao.addEventListener("click", () => acao.callback(item.ID, item.tabela));
+                    botao.className = `btn btn-sm me-1 ${
+                        acao.cor
+                            ? `btn-outline-${acao.cor}`
+                            : "btn-outline-primary"
+                    }`;
+                    botao.title =
+                        acao.nome.charAt(0).toUpperCase() + acao.nome.slice(1);
+                    botao.innerHTML = acao.icone
+                        ? `<i class="bx ${acao.icone} me-1"></i>${
+                              acao.texto || ""
+                          }`
+                        : acao.texto || "";
+                    botao.addEventListener("click", () =>
+                        acao.callback(item.ID, item.tabela)
+                    );
                     celulaAcoes.appendChild(botao);
                 });
                 linha.appendChild(celulaAcoes);
@@ -127,34 +162,43 @@ class TabelaDinamica {
     }
 
     renderizarPaginacao() {
-        this.paginacao.innerHTML = "";
-        const total = this.meta.last_page;
-        const current = this.paginaAtual;
-
-        if (!total || total < 1) return;
-
+        const paginacao = this.paginacao;
+        paginacao.innerHTML = "";
+        const total = this.meta?.last_page ?? 0;
+        const current = this.paginaAtual ?? 1;
+        if (total < 1) return;
+        // Botão para primeira página
         this._criarBotao("«", current > 1, () => this.carregarDados(1));
+        // Página 1 sempre visível
         this._criarBotaoPagina(1, current);
-
-        let start = Math.max(2, current - 2);
-        let end = Math.min(total - 1, current + 2);
-
+        const range = 2; // número de páginas antes/depois da atual
+        const start = Math.max(2, current - range);
+        const end = Math.min(total - 1, current + range);
         if (start > 2) this._adicionarEllipsis();
-        for (let i = start; i <= end; i++) this._criarBotaoPagina(i, current);
+        for (let i = start; i <= end; i++) {
+            this._criarBotaoPagina(i, current);
+        }
         if (end < total - 1) this._adicionarEllipsis();
-
         if (total > 1) this._criarBotaoPagina(total, current);
+        // Botão para última página
         this._criarBotao("»", current < total, () => this.carregarDados(total));
     }
 
     _criarBotaoPagina(pagina, atual) {
-        this._criarBotao(pagina, true, () => this.carregarDados(pagina), pagina === atual);
+        this._criarBotao(
+            pagina,
+            true,
+            () => this.carregarDados(pagina),
+            pagina === atual
+        );
     }
 
     _criarBotao(texto, habilitado, callback, ativo = false) {
         const btn = document.createElement("button");
         btn.textContent = texto;
-        btn.className = `btn btn-sm me-1 ${ativo ? "btn-primary text-white" : "btn-outline-primary"}`;
+        btn.className = `btn btn-sm me-1 ${
+            ativo ? "btn-primary text-white" : "btn-outline-primary"
+        }`;
         btn.disabled = !habilitado;
         btn.addEventListener("click", callback);
         this.paginacao.appendChild(btn);

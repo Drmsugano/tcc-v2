@@ -48,6 +48,8 @@ Route::middleware(['web'])->group(function () {
             Route::prefix('Obras')->group(function () {
                 Route::get('/', [DocumentacaoObraController::class, 'indexDocumentos'])->name('documentos.obras');
                 Route::get('/getDados', [DocumentacaoObraController::class, 'getDados']);
+                Route::get('/{id}',[DocumentacaoObraController::class,'baixar']);
+                Route::delete('/delete/{id}', [DocumentacaoObraController::class, 'destroy']);
                 Route::post('/store', [DocumentacaoObraController::class, 'store']);
             });
         });

@@ -64,7 +64,7 @@
                     </table>
                 </div>
                 <nav>
-                    <ul class="pagination justify-content-center" id="paginacao"></ul>
+                    <ul class="pagination justify-content-center" id="paginacaoDocObra"></ul>
                 </nav>
             </div>
         </div>

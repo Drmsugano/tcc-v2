@@ -75,7 +75,6 @@ class DocumentacaoObraController extends Controller
             $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
             $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
             $url = Storage::url($path);
-            dd($url);
             $doc = DocumentacaoObra::create([
                 'OBRA_ID' => $obraId,
                 'TIPO_DOCUMENTO_ID' => $request->TIPO_DOCUMENTO_ID,
@@ -96,7 +95,7 @@ class DocumentacaoObraController extends Controller
     {
         $documento = DocumentacaoObra::where('PUBLIC_ID', $publicId)->firstOrFail();
         // O CAMINHO vem com "/storage/..." → precisamos só do trecho após isso
-        $relativePath =  $documento->CAMINHO;
+        $relativePath = $documento->CAMINHO;
         // Verifica se o arquivo realmente existe no disco público
         if (!Storage::disk('public')->exists($relativePath)) {
             return response()->json([
@@ -109,16 +108,61 @@ class DocumentacaoObraController extends Controller
         return response()->download($filePath, $fileName);
     }
 
+    public function edit($id)
+    {
+        $documento = DocumentacaoObra::where('PUBLIC_ID', $id)->firstOrFail();
+        $tipo = TipoDocumento::select('ID', 'NOME')->get();
+        return response()->json([
+            'ID' => $documento->PUBLIC_ID,
+            'TIPO_DOCUMENTO_ID' => $documento->TIPO_DOCUMENTO_ID,
+            'NOME_ARQUIVO' => $documento->NOME_ARQUIVO,
+            'DESCRICAO' => $documento->DESCRICAO,
+            'TIPO_DOCUMENTO' => $tipo,
+        ]);
+    }
 
+    public function update(Request $request, $id)
+    {
+        $validate = Validator::make($request->all(), [
+            'TIPO_DOCUMENTO_ID' => 'required|exists:TIPO_DOCUMENTO,ID',
+            'DESCRICAO' => 'nullable|string|max:255',
+        ]);
+        if ($validate->fails()) {
+            return response()->json(['errors' => $validate->errors()], 422);
+        }
+        $documento = DocumentacaoObra::where('PUBLIC_ID', $id)->firstOrFail();
+        $documento->TIPO_DOCUMENTO_ID = $request->TIPO_DOCUMENTO_ID;
+        $documento->DESCRICAO = $request->DESCRICAO;
+        if ($request->hasFile('arquivo')) {
+            // Deleta o arquivo antigo
+            $relativePath = $documento->CAMINHO;
+            if (Storage::disk('public')->exists($relativePath)) {
+                Storage::disk('public')->delete($relativePath);
+            }
+            $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
+            $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
+            $url = Storage::url($path);
+            $documento->CAMINHO = str_replace("http://{$_SERVER['HTTP_HOST']}/storage", '', $url);
+            $documento->NOME_ARQUIVO = $request->file('arquivo')->getClientOriginalName();
+        }
+        $documento->save();
+        return response()->json(['success' => true, 'documento' => $documento]);
+    }
 
     public function destroy($id)
     {
-        $doc = DocumentacaoObra::findOrFail($id);
-        if ($doc->CAMINHO) {
-            $relativePath = str_replace('/storage/', 'public/', $doc->CAMINHO);
-            Storage::delete($relativePath);
+        $documento = DocumentacaoObra::where('PUBLIC_ID', $id)->firstOrFail();
+        // O CAMINHO vem com "/storage/..." → precisamos só do trecho após isso
+        $relativePath = $documento->CAMINHO;
+        // Verifica se o arquivo realmente existe no disco público
+        if (!Storage::disk('public')->exists($relativePath)) {
+            return response()->json([
+                'error' => 'Arquivo não encontrado.',
+                'path' => $relativePath, // útil pra depurar
+            ], 404);
         }
-        $doc->delete();
+        Storage::disk('public')->delete($relativePath);
+        DocumentacaoObra::where('PUBLIC_ID', $id)->delete();
         return response()->json(['success' => true]);
     }
 }

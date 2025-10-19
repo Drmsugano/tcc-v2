@@ -23,20 +23,19 @@ class TabelaDinamica {
         this.filtrosAtuais = {};
     }
 
-    async carregarDados(pagina = 1, filtros = {}) {
+    async carregarDados(pagina = 1, filtros = {}, pegarCache = true) {
         const chaveCache = JSON.stringify({ pagina, filtros });
         this.filtrosAtuais = filtros;
-
-        // Recupera do cache
-        if (this.cache.has(chaveCache)) {
-            const cached = this.cache.get(chaveCache);
-            this.dados = cached.data;
-            this.meta = cached.meta;
-            this.links = cached.links;
-            this.paginaAtual = pagina;
-            this.renderizarTabela();
-            this.renderizarPaginacao();
-            return;
+        if (pegarCache) {
+            if (this.cache[chaveCache]) {
+                this.dados = this.cache[chaveCache].data;
+                this.meta = this.cache[chaveCache].meta;
+                this.links = this.cache[chaveCache].links;
+                this.paginaAtual = pagina;
+                this.renderizarTabela();
+                this.renderizarPaginacao();
+                return;
+            }
         }
 
         if (!Swal.isVisible()) {

@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app:/fastapi/app
+      - ./config_nomes_colunas.csv:/fastapi/config_nomes_colunas.csv
+      - ./requirements.txt:/fastapi/requirements.txt
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=America/Sao_Paulo
+    restart: unless-stopped

@@ -51,6 +51,7 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/{id}',[DocumentacaoObraController::class,'baixar']);
                 Route::get('/{id}/edit', [DocumentacaoObraController::class, 'edit']);
                 Route::delete('/delete/{id}', [DocumentacaoObraController::class, 'destroy']);
+                Route::post('/update/{id}', [DocumentacaoObraController::class, 'update']);
                 Route::post('/store', [DocumentacaoObraController::class, 'store']);
             });
         });

@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                                   <input type="hidden" name="id" />
                                                   <div class="mb-3">
                                                     <label class="form-label">Tipo de Documento</label>
-                                                    <select class="form-select" name="tipoDocumento">
+                                                    <select class="form-select" name="TIPO_DOCUMENTO_ID">
                                                       <option value="">Selecione um tipo</option>
                                                       ${data.TIPO_DOCUMENTO.map(
                                                           (tipo) => `
@@ -106,10 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (
                                 (data.TIPO_DOCUMENTO_ID !== undefined ||
                                     data.TIPO_DOCUMENTO_ID !== undefined) &&
-                                editForm.querySelector('[name="tipoDocumento"]')
+                                editForm.querySelector('[name="TIPO_DOCUMENTO_ID"]')
                             )
                                 editForm.querySelector(
-                                    '[name="tipoDocumento"]'
+                                    '[name="TIPO_DOCUMENTO_ID"]'
                                 ).value =
                                     data.TIPO_DOCUMENTO_ID ||
                                     data.TIPO_DOCUMENTO_ID ||
@@ -117,16 +117,15 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (
                                 (data.DESCRICAO !== undefined ||
                                     data.descricao !== undefined) &&
-                                editForm.querySelector('[name="descricao"]')
+                                editForm.querySelector('[name="DESCRICAO"]')
                             )
                                 editForm.querySelector(
-                                    '[name="descricao"]'
+                                    '[name="DESCRICAO"]'
                                 ).value =
                                     data.DESCRICAO || data.descricao || "";
                             editForm.onsubmit = async function (e) {
                                 e.preventDefault();
                                 const formData = new FormData(this);
-                                formData.append("_method", "PUT");
                                 try {
                                     const resp = await fetch(
                                         `/Documentos/Obras/update/${id}`,
@@ -299,4 +298,15 @@ async function deletar(id) {
     } catch (erro) {
         Swal.fire("Erro!", erro.message, "error");
     }
+}
+
+function searchDocumentos() {
+    const filtroForm = document.getElementById("filtroForm");
+    const filtros = {};
+    Array.from(filtroForm.elements).forEach((el) => {
+        if (el.name && el.value) {
+            filtros[el.name] = el.value;
+        }
+    });
+    tabelaObras.carregarDados(1, filtros, false);
 }

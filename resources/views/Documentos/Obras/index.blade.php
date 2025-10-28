@@ -15,13 +15,18 @@
             <div class="card-body">
                 <form id="filtroForm" class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label fw-semibold text-secondary">Nome da Obra</label>
+                        <label class="form-label fw-semibold text-secondary">Descrição do Documento</label>
                         <input type="text" name="NOME_OBRA" class="form-control" placeholder="Ex: Prédio Central">
                     </div>
 
                     <div class="col-md-3">
                         <label class="form-label fw-semibold text-secondary">Tipo de Documento</label>
-                        <input type="text" name="TIPO_DOCUMENTO" class="form-control" placeholder="Ex: PDF, Word">
+                        <select name="TIPO_DOCUMENTO" id="TIPO_DOCUMENTO" class="form-select">
+                            <option value="">Selecione um tipo</option>
+                            <option value="1">XLSX</option>
+                            <option value="2">DOC</option>
+                            <option value="3">PDF</option>
+                        </select>
                     </div>
 
                     <div class="col-md-2">

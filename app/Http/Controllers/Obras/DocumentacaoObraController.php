@@ -72,6 +72,17 @@ class DocumentacaoObraController extends Controller
             if ($validate->fails()) {
                 return response()->json(['errors' => $validate->errors()], 422);
             }
+            $tipoDocId = $request->TIPO_DOCUMENTO_ID;
+            $extensao = $request->file('arquivo')->getClientOriginalExtension();
+            if ($tipoDocId == 1 && !in_array(strtolower($extensao), ['xlsx', 'xls', 'xlsm'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser XLSX']], 422);
+            }
+            if ($tipoDocId == 2 && !in_array(strtolower($extensao), ['doc', 'docx', 'docm'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser DOC ou DOCX ou DOCM']], 422);
+            }
+            if ($tipoDocId == 3 && !in_array(strtolower($extensao), ['pdf'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser PDF']], 422);
+            }
             $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
             $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
             $url = Storage::url($path);
@@ -131,10 +142,18 @@ class DocumentacaoObraController extends Controller
             return response()->json(['errors' => $validate->errors()], 422);
         }
         $documento = DocumentacaoObra::where('PUBLIC_ID', $id)->firstOrFail();
-        $documento->TIPO_DOCUMENTO_ID = $request->TIPO_DOCUMENTO_ID;
-        $documento->DESCRICAO = $request->DESCRICAO;
         if ($request->hasFile('arquivo')) {
-            // Deleta o arquivo antigo
+            $tipoDocId = $request->TIPO_DOCUMENTO_ID;
+            $extensao = $request->file('arquivo')->getClientOriginalExtension();
+            if ($tipoDocId == 1 && !in_array(strtolower($extensao), ['xlsx', 'xls', 'xlsm'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser XLSX']], 422);
+            }
+            if ($tipoDocId == 2 && !in_array(strtolower($extensao), ['doc', 'docx', 'docm'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser DOC ou DOCX ou DOCM']], 422);
+            }
+            if ($tipoDocId == 3 && !in_array(strtolower($extensao), ['pdf'])) {
+                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser PDF']], 422);
+            }
             $relativePath = $documento->CAMINHO;
             if (Storage::disk('public')->exists($relativePath)) {
                 Storage::disk('public')->delete($relativePath);
@@ -142,10 +161,13 @@ class DocumentacaoObraController extends Controller
             $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
             $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
             $url = Storage::url($path);
-            $documento->CAMINHO = str_replace("http://{$_SERVER['HTTP_HOST']}/storage", '', $url);
-            $documento->NOME_ARQUIVO = $request->file('arquivo')->getClientOriginalName();
         }
-        $documento->save();
+        DocumentacaoObra::where('PUBLIC_ID', $id)->update([
+            'TIPO_DOCUMENTO_ID' => $request->TIPO_DOCUMENTO_ID,
+            'DESCRICAO' => $request->DESCRICAO,
+            'CAMINHO' => isset($url) ? str_replace('http://localhost/storage', '', $url) : $documento->CAMINHO,
+            'NOME_ARQUIVO' => isset($url) ? $request->file('arquivo')->getClientOriginalName() : $documento->NOME_ARQUIVO,
+        ]);
         return response()->json(['success' => true, 'documento' => $documento]);
     }
 

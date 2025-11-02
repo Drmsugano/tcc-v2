@@ -1,10 +1,12 @@
 @extends('layout')
+
 @section('conteudo')
-    <div class="text-center mb-5">
-        <h1 class="fw-bold text-primary"><i class="bi bi-grid-1x2"></i> Módulo de EPI</h1>
-        <p class="text-muted">Aqui você pode gerenciar os EPI's da empresa {{ $usuarioView['EMPRESA'] }}</p>
-    </div>
-    <div class="container mb-3">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-primary"><i class="bx bx-plus-lg"></i> Adicionar Novo EPI</h1>
+            <p class="text-muted">Preencha o formulário abaixo para adicionar um novo EPI ao sistema.</p>
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-body">
                 <form id="formNovoEPI">
@@ -64,8 +66,7 @@
                             <label for="fornecedorEPI" class="form-label fw-bold">Fornecedor</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bx bx-building"></i></span>
-                                <input type="text" class="form-control" id="fornecedorEPI" placeholder="Ex: Empresa XYZ"
-                                    required>
+                                <input type="text" class="form-control" id="fornecedorEPI" placeholder="Ex: Empresa XYZ" required>
                             </div>
                         </div>
                     </div>
@@ -79,33 +80,4 @@
             </div>
         </div>
     </div>
-    <div class="d-flex justify-content-center mb-3">
-        <h3 class="h4 fw-bold">Lista de EPIs</h3>
-    </div>
-    <form id="pesquisaEpi" class="mb-4">
-        <label for="filtroEpi" class="visually-hidden">Pesquisar EPI por CA</label>
-        <div class="input-group">
-            <input type="number" id="filtroEpi" class="form-control border-primary" placeholder="Pesquisar por CA...">
-            <button class="btn btn-outline-primary" onclick="pesquisarEpi(event)" type="submit">
-                <i class="bx bx-search"></i>
-            </button>
-        </div>
-    </form>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-primary">
-                <tr>
-                    <th>CA</th>
-                    <th>Nome do EPI</th>
-                    <th>Descrição</th>
-                    <th>Quantidade em Estoque</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="corpoTabelaEPI">
-            </tbody>
-        </table>
-    </div>
-    <script src="{{ asset('js/Controle/EPI/index.js') }}"></script>
-    <script src="{{ asset('js/Utils/listar.js') }}"></script>
 @endsection

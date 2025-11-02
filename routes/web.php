@@ -43,16 +43,24 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/getDados', [ObrasController::class, 'getDados']);
                 Route::get('/{id}', [ObrasController::class, 'verDetalhes'])->name('controle.obras.verDetalhes');
             });
+            Route::prefix('EPI')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'index'])->name('controle.epi');
+                Route::get('/getDados', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'getDados']);
+                Route::get('/create', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'create'])->name('controle.epi.create');
+            });
         });
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
             Route::prefix('Obras')->group(function () {
                 Route::get('/', [DocumentacaoObraController::class, 'indexDocumentos'])->name('documentos.obras');
                 Route::get('/getDados', [DocumentacaoObraController::class, 'getDados']);
-                Route::get('/{id}',[DocumentacaoObraController::class,'baixar']);
+                Route::get('/{id}', [DocumentacaoObraController::class, 'baixar']);
                 Route::get('/{id}/edit', [DocumentacaoObraController::class, 'edit']);
                 Route::delete('/delete/{id}', [DocumentacaoObraController::class, 'destroy']);
                 Route::post('/update/{id}', [DocumentacaoObraController::class, 'update']);
                 Route::post('/store', [DocumentacaoObraController::class, 'store']);
+            });
+            Route::prefix('Funcionario')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Controle\Funcionario\FuncionarioController::class, 'index'])->name('controle.funcionario');
             });
         });
     });

@@ -22,16 +22,16 @@
                     </li>
                 @endif
                 @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('FINANCEIRO', $usuarioView['PERMISSOES'] ?? []))
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link text-white" href="#">
                             <i class='bx bx-wallet'></i>
                             Financeiro
                         </a>
-                    </li>
+                    </li> -->
                 @endif
                 @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []) || in_array('CONTROLE', $usuarioView['PERMISSOES'] ?? []))
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="#">
+                        <a class="nav-link text-white" href="/Controle">
                             <i class='bx bx-group'></i>
                             Controle
                         </a>

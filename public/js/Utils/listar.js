@@ -59,6 +59,9 @@ class TabelaDinamica {
             const json = await response.json();
 
             this.dados = json.data || [];
+            if (this.dados.length === 0) {
+                this.dados = [];
+            }
             this.meta = {
                 current_page: json.current_page || 1,
                 last_page: Math.max(1, json.last_page || 1),
@@ -77,10 +80,7 @@ class TabelaDinamica {
             this.renderizarTabela();
             this.renderizarPaginacao();
         } catch (erro) {
-            console.error("Erro ao carregar dados:", erro);
-            this.corpo.innerHTML = `<tr><td colspan="${
-                this.colunas.length + 1
-            }" class="text-danger text-center">Erro ao carregar dados.</td></tr>`;
+            this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-danger text-center">Sem dados</td></tr>`;
         } finally {
             Swal.isVisible() && Swal.close();
         }

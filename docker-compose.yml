@@ -10,7 +10,7 @@ services:
             - "TZ=America/Sao_Paulo"
         entrypoint: ./.docker/entrypoint.sh
         ports:
-            - "8080:80" # acessa em http://localhost:8080
+            - "80':80" # acessa em http://localhost
         volumes:
             - .:/var/www/html
         restart: unless-stopped

@@ -16,7 +16,7 @@
                         <i class="bi bi-box-seam text-primary fs-1 mb-3"></i>
                         <h5 class="fw-bold">Controle de EPI</h5>
                         <p class="text-muted">Gerencie documentos, comprovantes de entrega e estoque de EPIs.</p>
-                        <a href="" class="btn btn-outline-primary mt-2">
+                        <a href="{{ route('controle.epi') }}" class="btn btn-outline-primary mt-2">
                             Acessar
                         </a>
                     </div>

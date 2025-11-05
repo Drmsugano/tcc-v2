@@ -12,19 +12,20 @@ tag_ca = [
 ]
 app = FastAPI( 
     title="API BaseCAEPI",
-    description="""Pesquisar e recuperar informações(por json ou arquivo de excel) sobre os certificados de aprovação emitidos para EPIs.\n
-    Codigo fonte: https://github.com/JoaoAugustoMV/API_BaseCAEPI
-        """,
+    description="""Pesquisar e recuperar informações(por json ou arquivo de excel) sobre os certificados de aprovação emitidos para EPIs.\n""",
         openapi_tags=tag_ca
     )
 
 origins = [
+    "http://127.0.0.1:8080",
+    "http://localhost:8080",
+    "http://127.0.0.1:4200",
     "http://localhost:4200",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

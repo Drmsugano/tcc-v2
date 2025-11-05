@@ -29,18 +29,18 @@ class ResponsesModels():
                 }
     
     responsesCANaoEncontrado = JSONResponse(status_code=404, content={
-        "sucess": False,
+        "success": False,
         "erros": ["Numero Ca não encontrado!"]
         })
     
     responsesListaVazia = JSONResponse(status_code=404, content={
-        "sucess": False,
+        "success": False,
         "erros": ["listaCAs não pode estar vazia"]
         })
 
     def responsesExportarCAsNaoEncontrado(self, listCAsNaoEncontrados):
         return JSONResponse(status_code=404, content={
-        "sucess": False,
+        "success": False,
         "erros": {
             'CAsNaoEncontrados': listCAsNaoEncontrados
             }        

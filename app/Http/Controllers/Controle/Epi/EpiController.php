@@ -9,9 +9,52 @@ class EpiController extends Controller
     {
         return view('Controle.Epi.index');
     }
-    public function create()
+    public function store(Request $request)
     {
-        return view('Controle.Epi.create');
+        try {
+        $validatedData = $request->validate([
+            'nomeEpi' => 'required|string|max:255',
+            'descricaoEpi' => 'nullable|string',
+            'ca' => 'required|string|max:100|unique:EPI,CA',
+            'dataValidade' => 'required|date',
+            'dataMaterial' => 'required|date',
+            'fornecedorEPI' => 'required|string|max:255',
+            'quantidadeEPI' => 'required|integer|min:0',
+        ]);
+        if (date('Y-m-d') > $validatedData['dataValidade']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'A data de aquisição não pode ser maior que a data de validade.'
+            ], 400);
+        }
+            if ($validatedData) {
+                Epi::insert([
+                    'NOME' => $validatedData['nomeEpi'],
+                    'DESCRICAO' => $validatedData['descricaoEpi'] ?? null,
+                    'CA' => $validatedData['ca'],
+                    'VALIDADE_EPI' => $validatedData['dataValidade'],
+                    'VALIDADE_MATERIAL' => $validatedData['dataMaterial'],
+                    'FORNECEDOR_EPI' => $validatedData['fornecedorEPI'],
+                    'USUARIO_CADASTRO' => $request->user()->ID,
+                    'PUBLIC_ID' => \Illuminate\Support\Str::uuid(),
+                    'QUANTIDADE_ESTOQUE' => $validatedData['quantidadeEPI'],
+                ]);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'EPI cadastrado com sucesso.'
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Dados inválidos fornecidos.'
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocorreu um erro ao cadastrar o EPI: ' . $e->getMessage()
+            ], 500);
+        }
     }
     public function getDados(Request $request)
     {

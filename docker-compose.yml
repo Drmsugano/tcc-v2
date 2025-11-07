@@ -10,9 +10,11 @@ services:
             - "TZ=America/Sao_Paulo"
         entrypoint: ./.docker/entrypoint.sh
         ports:
-            - "80':80" # acessa em http://localhost
+            - "80:80"
         volumes:
             - .:/var/www/html
+        networks:
+            - rosfield_network
         restart: unless-stopped
         depends_on:
             - db
@@ -29,6 +31,8 @@ services:
             - "3307:3306" # acessa externamente pela 3307, mas MySQL interno na 3306
         volumes:
             - db_data:/var/lib/mysql
+        networks:
+            - rosfield_network
         restart: unless-stopped
 volumes:
     db_data:

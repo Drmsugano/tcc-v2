@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Controle\ControleController;
+use App\Http\Controllers\Controle\Epi\EpiController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
@@ -44,9 +45,9 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/{id}', [ObrasController::class, 'verDetalhes'])->name('controle.obras.verDetalhes');
             });
             Route::prefix('EPI')->group(function () {
-                Route::get('/', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'index'])->name('controle.epi');
-                Route::get('/getDados', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'getDados']);
-                Route::get('/create', [\App\Http\Controllers\Controle\Epi\EpiController::class, 'create'])->name('controle.epi.create');
+                Route::get('/', [EpiController::class, 'index'])->name('controle.epi');
+                Route::get('/getDados', [EpiController::class, 'getDados']);
+                Route::post('/store', [EpiController::class, 'store'])->name('controle.epi.store');
             });
         });
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {

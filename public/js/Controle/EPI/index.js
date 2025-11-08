@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Inicializa a tabela dinâmica
-    window.tabelaEPI = new TabelaDinamica({
+    window.tabelaEpi = new TabelaDinamica({
         urlBase: "/Controle/EPI",
-        corpoId: "corpoTabelaEPI",
-        paginacaoId: "paginacaoEPI",
-        colunas: ["CA", "NOME_EPI", "DESCRICAO", "QUANTIDADE_ESTOQUE"],
+        corpoId: "corpoTabelaEpi",
+        paginacaoId: "paginacaoEpi",
+        colunas: ["CA", "NOME", "DESCRICAO", "QUANTIDADE_ESTOQUE"],
         acoes: [
             {
                 nome: "Ver",
@@ -15,9 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ],
         itensPorPagina: 10,
     });
-    tabelaEPI.carregarDados();
-
-    // Inicializa o formulário
+    tabelaEpi.carregarDados(1, {}, false);
     window.formulario = new Formulario("/Controle/EPI", "store", "formNovoEPI");
 });
 
@@ -38,20 +36,14 @@ function procurarCA(ca) {
                 limparCamposEPI();
                 return;
             }
-
-            // --- Trata a data de validade ---
             let dataValidade = null;
             if (data.DataValidade) {
                 let dataValidadeString = data.DataValidade;
-
-                // Converte formato DD/MM/YYYY → YYYY-MM-DD
                 if (/^\d{2}\/\d{2}\/\d{4}$/.test(dataValidadeString)) {
                     const [dia, mes, ano] = dataValidadeString.split("/");
                     dataValidadeString = `${ano}-${mes}-${dia}`;
                 }
-
                 dataValidade = new Date(dataValidadeString);
-
                 if (!isNaN(dataValidade)) {
                     const hoje = new Date();
                     if (dataValidade < hoje) {
@@ -70,13 +62,10 @@ function procurarCA(ca) {
                     );
                 }
             }
-
-            // --- Preenche os campos ---
             document.getElementById("nomeEPI").value =
                 data.NomeEquipamento || "";
             document.getElementById("descricaoEPI").value =
                 data.DescricaoEquipamento || "";
-
             if (dataValidade && !isNaN(dataValidade)) {
                 document.getElementById("dataValidade").value = dataValidade
                     .toISOString()
@@ -84,16 +73,10 @@ function procurarCA(ca) {
             } else {
                 document.getElementById("dataValidade").value = "";
             }
-
-            // Habilita o botão de salvar
             const btnSalvar = document.getElementById("btnSalvarEPI");
             btnSalvar.disabled = false;
-
-            // Remove event listeners duplicados antes de adicionar novamente
             const novoBotao = btnSalvar.cloneNode(true);
             btnSalvar.parentNode.replaceChild(novoBotao, btnSalvar);
-
-            // Adiciona o evento de salvar
             novoBotao.addEventListener("click", (event) => salvarEPI(event));
         })
         .catch((error) => {
@@ -105,14 +88,10 @@ function procurarCA(ca) {
             });
         });
 }
-
-// --- Função para enviar o formulário ---
 function salvarEPI(event) {
     event.preventDefault();
     formulario.enviarFormulario(event);
 }
-
-// --- Limpa os campos do formulário de EPI ---
 function limparCamposEPI() {
     document.getElementById("nomeEPI").value = "";
     document.getElementById("descricaoEPI").value = "";
@@ -120,12 +99,10 @@ function limparCamposEPI() {
     document.getElementById("btnSalvarEPI").disabled = true;
 }
 
-// --- Funções auxiliares de filtro/pesquisa ---
 function limparFiltroEpi() {
     document.getElementById("filtroEpi").value = "";
-    tabelaEPI.carregarDados(1, {}, false);
+    tabelaEpi.carregarDados(1, {}, false);
 }
-
 function pesquisarEpi(event) {
     event.preventDefault();
     const filtro = document.getElementById("filtroEpi").value;
@@ -133,5 +110,5 @@ function pesquisarEpi(event) {
     if (filtro) {
         filtros.filtroEpi = filtro;
     }
-    tabelaEPI.carregarDados(1, filtros, false);
+    tabelaEpi.carregarDados(1, filtros, false);
 }

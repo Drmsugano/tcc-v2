@@ -114,8 +114,15 @@
                     <th>Ações</th>
                 </tr>
             </thead>
-            <tbody id="corpoTabelaEPI">
+            <tbody id="corpoTabelaEpi">
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <div id="paginacaoEpi"></div>
+                    </td>
+                </tr>
+            </tfoot>
         </table>
     </div>
     <script src="{{ asset('js/Controle/EPI/index.js') }}"></script>

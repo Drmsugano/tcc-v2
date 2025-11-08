@@ -57,7 +57,6 @@ class TabelaDinamica {
             });
             const response = await fetch(`${this.urlBase}/getDados?${params}`);
             const json = await response.json();
-
             this.dados = json.data || [];
             if (this.dados.length === 0) {
                 this.dados = [];
@@ -102,11 +101,9 @@ class TabelaDinamica {
             }" class="text-center">Nenhum dado encontrado.</td></tr>`;
             return;
         }
-
         this.dados.forEach((item) => {
             const linha = document.createElement("tr");
             linha.id = `${item.tabela}-${item.ID}`;
-
             this.colunas.forEach((coluna) => {
                 const celula = document.createElement("td");
                 celula.className = "align-middle";

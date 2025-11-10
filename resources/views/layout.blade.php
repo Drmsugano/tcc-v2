@@ -95,7 +95,7 @@
     </div>
 
     @include('components/navbar')
-    <main class="container my-4">
+    <main class="container-fluid my-4">
         <div class="card card-main">
             <div class="card-body">
                 @yield('conteudo')

@@ -9,6 +9,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Obras\DocumentacaoObraController;
 use App\Http\Controllers\Obras\ObrasController;
+use App\Http\Controllers\Controle\Funcionario\FuncionarioController;
+use App\Http\Controllers\Controle\Fornecedor\FornecedorController;
 use App\Models\DocumentacaoObra;
 
 Route::middleware(['web'])->group(function () {
@@ -49,6 +51,14 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/getDados', [EpiController::class, 'getDados']);
                 Route::post('/store', [EpiController::class, 'store'])->name('controle.epi.store');
             });
+            Route::prefix('Fornecedor')->group(function () {
+                Route::get('/', [FornecedorController::class, 'index'])->name('controle.fornecedores');
+                Route::get('/getDados', [FornecedorController::class, 'getDados']);
+                Route::get('/{id}', [FornecedorController::class, 'getFornecedor'])->name('controle.fornecedores.detalhes');
+                Route::post('/store', [FornecedorController::class, 'store'])->name('controle.fornecedores.store');
+                Route::post('/update', [FornecedorController::class, 'update'])->name('controle.fornecedores.update');
+                Route::post('/delete/{id}', [FornecedorController::class, 'destroy'])->name('controle.fornecedores.destroy');
+            });
         });
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
             Route::prefix('Obras')->group(function () {
@@ -61,7 +71,7 @@ Route::middleware(['web'])->group(function () {
                 Route::post('/store', [DocumentacaoObraController::class, 'store']);
             });
             Route::prefix('Funcionario')->group(function () {
-                Route::get('/', [\App\Http\Controllers\Controle\Funcionario\FuncionarioController::class, 'index'])->name('controle.funcionario');
+                Route::get('/', [FuncionarioController::class, 'index'])->name('controle.funcionario');
             });
         });
     });

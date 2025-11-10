@@ -116,6 +116,7 @@ class TabelaDinamica {
                         Ativa: "success",
                         Concluída: "primary",
                         "Em Andamento": "warning",
+                        Inativa: "danger",
                     };
                     const cor = cores[valor] ?? "secondary";
                     span.className = `badge bg-${cor}`;
@@ -133,7 +134,7 @@ class TabelaDinamica {
                 this.acoes.forEach((acao) => {
                     const botao = document.createElement("button");
                     botao.id = `${item.tabela}-${item.ID}`;
-                    botao.className = `btn btn-sm me-1 ${
+                    botao.className = `btn btn-sm me-2 ${
                         acao.cor
                             ? `btn-outline-${acao.cor}`
                             : "btn-outline-primary"

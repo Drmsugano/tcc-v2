@@ -1,8 +1,9 @@
 class Formulario {
-    constructor(urlBase, params, formId) {
+    constructor(urlBase, params, formId, tabela) {
         this.urlBase = urlBase;
         this.params = params;
         this.formId = formId;
+        this.tabela = tabela;
     }
 
     resetarFormulario() {
@@ -11,6 +12,11 @@ class Formulario {
             form.reset();
         } else {
             console.error(`Formulário com ID '${this.formId}' não encontrado.`);
+        }
+        if (this.tabela) {
+            this.tabela.carregarDados(1, {}, false);
+        } else {
+            window.location.reload();
         }
     }
 
@@ -27,26 +33,35 @@ class Formulario {
         fetch(`${this.urlBase}/${this.params}`, {
             method: "POST",
             headers: {
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content"),
             },
             body: dados,
         })
             .then((response) => response.json())
             .then((data) => {
-                if (data.success) {
-                    swal.fire({
-                        title: "Sucesso",
-                        text: data.message || "Formulário enviado com sucesso.",
-                        icon: "success",
-                    });
-                    this.resetarFormulario();
-                } else {
-                    swal.fire({
-                        title: "Erro",
-                        text: data.message || "Ocorreu um erro ao enviar o formulário.",
-                        icon: "error",
-                    });
+                switch (data.success) {
+                    case true:
+                        swal.fire({
+                            title: "Sucesso",
+                            text:
+                                data.message ||
+                                "Formulário enviado com sucesso.",
+                            icon: "success",
+                        });
+                        break;
+                    case false:
+                        swal.fire({
+                            title: "Erro",
+                            text:
+                                data.message ||
+                                "Ocorreu um erro ao enviar o formulário.",
+                            icon: "error",
+                        });
+                        break;
                 }
+                this.resetarFormulario();
             })
             .catch((error) => {
                 console.error("Erro ao enviar o formulário:", error);

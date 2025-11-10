@@ -13,11 +13,6 @@ class Formulario {
         } else {
             console.error(`Formulário com ID '${this.formId}' não encontrado.`);
         }
-        if (this.tabela) {
-            this.tabela.carregarDados(1, {}, false);
-        } else {
-            window.location.reload();
-        }
     }
 
     enviarFormulario(event) {
@@ -49,6 +44,13 @@ class Formulario {
                                 data.message ||
                                 "Formulário enviado com sucesso.",
                             icon: "success",
+                            showConfirmButton: true,
+                        }).then(() => {
+                            if (this.tabela) {
+                                this.tabela.carregarDados(1, {}, false);
+                            } else {
+                                window.location.href = this.urlBase;
+                            }
                         });
                         break;
                     case false:

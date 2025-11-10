@@ -3,11 +3,14 @@ namespace App\Http\Controllers\Controle\Epi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Epi;
+use App\Models\Fornecedor;
+
 class EpiController extends Controller
 {
     public function index()
     {
-        return view('Controle.Epi.index');
+        $fornecedores = Fornecedor::select(['NOME_FORNECEDOR', 'ID'])->get();
+        return view('Controle.Epi.index', compact('fornecedores'));
     }
     public function store(Request $request)
     {
@@ -18,7 +21,7 @@ class EpiController extends Controller
                 'ca' => 'required|string|max:100|unique:EPI,CA',
                 'dataValidade' => 'required|date',
                 'dataMaterial' => 'required|date',
-                'fornecedorEPI' => 'required|string|max:255',
+                'fornecedorEPI' => 'required|integer',
                 'quantidadeEPI' => 'required|integer|min:0',
             ]);
             if (date('Y-m-d') > $validatedData['dataValidade']) {
@@ -34,7 +37,7 @@ class EpiController extends Controller
                     'CA' => $validatedData['ca'],
                     'VALIDADE_EPI' => $validatedData['dataValidade'],
                     'VALIDADE_MATERIAL' => $validatedData['dataMaterial'],
-                    'FORNECEDOR_EPI' => $validatedData['fornecedorEPI'],
+                    'FORNECEDOR_ID' => $validatedData['fornecedorEPI'],
                     'USUARIO_CADASTRO' => $request->user()->ID,
                     'PUBLIC_ID' => \Illuminate\Support\Str::uuid(),
                     'QUANTIDADE_ESTOQUE' => $validatedData['quantidadeEPI'],

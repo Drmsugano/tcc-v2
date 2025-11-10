@@ -30,5 +30,9 @@ class EPI extends Model
         return $this->belongsToMany(Funcionario::class, 'FUNCIONARIO_EPI')
             ->withPivot(['QUANTIDADE', 'DATA_ENTREGA', 'DATA_DEVOLUCAO', 'RESPONSAVEL_ENTREGA']);
     }
+    public function fornecedor()
+    {
+        return $this->belongsTo(Fornecedor::class, 'FORNECEDOR_EPI', 'ID');
+    }
 }
 

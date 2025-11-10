@@ -28,4 +28,8 @@ class Fornecedor extends Model
     {
         return $this->hasMany(TipoFornecedor::class, 'ID', 'TIPO_FORNECEDOR_ID');
     }
+    public function epis()
+    {
+        return $this->hasMany(Epi::class, 'FORNECEDOR_EPI', 'ID');
+    }
 }

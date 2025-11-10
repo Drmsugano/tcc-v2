@@ -54,8 +54,12 @@
                             <label for="fornecedorEPI" class="form-label fw-bold">Fornecedor</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bx bx-building"></i></span>
-                                <input type="text" class="form-control" id="fornecedorEPI" name="fornecedorEPI"
-                                    placeholder="Ex: Empresa XYZ" autocomplete="off" required>
+                                <select name="fornecedorEPI" id="fornecedorEPI" class="form-select" required>
+                                    <option value="">Selecione um fornecedor</option>
+                                    @foreach($fornecedores as $fornecedor)
+                                        <option value="{{ $fornecedor->ID }}">{{ $fornecedor->NOME_FORNECEDOR }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         itensPorPagina: 10,
     });
     tabelaEpi.carregarDados(1, {}, false);
-    window.formulario = new Formulario("/Controle/EPI", "store", "formNovoEPI");
+    window.formulario = new Formulario("/Controle/EPI", "store", "formNovoEPI", window.tabelaEpi);
 });
 
 function selecionar(id) {

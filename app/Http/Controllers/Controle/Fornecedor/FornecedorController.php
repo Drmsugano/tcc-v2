@@ -90,7 +90,7 @@ class FornecedorController extends Controller
     }
     public function getFornecedor($id)
     {
-        $fornecedor = Fornecedor::find($id)->select(['*'])->first();
+        $fornecedor = Fornecedor::where('PUBLIC_ID', $id)->first();
         $tiposFornecedores = TipoFornecedor::all();
         return view('Controle.Fornecedor.detalhes', compact('fornecedor', 'tiposFornecedores'));
     }

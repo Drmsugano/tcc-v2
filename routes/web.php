@@ -49,7 +49,9 @@ Route::middleware(['web'])->group(function () {
             Route::prefix('EPI')->group(function () {
                 Route::get('/', [EpiController::class, 'index'])->name('controle.epi');
                 Route::get('/getDados', [EpiController::class, 'getDados']);
+                Route::get('/{id}', [EpiController::class, 'getEpi'])->name('controle.epi.detalhes');
                 Route::post('/store', [EpiController::class, 'store'])->name('controle.epi.store');
+                Route::post('/update', [EpiController::class, 'update'])->name('controle.epi.update');
             });
             Route::prefix('Fornecedor')->group(function () {
                 Route::get('/', [FornecedorController::class, 'index'])->name('controle.fornecedores');

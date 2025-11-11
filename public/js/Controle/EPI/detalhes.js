@@ -1,26 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Inicializa a tabela dinâmica
-    window.tabelaEpi = new TabelaDinamica({
-        urlBase: "/Controle/EPI",
-        corpoId: "corpoTabelaEpi",
-        paginacaoId: "paginacaoEpi",
-        colunas: ["CA", "NOME", "DESCRICAO", "QUANTIDADE_ESTOQUE"],
-        acoes: [
-            {
-                nome: "Ver",
-                texto: "Ver Detalhes",
-                cor: "warning",
-                callback: (id) => selecionar(id),
-            },
-        ],
-        itensPorPagina: 10,
-    });
-    tabelaEpi.carregarDados(1, {}, false);
-    window.formulario = new Formulario("/Controle/EPI", "store", "formNovoEPI", window.tabelaEpi);
+    window.formulario = new Formulario(
+        "/Controle/EPI",
+        "update",
+        "form-update"
+    );
 });
 
-function selecionar(id) {
-    window.location.href = `/Controle/EPI/${id}`;
+function limparCamposEPI() {
+    document.getElementById("nomeEPI").value = "";
+    document.getElementById("descricaoEPI").value = "";
+    document.getElementById("dataValidade").value = "";
+    document.getElementById("btnSalvarEPI").disabled = true;
+}
+function editarEPI(event) {
+    event.preventDefault();
+    if (window.formulario) {
+        window.formulario.enviarFormulario(event);
+    } else {
+        console.error("Classe Formulario não inicializada!");
+    }
+}
+
+function habilitarEdicao() {
+    const campos = document.querySelectorAll(
+        '#form-update [data-editavel="true"]'
+    );
+    campos.forEach((campo) => {
+        campo.removeAttribute("readonly");
+        campo.setAttribute("required", "true");
+    });
+    document.getElementById("btnSalvarAlteracoes").style.display =
+        "inline-block";
+    document.getElementById("btnHabilitarEdicao").disabled = true;
+    document.getElementById("btnCancelarEdicao").disabled = false;
+    document.getElementById("btnSalvarAlteracoes").disabled = false;
+    Swal.fire({
+        title: "Edição Habilitada",
+        text: "Você pode editar os campos agora.",
+        icon: "info",
+        timer: 2000,
+        showConfirmButton: false,
+    });
 }
 
 function procurarCA(ca) {
@@ -73,7 +93,7 @@ function procurarCA(ca) {
             } else {
                 document.getElementById("dataValidade").value = "";
             }
-            const btnSalvar = document.getElementById("btnSalvarEPI");
+            const btnSalvar = document.getElementById("btnEditarEPI");
             btnSalvar.disabled = false;
             const novoBotao = btnSalvar.cloneNode(true);
             btnSalvar.parentNode.replaceChild(novoBotao, btnSalvar);
@@ -87,32 +107,4 @@ function procurarCA(ca) {
                 icon: "error",
             });
         });
-}
-function salvarEPI(event) {
-    event.preventDefault();
-    formulario.enviarFormulario(event);
-}
-function selecionar(id)
-{
-    window.location.href = `/Controle/EPI/${id}`;
-}
-function limparCamposEPI() {
-    document.getElementById("nomeEPI").value = "";
-    document.getElementById("descricaoEPI").value = "";
-    document.getElementById("dataValidade").value = "";
-    document.getElementById("btnSalvarEPI").disabled = true;
-}
-
-function limparFiltroEpi() {
-    document.getElementById("filtroEpi").value = "";
-    tabelaEpi.carregarDados(1, {}, false);
-}
-function pesquisarEpi(event) {
-    event.preventDefault();
-    const filtro = document.getElementById("filtroEpi").value;
-    const filtros = {};
-    if (filtro) {
-        filtros.filtroEpi = filtro;
-    }
-    tabelaEpi.carregarDados(1, filtros, false);
 }

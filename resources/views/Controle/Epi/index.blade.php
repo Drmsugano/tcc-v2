@@ -78,7 +78,7 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bx bx-box"></i></span>
                                 <input type="number" class="form-control" id="quantidadeEPI" name="quantidadeEPI"
-                                    placeholder="Ex: 50" required>
+                                    placeholder="Ex: 50" min="0" required>
                             </div>
                         </div>
                     </div>

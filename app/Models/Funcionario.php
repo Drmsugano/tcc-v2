@@ -19,12 +19,12 @@ class Funcionario extends Model
 
     public function empresa()
     {
-        return $this->belongsTo(Empresa::class);
+        return $this->belongsTo(Empresa::class,'EMPRESA_ID', 'ID');
     }
 
     public function funcao()
     {
-        return $this->belongsTo(Funcao::class);
+        return $this->belongsTo(Funcao::class, 'FUNCAO_ID', 'ID');
     }
 
     public function obras()

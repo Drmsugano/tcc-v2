@@ -42,7 +42,7 @@
                             <select class="form-select" id="tipoFornecedor" name="tipoFornecedor" required>
                                 <option value="" disabled selected>Selecione...</option>
                                 @foreach ($tiposFornecedores as $tipo)
-                                    <option value="{{ $tipo->ID }}">{{ $tipo->TIPO }}</option>
+                                    <option value="{{ $tipo->ID }}">{{ $tipo->NOME }}</option>
                                 @endforeach
                             </select>
                         </div>

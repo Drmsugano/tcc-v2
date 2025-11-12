@@ -61,6 +61,14 @@ Route::middleware(['web'])->group(function () {
                 Route::post('/update', [FornecedorController::class, 'update'])->name('controle.fornecedores.update');
                 Route::post('/delete/{id}', [FornecedorController::class, 'destroy'])->name('controle.fornecedores.destroy');
             });
+            Route::prefix('Funcionario')->group(function () {
+                Route::get('/', [FuncionarioController::class, 'index'])->name('controle.funcionario');
+                Route::get('/getDados', [FuncionarioController::class, 'getDados']);
+                Route::post('/store', [FuncionarioController::class, 'store'])->name('controle.funcionario.store');
+                Route::get('/{id}', [FuncionarioController::class, 'show'])->name('controle.funcionario.detalhes');
+                Route::post('/update', [FuncionarioController::class, 'update'])->name('controle.funcionario.update');
+                Route::post('/delete/{id}', [FuncionarioController::class, 'destroy'])->name('controle.funcionario.destroy');
+            });
         });
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
             Route::prefix('Obras')->group(function () {

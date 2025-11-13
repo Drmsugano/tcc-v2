@@ -30,7 +30,7 @@
                         <i class="bi bi-people-fill text-success fs-1 mb-3"></i>
                         <h5 class="fw-bold">Funcionários</h5>
                         <p class="text-muted">Gerencie documentos, arquivos pessoais e histórico de EPIs.</p>
-                        <a href="" class="btn btn-outline-primary mt-2">
+                        <a href="{{ route('controle.funcionario') }}" class="btn btn-outline-primary mt-2">
                             Acessar
                         </a>
                     </div>

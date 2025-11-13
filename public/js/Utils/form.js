@@ -8,15 +8,19 @@ class Formulario {
 
     resetarFormulario() {
         const form = document.getElementById(this.formId);
-        if (form) {
-            form.reset();
-        } else {
+        if (!form) {
             console.error(`Formulário com ID '${this.formId}' não encontrado.`);
+            return;
         }
+
+        form.reset();
+        form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+        form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
     }
 
     enviarFormulario(event) {
         event.preventDefault();
+
         const form = document.getElementById(this.formId);
         if (!form) {
             console.error(`Formulário com ID '${this.formId}' não encontrado.`);
@@ -34,36 +38,57 @@ class Formulario {
             },
             body: dados,
         })
-            .then((response) => response.json())
-            .then((data) => {
-                switch (data.success) {
-                    case true:
-                        swal.fire({
-                            title: "Sucesso",
-                            text:
-                                data.message ||
-                                "Formulário enviado com sucesso.",
-                            icon: "success",
-                            showConfirmButton: true,
-                        }).then(() => {
-                            if (this.tabela) {
-                                this.tabela.carregarDados(1, {}, false);
-                            } else {
-                                window.location.href = this.urlBase;
-                            }
-                        });
-                        break;
-                    case false:
-                        swal.fire({
-                            title: "Erro",
-                            text:
-                                data.message ||
-                                "Ocorreu um erro ao enviar o formulário.",
-                            icon: "error",
-                        });
-                        break;
+            .then(async (response) => {
+                // Tenta converter o JSON (pode lançar erro se resposta não for JSON)
+                try {
+                    return await response.json();
+                } catch (e) {
+                    throw new Error(`Resposta inesperada do servidor (${response.status})`);
                 }
-                this.resetarFormulario();
+            })
+            .then((data) => {
+                if (data.success) {
+                    swal.fire({
+                        title: "Sucesso",
+                        text: data.message || "Formulário enviado com sucesso.",
+                        icon: "success",
+                        showConfirmButton: true,
+                    }).then(() => {
+                        if (this.tabela) {
+                            this.tabela.carregarDados(1, {}, false);
+                        } else {
+                            window.location.href = this.urlBase;
+                        }
+                    });
+
+                    this.resetarFormulario();
+                    return;
+                }
+
+                // Caso contrário, trata erro
+                swal.fire({
+                    title: "Erro",
+                    text: data.message || "Ocorreu um erro ao enviar o formulário.",
+                    icon: "error",
+                });
+
+                // Validações (422)
+                if ((data.status === 422 || data.getStatusCode === 422) && data.errors) {
+                    // limpa feedbacks antigos
+                    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+                    form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+
+                    for (const [campo, mensagens] of Object.entries(data.errors)) {
+                        const input = form.querySelector(`[name="${campo}"]`);
+                        if (input) {
+                            input.classList.add('is-invalid');
+                            const feedback = document.createElement('div');
+                            feedback.classList.add('invalid-feedback');
+                            feedback.innerHTML = mensagens.join('<br>');
+                            input.insertAdjacentElement('afterend', feedback);
+                        }
+                    }
+                }
             })
             .catch((error) => {
                 console.error("Erro ao enviar o formulário:", error);

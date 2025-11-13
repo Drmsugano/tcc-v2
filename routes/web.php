@@ -82,6 +82,11 @@ Route::middleware(['web'])->group(function () {
             });
             Route::prefix('Funcionario')->group(function () {
                 Route::get('/', [FuncionarioController::class, 'index'])->name('controle.funcionario');
+                Route::get('/{id}/documentos', [FuncionarioController::class, 'indexDocumentos'])->name('controle.funcionario.documentos');
+                Route::get('/{id}/documentos/getDados', [FuncionarioController::class, 'getDadosDocumentos']);
+                Route::post('/{id}/documentos/store', [FuncionarioController::class, 'storeDocumento'])->name('controle.funcionario.documentos.store');
+                Route::delete('/{id}/documentos/delete/{docId}', [FuncionarioController::class, 'destroyDocumento'])->name('controle.funcionario.documentos.destroy');
+                Route::post('/{id}/documentos/update/{docId}', [FuncionarioController::class, 'updateDocumento'])->name('controle.funcionario.documentos.update');
             });
         });
     });

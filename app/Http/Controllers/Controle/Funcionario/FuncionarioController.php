@@ -47,22 +47,25 @@ class FuncionarioController extends Controller
     public function store(Request $request)
     {
         try {
-            $validate = Validator::make($request->all(), [
-                'nomeFuncionario' => 'required|string|max:255',
-                'cpfFuncionario' => 'required|string|max:14|unique:FUNCIONARIOS,CPF',
-                'pis' => 'required|string|max:14',
-                'dataAdmissao' => 'required|date|after_or_equal:today',
-                'funcaoFuncionario' => 'required|exists:FUNCAO,ID',
-            ],
-        [
-                'nomeFuncionario.required' => 'O campo Nome do Funcionário é obrigatório.',
-                'cpfFuncionario.required' => 'O campo CPF é obrigatório.',
-                'pis.required' => 'O campo PIS é obrigatório.',
-                'dataAdmissao.required' => 'O campo Data de Admissão é obrigatório.',
-                'dataAdmissao.after_or_equal' => 'A Data de Admissão não pode ser anterior a hoje.',
-                'funcaoFuncionario.required' => 'O campo Função é obrigatório.',
-                'funcaoFuncionario.exists' => 'A função selecionada é inválida.',
-        ]);
+            $validate = Validator::make(
+                $request->all(),
+                [
+                    'nomeFuncionario' => 'required|string|max:255',
+                    'cpfFuncionario' => 'required|string|max:14|unique:FUNCIONARIOS,CPF',
+                    'pis' => 'required|string|max:14',
+                    'dataAdmissao' => 'required|date|before_or_equal:today',
+                    'funcaoFuncionario' => 'required|exists:FUNCAO,ID',
+                ],
+                [
+                    'nomeFuncionario.required' => 'O campo Nome do Funcionário é obrigatório.',
+                    'cpfFuncionario.required' => 'O campo CPF é obrigatório.',
+                    'pis.required' => 'O campo PIS é obrigatório.',
+                    'dataAdmissao.required' => 'O campo Data de Admissão é obrigatório.',
+                    'dataAdmissao.before_or_equal' => 'A Data de Admissão não pode ser posterior a hoje.',
+                    'funcaoFuncionario.required' => 'O campo Função é obrigatório.',
+                    'funcaoFuncionario.exists' => 'A função selecionada é inválida.',
+                ]
+            );
             if ($validate->fails()) {
                 return response()->json(['success' => false, 'errors' => $validate->errors(), 'status' => 422]);
             }
@@ -80,16 +83,55 @@ class FuncionarioController extends Controller
             return response()->json(['success' => false, 'message' => 'Erro ao cadastrar funcionário: ' . $e->getMessage()], 500);
         }
     }
-    public function show($id)
+    public function show($identifier)
     {
-        $funcionario = Funcionario::where('PUBLIC_ID', $id)->with(['funcao','empresa'])->first();
+        $funcionario = Funcionario::with(['funcao', 'empresa'])->where('PUBLIC_ID', $identifier)->first();
+        $funcao = Funcao::all();
         if (!$funcionario) {
             return response()->json(['success' => false, 'message' => 'Funcionário não encontrado.'], 404);
         }
-        return response()->json(['success' => true, 'data' => $funcionario], 200);
+        return view('Controle.Funcionario.detalhes', ['funcionario' => $funcionario, 'funcoes' => $funcao]);
     }
     public function update(Request $request)
     {
-        //
+        try {
+            $validate = Validator::make(
+                $request->all(),
+                [
+                    'nomeFuncionario' => 'required|string|max:255',
+                    'cpfFuncionario' => 'required|string|max:14',
+                    'pis' => 'required|string|max:14',
+                    'dataDemissao' => 'nullable|date|before_or_equal:today',
+                    'statusFuncionario' => 'nullable|integer',
+                    'dataAdmissao' => 'required|date|before_or_equal:today',
+                    'funcaoFuncionario' => 'required|exists:FUNCAO,ID',
+                ],
+                [
+                    'nomeFuncionario.required' => 'O campo Nome do Funcionário é obrigatório.',
+                    'cpfFuncionario.required' => 'O campo CPF é obrigatório.',
+                    'pis.required' => 'O campo PIS é obrigatório.',
+                    'dataAdmissao.required' => 'O campo Data de Admissão é obrigatório.',
+                    'dataDemissao.before_or_equal' => 'A Data de Demissão não pode ser posterior a hoje.',
+                    'dataAdmissao.before_or_equal' => 'A Data de Admissão não pode ser posterior a hoje.',
+                    'funcaoFuncionario.required' => 'O campo Função é obrigatório.',
+                    'funcaoFuncionario.exists' => 'A função selecionada é inválida.',
+                ]
+            );
+            if ($validate->fails()) {
+                return response()->json(['success' => false, 'errors' => $validate->errors(), 'status' => 422]);
+            }
+            Funcionario::where('ID', $request->input('id'))->update([
+                'NOME' => $request->input('nomeFuncionario'),
+                'CPF' => $request->input('cpfFuncionario'),
+                'PIS' => $request->input('pis'),
+                'DATA_ADMISSAO' => $request->input('dataAdmissao'),
+                'DATA_DEMISSAO' => $request->input('dataDemissao') ?? null,
+                'IS_DELETED' => $request->input('statusFuncionario'),
+                'FUNCAO_ID' => $request->input('funcaoFuncionario'),
+            ]);
+            return response()->json(['success' => true, 'message' => 'Funcionário atualizado com sucesso!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Erro ao atualizar funcionário: ' . $e->getMessage()], 500);
+        }
     }
 }

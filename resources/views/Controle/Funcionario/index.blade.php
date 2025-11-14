@@ -74,14 +74,36 @@
         <h3 class="h4 fw-bold">Lista de Funcionários</h3>
     </div>
     <form id="pesquisaFuncionario" class="mb-4">
-        <label for="filtroFuncionario" class="visually-hidden">Pesquisar Funcionário por Nome</label>
-        <div class="input-group">
-            <input type="text" id="filtroFuncionario" class="form-control border-primary" placeholder="Pesquisar por Nome...">
-            <button class="btn btn-outline-primary" onclick="pesquisarFuncionario(event)">
-                <i class="bx bx-search"></i>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label for="filtroFuncionario" class="form-label">Pesquisar Funcionário por Nome</label>
+                <input type="text" id="filtroFuncionario" name="filtroFuncionario" class="form-control border-primary"
+                    placeholder="Pesquisar por Nome...">
+            </div>
+            <div class="col-md-4">
+                <label for="statusFuncionario" class="form-label">Status do Funcionário</label>
+                <select id="statusFuncionario" name="statusFuncionario" class="form-select">
+                    <option value="" selected>Todos</option>
+                    <option value="0">Ativo</option>
+                    <option value="1">Inativo</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="funcaoFuncionario" class="form-label">Função do Funcionário</label>
+                <select id="funcaoFuncionario" class="form-select" name="funcaoFuncionario">
+                    <option value="" selected>Todas as Funções</option>
+                    @foreach ($funcao as $funcoes)
+                        <option value="{{ $funcoes->ID }}">{{ $funcoes->NOME }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end mt-4 gap-2">
+            <button type="button" class="btn btn-primary px-4" onclick="aplicarFiltro(event)">
+                <i class="bx bx-search me-1"></i> Pesquisar
             </button>
-            <button class="btn btn-outline-danger" type="button" onclick="limparFiltroFuncionario()">
-                <i class="bx bx-x"></i>
+            <button type="button" class="btn btn-outline-secondary px-4" id="btnLimparFiltro" onclick="limparFiltro()">
+                <i class="bx bx-x me-1"></i> Limpar
             </button>
         </div>
     </form>

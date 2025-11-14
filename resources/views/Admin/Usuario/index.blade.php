@@ -83,7 +83,7 @@
                             <button type="submit" class="btn btn-primary btn-lg shadow-sm">
                                 Cadastrar Usuário
                             </button>
-                        </div>https://www.youtube.com/watch?v=jqNospiBj-k
+                        </div>
                     </div>
                 </form>
             </div>
@@ -128,7 +128,7 @@
                                             <div class="col">
                                                 <form method="POST" class="d-inline">
                                                     @csrf
-                                                    @method('DELETE')
+                                                    @method('GET')
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">
                                                         Excluir</button>
                                                 </form>

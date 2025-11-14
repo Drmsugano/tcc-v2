@@ -9,45 +9,6 @@
                 <i class="bi bi-upload"></i> Enviar Documento
             </button>
         </div>
-
-        <!-- Filtros -->
-        <div class="card mb-4 shadow-sm border-0">
-            <div class="card-body">
-                <form id="filtroForm" class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold text-secondary">Descrição do Documento</label>
-                        <input type="text" name="NOME_OBRA" class="form-control" placeholder="Ex: Prédio Central">
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label fw-semibold text-secondary">Tipo de Documento</label>
-                        <select name="TIPO_DOCUMENTO" id="TIPO_DOCUMENTO" class="form-select">
-                            <option value="">Selecione um tipo</option>
-                            <option value="1">XLSX</option>
-                            <option value="2">DOC</option>
-                            <option value="3">PDF</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label fw-semibold text-secondary">Data Início</label>
-                        <input type="date" name="dataInicio" class="form-control">
-                    </div>
-
-                    <div class="col-md-2">
-                        <label class="form-label fw-semibold text-secondary">Data Fim</label>
-                        <input type="date" name="dataFim" class="form-control">
-                    </div>
-
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Filtrar
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
         <!-- Tabela -->
         <div class="card shadow-sm border-0">
             <div class="card-body">

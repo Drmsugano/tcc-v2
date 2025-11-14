@@ -23,6 +23,12 @@ class FuncionarioController extends Controller
         $funcionarios->when($filtros['filtroFuncionario'] ?? null, function ($q, $nome) {
             $q->where('FUNCIONARIOS.NOME', 'like', '%' . $nome . '%');
         });
+        $funcionarios->when(isset($filtros['statusFuncionario']) && $filtros['statusFuncionario'] !== '', function ($q) use ($filtros) {
+            $q->where('FUNCIONARIOS.IS_DELETED', $filtros['statusFuncionario']);
+        });
+        $funcionarios->when($filtros['funcaoFuncionario'] ?? null, function ($q, $funcaoId) {
+            $q->where('FUNCIONARIOS.FUNCAO_ID', $funcaoId);
+        });
         $funcionarios->where('FUNCIONARIOS.EMPRESA_ID', $request->user()->EMPRESA_ID);
         $funcionarios = $funcionarios->paginate($perPage, ['*'], 'page', $page);
         $dados = $funcionarios->map(function ($item) {
@@ -101,7 +107,7 @@ class FuncionarioController extends Controller
                     'nomeFuncionario' => 'required|string|max:255',
                     'cpfFuncionario' => 'required|string|max:14',
                     'pis' => 'required|string|max:14',
-                    'dataDemissao' => 'nullable|date|before_or_equal:today',
+                    'dataDemissao' => 'date|before_or_equal:today|after_or_equal:dataAdmissao|required_with:statusFuncionario,1',
                     'statusFuncionario' => 'nullable|integer',
                     'dataAdmissao' => 'required|date|before_or_equal:today',
                     'funcaoFuncionario' => 'required|exists:FUNCAO,ID',
@@ -112,6 +118,8 @@ class FuncionarioController extends Controller
                     'pis.required' => 'O campo PIS é obrigatório.',
                     'dataAdmissao.required' => 'O campo Data de Admissão é obrigatório.',
                     'dataDemissao.before_or_equal' => 'A Data de Demissão não pode ser posterior a hoje.',
+                    'dataDemissao.after_or_equal' => 'A Data de Demissão não pode ser anterior a Data de Admissão.',
+                    'dataDemissao.required_with' => 'A Data de Demissão é obrigatória quando o status do funcionário é Inativo.',
                     'dataAdmissao.before_or_equal' => 'A Data de Admissão não pode ser posterior a hoje.',
                     'funcaoFuncionario.required' => 'O campo Função é obrigatório.',
                     'funcaoFuncionario.exists' => 'A função selecionada é inválida.',

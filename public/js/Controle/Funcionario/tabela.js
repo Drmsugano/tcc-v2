@@ -22,18 +22,16 @@ function selecionar(id) {
     window.location.href = `/Controle/Funcionario/${id}`;
 }
 
-function pesquisarFuncionario() {
-    const nomeFuncionario = document.getElementById(
-        "inputPesquisarFuncionario"
-    ).value;
-    const filtros = {
-        nomeFuncionario: nomeFuncionario,
-    };
+function aplicarFiltro() {
+    const form = document.querySelector("#pesquisaFuncionario");
+    const formData = new FormData(form);
+    const filtros = Object.fromEntries(formData.entries());
     window.tabelaFuncionarios.carregarDados(1, filtros, false);
 }
 
-function limparFiltroFuncionario() {
-    document.getElementById("filtroFuncionario").value = "";
+function limparFiltro() {
+    const form = document.querySelector("#pesquisaFuncionario");
+    form.reset();
     window.tabelaFuncionarios.carregarDados(1, {}, false);
 }
 function pesquisarFuncionario(event) {

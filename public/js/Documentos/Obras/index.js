@@ -55,44 +55,42 @@ document.addEventListener("DOMContentLoaded", () => {
                             const data = await res.json();
                             if (!document.getElementById("modalEditObra")) {
                                 const modalHtml = `
-                                        <div class="modal fade" id="modalEditObra" tabindex="-1" aria-hidden="true">
-                                          <div class="modal-dialog">
-                                            <div class="modal-content">
-                                              <div class="modal-header">
-                                                <h5 class="modal-title">Editar Documento</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                              </div>
-                                              <form id="editForm" enctype="multipart/form-data">
-                                                <div class="modal-body">
-                                                  <input type="hidden" name="id" />
-                                                  <div class="mb-3">
-                                                    <label class="form-label">Tipo de Documento</label>
-                                                    <select class="form-select" name="TIPO_DOCUMENTO_ID">
-                                                      <option value="">Selecione um tipo</option>
-                                                      ${data.TIPO_DOCUMENTO.map(
-                                                          (tipo) => `
-                                                        <option value="${tipo.ID}">${tipo.NOME}</option>
-                                                      `
-                                                      ).join("")}
-                                                    </select>
-                                                  </div>
-                                                  <div class="mb-3">
-                                                    <label class="form-label">Descrição</label>
-                                                    <textarea class="form-control" name="descricao" rows="3"></textarea>
-                                                  </div>
-                                                  <div class="mb-3">
-                                                    <label class="form-label">Substituir arquivo (opcional)</label>
-                                                    <input type="file" class="form-control" name="arquivo" />
-                                                  </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                  <button type="submit" class="btn btn-primary">Salvar alterações</button>
-                                                </div>
-                                              </form>
-                                            </div>
+                                    <div class="modal fade" id="modalEditObra" tabindex="-1" aria-hidden="true">
+                                      <div class="modal-dialog">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title">Editar Documento</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                                           </div>
-                                        </div>`;
+                                          <form id="editForm" enctype="multipart/form-data">
+                                            <div class="modal-body">
+                                              <input type="hidden" name="id" />
+                                              <div class="mb-3">
+                                                <label class="form-label">Tipo de Documento</label>
+                                                <select class="form-select" name="TIPO_DOCUMENTO_ID">
+                                                  <option value="">Selecione um tipo</option>
+                                                  ${data.TIPO_DOCUMENTO.map(
+                                                      (tipo) => `<option value="${tipo.ID}">${tipo.NOME}</option>`
+                                                  ).join("")}
+                                                </select>
+                                              </div>
+                                              <div class="mb-3">
+                                                <label class="form-label">Descrição</label>
+                                                <textarea class="form-control" name="descricao" rows="3">${data.DESCRICAO || ""}</textarea>
+                                              </div>
+                                              <div class="mb-3">
+                                                <label class="form-label">Substituir arquivo (opcional)</label>
+                                                <input type="file" class="form-control" name="arquivo"/>
+                                              </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                              <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                                            </div>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    </div>`;
                                 document.body.insertAdjacentHTML(
                                     "beforeend",
                                     modalHtml
@@ -106,7 +104,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             if (
                                 (data.TIPO_DOCUMENTO_ID !== undefined ||
                                     data.TIPO_DOCUMENTO_ID !== undefined) &&
-                                editForm.querySelector('[name="TIPO_DOCUMENTO_ID"]')
+                                editForm.querySelector(
+                                    '[name="TIPO_DOCUMENTO_ID"]'
+                                )
                             )
                                 editForm.querySelector(
                                     '[name="TIPO_DOCUMENTO_ID"]'

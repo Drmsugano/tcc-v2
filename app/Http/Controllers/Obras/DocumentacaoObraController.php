@@ -26,7 +26,6 @@ class DocumentacaoObraController extends Controller
     {
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
-        $filtros = $request->all();
         $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
         $query = DocumentacaoObra::select([
             'ID',

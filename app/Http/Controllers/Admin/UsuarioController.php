@@ -41,6 +41,11 @@ class UsuarioController extends Controller
         $data['PUBLIC_ID'] = Str::uuid();
         unset($data['SENHA'], $data['permissoes']);
         try {
+            if (Usuario::where('USUARIO', $data['USUARIO'])->exists()) {
+                return redirect()->route('admin.usuarios')
+                    ->with(['error' => 'Já existe um usuário com esse nome de usuário.'])
+                    ->withInput();
+            };
             // Cria o usuário
             $usuario = Usuario::create($data);
             // Relaciona permissões
@@ -56,7 +61,33 @@ class UsuarioController extends Controller
         }
     }
 
-
+    public function desativarAtivar($id, Request $request)
+    {
+        try {
+            $usuario = Usuario::where('PUBLIC_ID', $id)->first();
+            if (!$usuario) {
+                return response()->json([
+                    'status' => "Erro",
+                    "mensagem" => "Usuário não encontrado",
+                ], 500);
+            }
+            if ($usuario->ID == $request->user()->ID) {
+                return response()->json([
+                    'status' => "Erro",
+                    "mensagem" => "Você não pode desativar seu próprio usuário",
+                ], 400);
+            }
+            $usuario->IS_DELETED = !$usuario->IS_DELETED;
+            $usuario->save();
+            $status = $usuario->IS_DELETED ? 'desativado' : 'ativado';
+            return redirect()->route('admin.usuarios');
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => "Erro",
+                "mensagem" => "Erro de Servidor: " . $e->getMessage(),
+            ], 500);
+        }
+    }
     public function editar(Request $request, $id)
     {
         try {

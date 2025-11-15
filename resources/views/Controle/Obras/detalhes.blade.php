@@ -48,10 +48,28 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row mb-2">
                 <div class="col-md-6">
                     <p class="mb-1 text-secondary">👷 <strong>Quantidade de Funcionários</strong></p>
                     <span class="fs-5 fw-bold text-primary">{{ $obra->funcionarios_count }}</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary">📅 <strong>Data de Início</strong></p>
+                    <p class="fs-5">
+                        {{ date('d/m/Y', strtotime($obra->DATA_INICIO)) }}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-secondary">📅 <strong>Data de Fim (Prevista)</strong></p>
+                    <p class="fs-5">
+                        @if ($obra->DATA_FIM)
+                            {{ date('d/m/Y', strtotime($obra->DATA_FIM)) }}
+                        @else
+                            <span class="text-muted">Não definida</span>
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -80,7 +98,7 @@
                     <i class="bi bi-people text-success" style="font-size: 3rem;"></i>
                     <h5 class="mt-3 fw-bold">Funcionários</h5>
                     <p class="text-muted">Gerencie os funcionários vinculados a esta obra.</p>
-                    <a href="#" class="btn btn-outline-success rounded-pill px-4">
+                    <a href="{{ route('controle.obras.funcionarios', ['id' => $obra->PUBLIC_ID]) }}" class="btn btn-outline-success rounded-pill px-4">
                         Ver Funcionários
                     </a>
                 </div>

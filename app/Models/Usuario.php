@@ -22,7 +22,6 @@ class Usuario extends Authenticatable implements JWTSubject
     ];
     // Esconde automaticamente no JSON/array
     protected $hidden = [
-        'ID',
         'PASSWORD',
         'EMPRESA_ID',
         'IS_DELETED'

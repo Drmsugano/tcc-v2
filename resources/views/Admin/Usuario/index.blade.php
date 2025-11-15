@@ -2,7 +2,6 @@
 @section('conteudo')
     <div class="container mt-5">
         <h2 class="mb-4 fw-bold text-secondary">⚙️ Cadastro de Usuários - Empresa ({{ $empresa->NOME_FANTASIA }})</h2>
-
         <!-- Card do Formulário -->
         <div class="card shadow-lg mb-4 border-0">
             <div class="card-body">
@@ -31,21 +30,21 @@
                         </ul>
                     </div>
                 @endif
-                <form action="{{ route('admin.usuarios.cadastrar') }}" method="POST" class="mb-3">
+                <form action="{{ route('admin.usuarios.cadastrar') }}" method="POST" class="mb-3" autocomplete="off">
                     @csrf
                     <div class="row g-4">
                         <!-- Nome Completo -->
                         <div class="col-md-4">
                             <label for="nome" class="form-label fw-semibold text-secondary">Nome Completo</label>
                             <input type="text" class="form-control shadow-sm border" id="nome" name="NOME"
-                                value="{{ old('NOME') }}" placeholder="Digite o nome completo" required>
+                                value="{{ old('NOME') }}" placeholder="Digite o nome completo" autocomplete="off" required>
                         </div>
 
                         <!-- Usuário -->
                         <div class="col-md-4">
                             <label for="usuario" class="form-label fw-semibold text-secondary">Usuário</label>
                             <input type="text" class="form-control shadow-sm border" id="usuario" name="USUARIO"
-                                value="{{ old('USUARIO') }}" placeholder="Digite o nome de usuário" required>
+                                value="{{ old('USUARIO') }}" placeholder="Digite o nome de usuário" autocomplete="off" required>
                         </div>
 
                         <!-- E-mail -->
@@ -108,29 +107,32 @@
                         </thead>
                         <tbody>
                             @forelse($listaUsuarios as $usuario)
-                                <tr>
+                                <tr class="{{ $usuario->IS_DELETED == 1 ? 'bg-danger text-white' : '' }}">
                                     <td>{{ $usuario->NOME }}</td>
                                     <td>{{ $usuario->USUARIO }}</td>
                                     <td>{{ $usuario->EMAIL }}</td>
                                     <td>
                                         @foreach ($usuario->permissoes as $permissaoUser)
                                             <span class="badge text-bg-primary">
-                                                {{$permissaoUser->NOME_PERMISSAO}}
+                                                {{ $permissaoUser->NOME_PERMISSAO }}
                                             </span>
                                         @endforeach
                                     </td>
                                     <td class="text-center">
                                         <div class="d-flex">
                                             <div class="col">
-                                                <a href="{{ route('admin.usuarios.editar', $usuario->PUBLIC_ID) }}"
-                                                    class="btn btn-sm btn-outline-warning me-1">Editar</a>
+                                                <button onclick="location.href='Usuario/editar/{{ $usuario->PUBLIC_ID }}'" class="btn btn-sm btn-outline-warning me-1" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>Editar</button>
                                             </div>
                                             <div class="col">
                                                 <form method="POST" class="d-inline">
                                                     @csrf
-                                                    @method('GET')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                        Excluir</button>
+                                                    <button type="submit"
+                                                        formaction="{{ route('admin.usuarios.status', $usuario->PUBLIC_ID) }}"
+                                                        class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Tem certeza que deseja deletar este usuário?');"
+                                                        {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>
+                                                        {{ $usuario->IS_DELETED == 1 ? 'Ativar' : 'Desativar' }}
+                                                    </button>
                                                 </form>
                                             </div>
                                         </div>

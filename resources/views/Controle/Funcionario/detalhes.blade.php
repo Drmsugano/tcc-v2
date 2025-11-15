@@ -76,23 +76,7 @@
             </div>
         </form>
 <div class="row g-4">
-    <div class="col-md-4">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-secondary text-white">
-                <i class="bi bi-clock-history"></i> Documentos deste Funcionário
-            </div>
-            <div class="card-body d-flex flex-column justify-content-between">
-                <p class="text-muted mb-3">
-                    Clique abaixo para ver os documentos referentes a este funcionário:
-                </p>
-                <a href="#" class="btn btn-outline-primary mt-auto">
-                    <i class="bi bi-folder2-open"></i> Ver Documentos
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
+    <div class="col">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-success text-white">
                 <i class="bi bi-shield-check"></i> EPIs deste Funcionário
@@ -108,7 +92,7 @@
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col">
         <div class="card shadow-sm border-0 h-100">
             <div class="card-header bg-primary text-white">
                 <i class="bi bi-file-earmark-text"></i> NR's deste Funcionário

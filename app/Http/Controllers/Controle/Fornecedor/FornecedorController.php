@@ -27,6 +27,12 @@ class FornecedorController extends Controller
         $fornecedores->when($filtros['nomeFornecedor'] ?? null, function ($q, $nome) {
             $q->where('NOME_FORNECEDOR', 'like', '%' . $nome . '%');
         });
+        $fornecedores->when(isset($filtros['statusFornecedor']) && $filtros['statusFornecedor'] !== '', function ($q) use ($filtros) {
+            $q->where('IS_DELETED', $filtros['statusFornecedor'] == 'Ativo' ? 0 : 1);
+        });
+        $fornecedores->when($filtros['tipoFornecedor'] ?? null, function ($q, $tipoId) {
+            $q->where('TIPO_FORNECEDOR_ID', $tipoId);
+        });
         $fornecedores = $fornecedores->paginate($perPage, ['*'], 'page', $page);
         $dados = $fornecedores->map(function ($item) {
             return [

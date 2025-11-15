@@ -11,6 +11,7 @@ use App\Http\Controllers\Obras\DocumentacaoObraController;
 use App\Http\Controllers\Obras\ObrasController;
 use App\Http\Controllers\Controle\Funcionario\FuncionarioController;
 use App\Http\Controllers\Controle\Fornecedor\FornecedorController;
+use App\Http\Controllers\Controle\Funcionario\FuncionarioObraController;
 use App\Models\DocumentacaoObra;
 
 Route::middleware(['web'])->group(function () {
@@ -31,12 +32,16 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/getDados', [UsuarioController::class, 'getDados']);
                 Route::get('/editar/{id}', [UsuarioController::class, 'editar'])->name('admin.usuarios.editar');
                 Route::post('/cadastrar', [UsuarioController::class, 'store'])->name('admin.usuarios.cadastrar');
+                Route::post('/status/{id}', [UsuarioController::class, 'desativarAtivar'])->name('admin.usuarios.status');
             });
             Route::prefix('Obras')->group(function () {
-                Route::get('/', [ObrasController::class, 'indexAdmin'])->name('admin.obras');
+                Route::get('/', [ObrasController::class, 'indexAdmin'])->name('admin.obras.index');
                 Route::get('/cadastrar', [ObrasController::class, 'create'])->name('admin.obras.cadastrar');
-                Route::post('/cadastrar', [ObrasController::class, 'store'])->name('admin.obras.store');
+                Route::post('/store', [ObrasController::class, 'store'])->name('admin.obras.store');
                 Route::get('/getDados', [ObrasController::class, 'getDados']);
+                Route::post('/update', [ObrasController::class, 'update'])->name('admin.obras.update');
+                Route::get('/deletar/{id}', [ObrasController::class, 'destroy'])->name('admin.obras.deletar');
+                Route::get('/{id}', [ObrasController::class, 'verDetalhesAdmin'])->name('admin.obras.detalhes');
             });
         });
         Route::prefix('Controle')->middleware('permissao:CONTROLE')->group(function () {
@@ -45,6 +50,10 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/', [ObrasController::class, 'indexControle'])->name('controle.obras');
                 Route::get('/getDados', [ObrasController::class, 'getDados']);
                 Route::get('/{id}', [ObrasController::class, 'verDetalhes'])->name('controle.obras.verDetalhes');
+                Route::get('/Funcionarios/{id}', [FuncionarioObraController::class, 'index'])->name('controle.obras.funcionarios');
+                Route::get('/Funcionarios/{id}/getDados', [FuncionarioObraController::class, 'getDados']);
+                Route::get('/Funcionarios/{id}/delete', [FuncionarioObraController::class, 'destroy']);
+                Route::post('/Funcionarios/{id}/store', [FuncionarioObraController::class, 'store'])->name('controle.obras.funcionarios.store');
             });
             Route::prefix('EPI')->group(function () {
                 Route::get('/', [EpiController::class, 'index'])->name('controle.epi');

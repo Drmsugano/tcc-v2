@@ -22,7 +22,7 @@
                             <h5 class="card-title">Obras</h5>
                             <p class="display-6 fw-bold">{{ $obraCount }}</p>
                         </div>
-                        <a href="{{ route('admin.obras') }}" class="btn btn-light btn-sm mt-2">Gerenciar Obras</a>
+                        <a href="{{ route('admin.obras.index') }}" class="btn btn-light btn-sm mt-2">Gerenciar Obras</a>
                     </div>
                 </div>
             </div>

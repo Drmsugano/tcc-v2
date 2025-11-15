@@ -39,7 +39,7 @@ function selecionar(id, tabela) {
             window.location.href = `/Admin/Usuario/editar/${id}`;
             break;
         case "obras":
-            window.location.href = `/Admin/Obra/editar/${id}`;
+            window.location.href = `/Admin/Obras/${id}`;
             break;
     }
 }

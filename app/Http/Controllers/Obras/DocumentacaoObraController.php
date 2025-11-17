@@ -104,19 +104,19 @@ class DocumentacaoObraController extends Controller
     public function baixar(string $publicId)
     {
         $documento = DocumentacaoObra::where('PUBLIC_ID', $publicId)->firstOrFail();
-        // O CAMINHO vem com "/storage/..." → precisamos só do trecho após isso
-        $relativePath = $documento->CAMINHO;
-        // Verifica se o arquivo realmente existe no disco público
+        // Remove qualquer "storage/" que vier salvo no banco
+        $relativePath = ltrim(str_replace('storage/', '', $documento->CAMINHO), '/');
         if (!Storage::disk('public')->exists($relativePath)) {
             return response()->json([
                 'error' => 'Arquivo não encontrado.',
-                'path' => $relativePath, // útil pra depurar
+                'path' => $relativePath,
             ], 404);
         }
         $fileName = $documento->NOME_ARQUIVO ?? 'documento.xlsx';
         $filePath = Storage::disk('public')->path($relativePath);
         return response()->download($filePath, $fileName);
     }
+
 
     public function edit($id)
     {
@@ -174,7 +174,7 @@ class DocumentacaoObraController extends Controller
     {
         $documento = DocumentacaoObra::where('PUBLIC_ID', $id)->firstOrFail();
         // O CAMINHO vem com "/storage/..." → precisamos só do trecho após isso
-        $relativePath = $documento->CAMINHO;
+        $relativePath = ltrim(str_replace('storage/', '', $documento->CAMINHO), '/');
         // Verifica se o arquivo realmente existe no disco público
         if (!Storage::disk('public')->exists($relativePath)) {
             return response()->json([

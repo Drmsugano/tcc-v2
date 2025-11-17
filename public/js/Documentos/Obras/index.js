@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                               </div>
                                               <div class="mb-3">
                                                 <label class="form-label">Descrição</label>
-                                                <textarea class="form-control" name="descricao" rows="3">${data.DESCRICAO || ""}</textarea>
+                                                <textarea class="form-control" name="DESCRICAO" rows="3">${data.DESCRICAO || ""}</textarea>
                                               </div>
                                               <div class="mb-3">
                                                 <label class="form-label">Substituir arquivo (opcional)</label>

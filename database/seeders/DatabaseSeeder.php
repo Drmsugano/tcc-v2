@@ -87,8 +87,8 @@ class DatabaseSeeder extends Seeder
         // Obras
         // -----------------------
         DB::table('OBRA')->insert([
-            ['NOME_OBRA' => 'Obra Central', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
-            ['NOME_OBRA' => 'Obra Norte', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()]
+            ['NOME_OBRA' => 'Obra Central','ENDERECO' => 'Rua Central, 123', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()],
+            ['NOME_OBRA' => 'Obra Norte', 'ENDERECO' => 'Avenida Norte, 456', 'EMPRESA_ID' => 1, 'PUBLIC_ID' => Str::uuid()]
         ]);
 
         // -----------------------

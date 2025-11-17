@@ -6,12 +6,12 @@ use App\Models\TipoFornecedor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Support\Facades\Validator;
 class FornecedorController extends Controller
 {
     public function index()
     {
-        $tiposFornecedores = TipoFornecedor::all();
+        $tiposFornecedores = TipoFornecedor::select('ID', 'TIPO as NOME')->get();
         return view('Controle.Fornecedor.index', compact('tiposFornecedores'));
     }
 
@@ -20,7 +20,7 @@ class FornecedorController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $fornecedores = Fornecedor::select(['PUBLIC_ID as ID', 'NOME_FORNECEDOR', 'CNPJ', 'ESTADO', 'CIDADE','IS_DELETED'])->join('TIPO_FORNECEDOR', 'FORNECEDOR.TIPO_FORNECEDOR_ID', '=', 'TIPO_FORNECEDOR.ID')->addSelect('TIPO_FORNECEDOR.TIPO as TIPO_FORNECEDOR');
+        $fornecedores = Fornecedor::select(['PUBLIC_ID as ID', 'NOME_FORNECEDOR', 'CNPJ', 'ESTADO', 'CIDADE', 'IS_DELETED'])->join('TIPO_FORNECEDOR', 'FORNECEDOR.TIPO_FORNECEDOR_ID', '=', 'TIPO_FORNECEDOR.ID')->addSelect('TIPO_FORNECEDOR.TIPO as TIPO_FORNECEDOR');
         $fornecedores->when($filtros['cnpj'] ?? null, function ($q, $cnpj) {
             $q->where('CNPJ', '=', $cnpj);
         });
@@ -28,7 +28,7 @@ class FornecedorController extends Controller
             $q->where('NOME_FORNECEDOR', 'like', '%' . $nome . '%');
         });
         $fornecedores->when(isset($filtros['statusFornecedor']) && $filtros['statusFornecedor'] !== '', function ($q) use ($filtros) {
-            $q->where('IS_DELETED', $filtros['statusFornecedor'] == 'Ativo' ? 0 : 1);
+            $q->where('IS_DELETED', $filtros['statusFornecedor'] == 'ATIVO' ? 0 : 1);
         });
         $fornecedores->when($filtros['tipoFornecedor'] ?? null, function ($q, $tipoId) {
             $q->where('TIPO_FORNECEDOR_ID', $tipoId);
@@ -60,30 +60,48 @@ class FornecedorController extends Controller
     public function store(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'nomeFornecedor' => 'required|string',
-                'cidadeFornecedor' => 'nullable|string|max:100',
-                'estadoFornecedor' => 'nullable|string|max:100',
-                'CEP' => 'nullable|string|max:30',
-                'enderecoFornecedor' => 'nullable|string',
-                'cnpjFornecedor' => 'required|string',
-                'tipoFornecedor' => 'required',
-                'telefoneFornecedor' => 'nullable|string|max:40',
-                'nomeResponsavel' => 'nullable|string',
-                'descricaoFornecedor' => 'nullable|string|max:1000',
-            ]);
+            $validatedData = Validator::make(
+                $request->all(),
+                [
+                    'nomeFornecedor' => 'required|string',
+                    'cidadeFornecedor' => 'nullable|string|max:100',
+                    'estadoFornecedor' => 'nullable|string|max:100',
+                    'CEP' => 'nullable|string|max:30',
+                    'enderecoFornecedor' => 'nullable|string',
+                    'cnpjFornecedor' => 'required|string|unique:FORNECEDOR,CNPJ',
+                    'tipoFornecedor' => 'required',
+                    'telefoneFornecedor' => 'nullable|string|max:40',
+                    'nomeResponsavel' => 'nullable|string',
+                    'descricaoFornecedor' => 'nullable|string|max:1000',
+                ],
+                [
+                    'nomeFornecedor.required' => 'O nome do fornecedor é obrigatório.',
+                    'cnpjFornecedor.required' => 'O CNPJ do fornecedor é obrigatório.',
+                    'cnpjFornecedor.unique' => 'O CNPJ do fornecedor já está em uso.',
+                    'tipoFornecedor.required' => 'O tipo de fornecedor é obrigatório.',
+                    'telefoneFornecedor.max' => 'O telefone do fornecedor não pode ter mais de 40 caracteres.',
+                    'descricaoFornecedor.max' => 'A descrição do fornecedor não pode ter mais de 1000 caracteres.',
+                ]
+            );
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validatedData->errors(),
+                    'status' => 422
+                ]);
+            }
             Fornecedor::insert([
-                'NOME_FORNECEDOR' => $validatedData['nomeFornecedor'],
-                'CNPJ' => $validatedData['cnpjFornecedor'],
-                'TIPO_FORNECEDOR_ID' => $validatedData['tipoFornecedor'],
-                'CEP' => $validatedData['CEP'] ?? null,
-                'ENDERECO' => $validatedData['enderecoFornecedor'] ?? null,
-                'CIDADE' => $validatedData['cidadeFornecedor'] ?? null,
-                'ESTADO' => $validatedData['estadoFornecedor'] ?? null,
-                'TELEFONE' => $validatedData['telefoneFornecedor'] ?? null,
-                'VENDEDOR' => $validatedData['nomeResponsavel'] ?? null,
+                'NOME_FORNECEDOR' => $request->input('nomeFornecedor'),
+                'CNPJ' => $request->input('cnpjFornecedor'),
+                'TIPO_FORNECEDOR_ID' => $request->input('tipoFornecedor'),
+                'CEP' => $request->input('CEP'),
+                'ENDERECO' => $request->input('enderecoFornecedor'),
+                'CIDADE' => $request->input('cidadeFornecedor'),
+                'ESTADO' => $request->input('estadoFornecedor'),
+                'TELEFONE' => $request->input('telefoneFornecedor'),
+                'VENDEDOR' => $request->input('nomeResponsavel'),
+                'OBSERVACAO' => $request->input('descricaoFornecedor'),
                 'USUARIO_CADASTRO' => $request->user()->ID,
-                'OBSERVACAO' => $validatedData['descricaoFornecedor'] ?? null,
                 'PUBLIC_ID' => \Illuminate\Support\Str::uuid(),
             ]);
             return response()->json(
@@ -103,31 +121,48 @@ class FornecedorController extends Controller
     public function update(Request $request)
     {
         try {
-            $validatedData = $request->validate([
-                'nomeFornecedor' => 'required|string',
-                'cidadeFornecedor' => 'nullable|string|max:100',
-                'estadoFornecedor' => 'nullable|string|max:100',
-                'CEP' => 'nullable|string|max:30',
-                'enderecoFornecedor' => 'nullable|string',
-                'cnpjFornecedor' => 'required|string',
-                'tipoFornecedor' => 'required',
-                'telefoneFornecedor' => 'nullable|string|max:40',
-                'statusFornecedor' => 'required|string',
-                'nomeResponsavel' => 'nullable|string',
-                'descricaoFornecedor' => 'nullable|string|max:1000',
-            ]);
-            Fornecedor::where('ID', $request['id'])->update([
-                'NOME_FORNECEDOR' => $validatedData['nomeFornecedor'],
-                'CNPJ' => $validatedData['cnpjFornecedor'],
-                'TIPO_FORNECEDOR_ID' => $validatedData['tipoFornecedor'],
-                'CEP' => $validatedData['CEP'] ?? null,
-                'ENDERECO' => $validatedData['enderecoFornecedor'] ?? null,
-                'CIDADE' => $validatedData['cidadeFornecedor'] ?? null,
-                'ESTADO' => $validatedData['estadoFornecedor'] ?? null,
-                'TELEFONE' => $validatedData['telefoneFornecedor'] ?? null,
-                'IS_DELETED' => $validatedData['statusFornecedor'] == 'Inativo' ? 1 : 0,
-                'VENDEDOR' => $validatedData['nomeResponsavel'] ?? null,
-                'OBSERVACAO' => $validatedData['descricaoFornecedor'] ?? null,
+            $validatedData = Validator::make(
+                $request->all(),
+                [
+                    'nomeFornecedor' => 'required|string',
+                    'cidadeFornecedor' => 'nullable|string|max:100',
+                    'estadoFornecedor' => 'nullable|string|max:100',
+                    'cepFornecedor' => 'required|string|max:30',
+                    'enderecoFornecedor' => 'nullable|string',
+                    'cnpjFornecedor' => "required|string|unique:FORNECEDOR,CNPJ,$request->id,ID",
+                    'tipoFornecedor' => 'required',
+                    'telefoneFornecedor' => 'nullable|string|max:40',
+                    'nomeResponsavel' => 'nullable|string',
+                    'descricaoFornecedor' => 'nullable|string|max:1000',
+                ],
+                [
+                    'nomeFornecedor.required' => 'O nome do fornecedor é obrigatório.',
+                    'cnpjFornecedor.required' => 'O CNPJ do fornecedor é obrigatório.',
+                    'cnpjFornecedor.unique' => 'O CNPJ do fornecedor já está em uso.',
+                    'tipoFornecedor.required' => 'O tipo de fornecedor é obrigatório.',
+                    'telefoneFornecedor.max' => 'O telefone do fornecedor não pode ter mais de 40 caracteres.',
+                    'descricaoFornecedor.max' => 'A descrição do fornecedor não pode ter mais de 1000 caracteres.',
+                ]
+            );
+            if ($validatedData->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validatedData->errors(),
+                    'status' => 422
+                ]);
+            }
+            Fornecedor::where('ID', $request->id)->update([
+                'NOME_FORNECEDOR' => $request->nomeFornecedor,
+                'CNPJ' => $request->cnpjFornecedor,
+                'TIPO_FORNECEDOR_ID' => $request->tipoFornecedor,
+                'CEP' => $request->cepFornecedor ?? null,
+                'ENDERECO' => $request->enderecoFornecedor ?? null,
+                'CIDADE' => $request->cidadeFornecedor ?? null,
+                'ESTADO' => $request->estadoFornecedor ?? null,
+                'TELEFONE' => $request->telefoneFornecedor ?? null,
+                'IS_DELETED' => $request->statusFornecedor == 'Inativo' ? 1 : 0,
+                'VENDEDOR' => $request->nomeResponsavel ?? null,
+                'OBSERVACAO' => $request->descricaoFornecedor ?? null,
             ]);
             return response()->json(
                 ['success' => true, 'message' => 'Fornecedor atualizado com sucesso.'],

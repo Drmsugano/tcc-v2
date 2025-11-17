@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "NOME_FORNECEDOR",
             "CNPJ",
             "TIPO_FORNECEDOR",
-            'STATUS',
+            "STATUS",
             "ESTADO",
             "CIDADE",
         ],
@@ -27,4 +27,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function selecionar(id) {
     window.location.href = `/Controle/Fornecedor/${id}`;
+}
+
+function aplicarFiltros() {
+    const form = document.querySelector("#pesquisaFornecedor");
+    const formData = new FormData(form);
+    const filtros = Object.fromEntries(formData.entries());
+    window.tabelaFornecedores.carregarDados(1, filtros, false);
+}
+
+function limparFiltros() {
+    const form = document.querySelector("#pesquisaFornecedor");
+    form.reset();
+    window.tabelaFornecedores.carregarDados(1, {}, false);
 }

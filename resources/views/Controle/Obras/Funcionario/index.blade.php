@@ -107,8 +107,7 @@
                             <th>Função</th>
                             <th>Status</th>
                             <th>Início na Obra</th>
-                            <th>Fim na Obra</th>
-                            <th class="text-center">Ações</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
 

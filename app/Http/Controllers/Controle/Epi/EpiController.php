@@ -9,7 +9,7 @@ class EpiController extends Controller
 {
     public function index()
     {
-        $fornecedores = Fornecedor::select(['NOME_FORNECEDOR', 'ID'])->get();
+        $fornecedores = Fornecedor::select(['NOME_FORNECEDOR AS NOME', 'ID'])->where('IS_DELETED', 0)->get();
         return view('Controle.Epi.index', compact('fornecedores'));
     }
     public function update(Request $request)
@@ -39,6 +39,8 @@ class EpiController extends Controller
                     'VALIDADE_EPI' => $validatedData['dataValidade'],
                     'VALIDADE_MATERIAL' => $validatedData['dataValidadeMaterial'],
                     'FORNECEDOR_ID' => $validatedData['fornecedorEPI'],
+                    'USUARIO_ALTERACAO' => $request->user()->ID,
+                    'EMPRESA_ID' => $request->user()->EMPRESA_ID,
                     'QUANTIDADE_ESTOQUE' => $validatedData['quantidadeEstoque'],
                 ]);
                 return response()->json([
@@ -85,6 +87,7 @@ class EpiController extends Controller
                     'VALIDADE_MATERIAL' => $validatedData['dataMaterial'],
                     'FORNECEDOR_ID' => $validatedData['fornecedorEPI'],
                     'USUARIO_CADASTRO' => $request->user()->ID,
+                    'EMPRESA_ID' => $request->user()->EMPRESA_ID,
                     'PUBLIC_ID' => \Illuminate\Support\Str::uuid(),
                     'QUANTIDADE_ESTOQUE' => $validatedData['quantidadeEPI'],
                 ]);
@@ -110,7 +113,7 @@ class EpiController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $query = Epi::select('PUBLIC_ID as ID', 'NOME', 'DESCRICAO', 'CA', 'QUANTIDADE_ESTOQUE');
+        $query = Epi::select('PUBLIC_ID as ID', 'NOME', 'DESCRICAO', 'CA', 'QUANTIDADE_ESTOQUE','VALIDADE_EPI','VALIDADE_MATERIAL');
         $query->when($filtros['filtroEpi'] ?? null, fn($q, $v) => $q->where('CA', trim($v)));
         $epis = $query->paginate($perPage, ['*'], 'page', $page);
         $dados = $epis->map(function ($m) {
@@ -119,6 +122,8 @@ class EpiController extends Controller
                 'CA' => $m->CA,
                 'NOME' => $m->NOME,
                 'DESCRICAO' => $m->DESCRICAO,
+                'STATUS_EPI' => (date('Y-m-d') > $m->VALIDADE_EPI) ? 'Vencido' : 'Válido',
+                'STATUS_MATERIAL' => (date('Y-m-d') > $m->VALIDADE_MATERIAL) ? 'Vencido' : 'Válido',
                 'QUANTIDADE_ESTOQUE' => $m->QUANTIDADE_ESTOQUE,
                 'tabela' => 'epi'
             ]

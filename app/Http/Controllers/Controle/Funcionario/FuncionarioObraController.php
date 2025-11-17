@@ -13,7 +13,7 @@ class FuncionarioObraController extends Controller
     public function index($id)
     {
         $obra = Obra::where('PUBLIC_ID', $id)->with('funcionarios')->first();
-        $funcionarios = Funcionario::where('EMPRESA_ID', $obra->EMPRESA_ID)->get();
+        $funcionarios = Funcionario::where('EMPRESA_ID', $obra->EMPRESA_ID)->where('IS_DELETED', 0)->get();
         $funcoes = Funcao::where('EMPRESA_ID', $obra->EMPRESA_ID)->get();
         return view('Controle.Obras.Funcionario.index', compact('obra', 'funcionarios', 'funcoes'));
     }
@@ -111,14 +111,9 @@ class FuncionarioObraController extends Controller
         $funcionarioId = $request->query('funcionarioId');
         $funcionarioObra = FuncionarioObra::find($funcionarioId);
         if (!$funcionarioObra) {
-            return response()->json(['message' => 'Funcionário na obra não encontrado.'], 404);
+            return response()->json(['success' => false, 'message' => 'Funcionário na obra não encontrado.'], 404);
         }
-        if ($funcionarioObra->DATA_FIM !== null) {
-            $funcionarioObra->update(['DATA_FIM' => null]);
-            return response()->json(['success' => true, 'message' => 'Funcionário já foi removido da obra.'], 400);
-        } else {
-            $funcionarioObra->update(['DATA_FIM' => now()->toDateString()]);
-            return response()->json(['success' => true, 'message' => 'Funcionário removido da obra com sucesso.']);
-        }
+        $funcionarioObra->delete();
+        return response()->json(['success' => true, 'message' => 'Funcionário removido da obra com sucesso.']);
     }
 }

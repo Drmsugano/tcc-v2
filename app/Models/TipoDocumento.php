@@ -10,18 +10,8 @@ class TipoDocumento extends Model
     public $timestamps = false;
     protected $fillable = ['NOME', 'DESCRICAO'];
 
-    public function documentosEmpresa()
-    {
-        return $this->hasMany(DocumentacaoEmpresa::class, 'TIPO_DOCUMENTO_ID');
-    }
-
     public function documentosObra()
     {
         return $this->hasMany(DocumentacaoObra::class, 'TIPO_DOCUMENTO_ID');
-    }
-
-    public function documentosFuncionario()
-    {
-        return $this->hasMany(DocumentacaoFuncionario::class, 'TIPO_DOCUMENTO_ID');
     }
 }

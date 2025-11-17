@@ -114,6 +114,7 @@
                     <th>Nome do Funcionário</th>
                     <th>Função</th>
                     <th>Data de Admissão</th>
+                    <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>

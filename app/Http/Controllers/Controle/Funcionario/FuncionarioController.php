@@ -19,7 +19,7 @@ class FuncionarioController extends Controller
         $perPage = $request->get('perPage', 20);
         $page = $request->get('page', 1);
         $filtros = $request->all();
-        $funcionarios = Funcionario::select(['FUNCIONARIOS.PUBLIC_ID as ID', 'FUNCIONARIOS.NOME AS NOME_FUNCIONARIO', 'DATA_ADMISSAO'])->join('FUNCAO', 'FUNCAO.ID', '=', 'FUNCIONARIOS.FUNCAO_ID')->addSelect('FUNCAO.NOME as FUNCAO');
+        $funcionarios = Funcionario::select(['FUNCIONARIOS.PUBLIC_ID as ID', 'FUNCIONARIOS.NOME AS NOME_FUNCIONARIO', 'DATA_ADMISSAO','DATA_DEMISSAO'])->join('FUNCAO', 'FUNCAO.ID', '=', 'FUNCIONARIOS.FUNCAO_ID')->addSelect('FUNCAO.NOME as FUNCAO');
         $funcionarios->when($filtros['filtroFuncionario'] ?? null, function ($q, $nome) {
             $q->where('FUNCIONARIOS.NOME', 'like', '%' . $nome . '%');
         });
@@ -37,6 +37,7 @@ class FuncionarioController extends Controller
                 'NOME_FUNCIONARIO' => $item->NOME_FUNCIONARIO,
                 'DATA_ADMISSAO' => date('d/m/Y', strtotime($item->DATA_ADMISSAO)),
                 'FUNCAO' => $item->FUNCAO,
+                'STATUS' => $item->DATA_DEMISSAO ? 'Inativo' : 'Ativo',
                 'tabela' => 'funcionarioTable',
             ];
         });
@@ -58,14 +59,16 @@ class FuncionarioController extends Controller
                 [
                     'nomeFuncionario' => 'required|string|max:255',
                     'cpfFuncionario' => 'required|string|max:14|unique:FUNCIONARIOS,CPF',
-                    'pis' => 'required|string|max:14',
+                    'pis' => 'required|string|max:14|unique:FUNCIONARIOS,PIS',
                     'dataAdmissao' => 'required|date|before_or_equal:today',
                     'funcaoFuncionario' => 'required|exists:FUNCAO,ID',
                 ],
                 [
                     'nomeFuncionario.required' => 'O campo Nome do Funcionário é obrigatório.',
                     'cpfFuncionario.required' => 'O campo CPF é obrigatório.',
+                    'cpfFuncionario.unique' => 'O CPF informado já está cadastrado.',
                     'pis.required' => 'O campo PIS é obrigatório.',
+                    'pis.unique' => 'O PIS informado já está cadastrado.',
                     'dataAdmissao.required' => 'O campo Data de Admissão é obrigatório.',
                     'dataAdmissao.before_or_equal' => 'A Data de Admissão não pode ser posterior a hoje.',
                     'funcaoFuncionario.required' => 'O campo Função é obrigatório.',

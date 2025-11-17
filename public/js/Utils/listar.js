@@ -79,6 +79,7 @@ class TabelaDinamica {
             this.renderizarTabela();
             this.renderizarPaginacao();
         } catch (erro) {
+            console.error(erro);
             this.corpo.innerHTML = `<tr><td colspan="${this.colunas.length + 1}" class="text-danger text-center">Sem dados</td></tr>`;
         } finally {
             Swal.isVisible() && Swal.close();

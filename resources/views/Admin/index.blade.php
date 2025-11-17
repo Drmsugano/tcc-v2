@@ -33,7 +33,7 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm rounded-3">
                     <div class="card-header bg-dark text-white">
-                        <b>Usuários (Ativas)</b>
+                        <b>Usuários</b>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-hover mb-0">
@@ -59,7 +59,7 @@
             <div class="col-lg-6">
                 <div class="card shadow-sm rounded-3">
                     <div class="card-header bg-dark text-white">
-                        <b>Obras (Ativas)</b>
+                        <b>Obras</b>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-hover mb-0">

@@ -115,13 +115,16 @@
             <div class="row g-3 align-items-end">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Nome</label>
-                    <input type="text" id="nomeFornecedor" class="form-control form-control-lg border-primary"
+                    <input type="text" id="nomeFornecedor" name="nomeFornecedor" class="form-control form-control-lg border-primary"
                         placeholder="Pesquisar nome...">
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold text-secondary">CNPJ</label>
-                    <input type="text" name="cpfFornecedor" oninput="formatarCNPJ(this)"
-                        class="form-control form-control-lg border-primary" placeholder="Pesquisar CNPJ...">
+                    <label class="form-label fw-semibold text-secondary">Status</label>
+                    <select name="statusFornecedor" id="statusFornecedor" class="form-select form-select-lg border-primary">
+                        <option value="">Selecionar Status</option>
+                        <option value="ATIVO">Ativo</option>
+                        <option value="INATIVO">Inativo</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Tipo</label>
@@ -135,10 +138,10 @@
             </div>
         </form>
         <div class="d-flex justify-content-end gap-3 mt-4">
-            <button class="btn btn-lg btn-outline-primary px-4" onclick="pesquisarFornecedor(event)">
+            <button class="btn btn-lg btn-outline-primary px-4" onclick="aplicarFiltros(event)">
                 <i class="bx bx-search me-2"></i>Pesquisar
             </button>
-            <button class="btn btn-lg btn-outline-danger px-4" type="button" onclick="limparFiltroFornecedor()">
+            <button class="btn btn-lg btn-outline-danger px-4" type="button" onclick="limparFiltros()">
                 <i class="bx bx-x me-2"></i>Limpar
             </button>
         </div>

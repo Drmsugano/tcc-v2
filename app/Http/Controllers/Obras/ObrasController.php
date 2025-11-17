@@ -163,7 +163,15 @@ class ObrasController extends Controller
     }
     public function verDetalhes($id)
     {
-        $obra = Obra::where('PUBLIC_ID', $id)->with('empresa')->with('funcionarios')->withCount('funcionarios')->first();
+        $obra = Obra::where('PUBLIC_ID', $id)
+            ->with('empresa')
+            ->with('funcionarios')
+            ->withCount([
+                'funcionarios as funcionarios_count' => function ($q) {
+                    $q->whereNull('FUNCIONARIO_OBRA.DATA_FIM');
+                }
+            ])
+            ->first();
         return view('Controle.Obras.detalhes', compact('obra'));
     }
     public function verDetalhesAdmin($id)

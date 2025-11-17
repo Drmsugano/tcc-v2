@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
         urlBase: "/Controle/Funcionario",
         corpoId: "corpoTabelaFuncionario",
         paginacaoId: "paginacaoFuncionario",
-        colunas: ["NOME_FUNCIONARIO", "FUNCAO", "DATA_ADMISSAO"],
+        colunas: ["NOME_FUNCIONARIO", "FUNCAO", "DATA_ADMISSAO", "STATUS"],
         acoes: [
             {
                 nome: "Ver",

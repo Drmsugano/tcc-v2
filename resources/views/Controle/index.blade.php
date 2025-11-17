@@ -50,19 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="card shadow border-0 h-100 hover-card">
-                    <div class="card-body text-center">
-                        <i class="bi bi-bar-chart-line text-danger fs-1 mb-3"></i>
-                        <h5 class="fw-bold">Treinamentos</h5>
-                        <p class="text-muted">Acesse o controle de treinamentos.</p>
-                        <a href="" class="btn btn-outline-primary mt-2">
-                            Acessar
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
+            <div class="col">
                 <div class="card shadow border-0 h-100 hover-card">
                     <div class="card-body text-center">
                         <i class="bi bi-bar-chart-line text-danger fs-1 mb-3"></i>
@@ -74,22 +62,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Dashboard Geral -->
-            @if (in_array('ADMIN', $usuarioView['PERMISSOES'] ?? []))
-                <div class="col-md-6 col-lg-4">
-                    <div class="card shadow border-0 h-100 hover-card">
-                        <div class="card-body text-center">
-                            <i class="bi bi-bar-chart-line text-danger fs-1 mb-3"></i>
-                            <h5 class="fw-bold">Dashboard Geral</h5>
-                            <p class="text-muted">Resumo de documentos, EPIs, funcionários e obras.</p>
-                            <a href="" class="btn btn-outline-danger mt-2">
-                                Acessar
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endif
         </div>
     </div>
 

@@ -11,7 +11,9 @@ use App\Http\Controllers\Obras\DocumentacaoObraController;
 use App\Http\Controllers\Obras\ObrasController;
 use App\Http\Controllers\Controle\Funcionario\FuncionarioController;
 use App\Http\Controllers\Controle\Fornecedor\FornecedorController;
+use App\Http\Controllers\Controle\Funcionario\FuncionarioEpiController;
 use App\Http\Controllers\Controle\Funcionario\FuncionarioObraController;
+use App\Http\Controllers\Controle\Funcionario\FuncionarioTreinamentoController;
 use App\Models\DocumentacaoObra;
 
 Route::middleware(['web'])->group(function () {
@@ -75,8 +77,20 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/getDados', [FuncionarioController::class, 'getDados']);
                 Route::post('/store', [FuncionarioController::class, 'store'])->name('controle.funcionario.store');
                 Route::get('/{id}', [FuncionarioController::class, 'show'])->name('controle.funcionario.detalhes');
+                Route::get('/epi/{id}/',[FuncionarioEpiController::class,'index'])->name('controle.funcionario.epi');
+                Route::post('/epi/{id}/store', [FuncionarioEpiController::class, 'store'])->name('controle.funcionario.epi.store');
+                Route::get('/epi/{id}/devolver', [FuncionarioEpiController::class, 'devolverEpi'])->name('controle.funcionario.epi.update');
+                Route::get('/epi/{id}/remover', [FuncionarioEpiController::class, 'removerEpi'])->name('controle.funcionario.epi.destroy');
+                Route::get('/epi/{id}/getDados', [FuncionarioEpiController::class, 'getDados']);
+                Route::get('/epi/{id}/protocolo', [FuncionarioEpiController::class, 'gerarProtocolo'])->name('controle.funcionario.epi.protocolo');
+                Route::get('/treinamentos/{id}',[FuncionarioTreinamentoController::class,'index'])->name('controle.funcionario.treinamentos');
+                Route::post('/treinamentos/{id}/store', [FuncionarioTreinamentoController::class, 'store'])->name('controle.funcionario.treinamentos.store');
+                Route::get('/treinamentos/{id}/remover', [FuncionarioTreinamentoController::class, 'removerTreinamento'])->name('controle.funcionario.treinamentos.destroy');
+                Route::get('/treinamentos/{id}/protocolo', [FuncionarioTreinamentoController::class, 'gerarProtocolo'])->name('controle.funcionario.treinamentos.protocolo');
+                Route::get('/treinamentos/{id}/getDados', [FuncionarioTreinamentoController::class, 'getDados']);
                 Route::post('/update', [FuncionarioController::class, 'update'])->name('controle.funcionario.update');
                 Route::post('/delete/{id}', [FuncionarioController::class, 'destroy'])->name('controle.funcionario.destroy');
+
             });
         });
         Route::prefix('Documentos')->middleware('permissao:CONTROLE')->group(function () {
@@ -88,15 +102,7 @@ Route::middleware(['web'])->group(function () {
                 Route::delete('/delete/{id}', [DocumentacaoObraController::class, 'destroy']);
                 Route::post('/update/{id}', [DocumentacaoObraController::class, 'update']);
                 Route::post('/store', [DocumentacaoObraController::class, 'store']);
-            });
-            Route::prefix('Funcionario')->group(function () {
-                Route::get('/', [FuncionarioController::class, 'index'])->name('controle.funcionario');
-                Route::get('/{id}/documentos', [FuncionarioController::class, 'indexDocumentos'])->name('controle.funcionario.documentos');
-                Route::get('/{id}/documentos/getDados', [FuncionarioController::class, 'getDadosDocumentos']);
-                Route::post('/{id}/documentos/store', [FuncionarioController::class, 'storeDocumento'])->name('controle.funcionario.documentos.store');
-                Route::delete('/{id}/documentos/delete/{docId}', [FuncionarioController::class, 'destroyDocumento'])->name('controle.funcionario.documentos.destroy');
-                Route::post('/{id}/documentos/update/{docId}', [FuncionarioController::class, 'updateDocumento'])->name('controle.funcionario.documentos.update');
-            });
+            }); 
         });
     });
 });

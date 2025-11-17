@@ -57,9 +57,10 @@
                                 <select name="fornecedorEPI" id="fornecedorEPI" class="form-select" required>
                                     <option value="">Selecione um fornecedor</option>
                                     @foreach($fornecedores as $fornecedor)
-                                        <option value="{{ $fornecedor->ID }}">{{ $fornecedor->NOME_FORNECEDOR }}</option>
+                                        <option value="{{ $fornecedor->ID }}">{{ $fornecedor->NOME }}</option>
                                     @endforeach
                                 </select>
+                                <a href="{{ route('controle.fornecedores') }}" class="btn btn-outline-primary btn-sm ms-2">Novo Fornecedor</a>
                             </div>
                         </div>
                     </div>
@@ -114,6 +115,8 @@
                     <th>CA</th>
                     <th>Nome do EPI</th>
                     <th>Descrição</th>
+                    <th>Status (CA)</th>
+                    <th>Status (Material)</th>
                     <th>Quantidade em Estoque</th>
                     <th>Ações</th>
                 </tr>

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
         urlBase: "/Controle/EPI",
         corpoId: "corpoTabelaEpi",
         paginacaoId: "paginacaoEpi",
-        colunas: ["CA", "NOME", "DESCRICAO", "QUANTIDADE_ESTOQUE"],
+        colunas: ["CA", "NOME", "DESCRICAO", "STATUS_EPI", "STATUS_MATERIAL", "QUANTIDADE_ESTOQUE"],
         acoes: [
             {
                 nome: "Ver",

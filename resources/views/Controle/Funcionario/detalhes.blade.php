@@ -85,7 +85,7 @@
                 <p class="text-muted mb-3">
                     Clique abaixo para ver os EPIs referentes a este funcionário:
                 </p>
-                <a href="#" class="btn btn-outline-primary mt-auto">
+                <a href="{{ route('controle.funcionario.epi', $funcionario->PUBLIC_ID) }}" class="btn btn-outline-primary mt-auto">
                     <i class="bi bi-folder2-open"></i> Ver EPIs
                 </a>
             </div>
@@ -101,7 +101,7 @@
                 <p class="text-muted mb-3">
                     Clique abaixo para ver as NR's referentes a este funcionário:
                 </p>
-                <a href="#" class="btn btn-outline-primary mt-auto">
+                <a href="{{ route('controle.funcionario.treinamentos', $funcionario->PUBLIC_ID) }}" class="btn btn-outline-primary mt-auto">
                     <i class="bi bi-folder2-open"></i> Ver NR's
                 </a>
             </div>

@@ -9,12 +9,11 @@ document.addEventListener("DOMContentLoaded", function () {
             "FUNCAO",
             "STATUS",
             "DATA_INICIO",
-            "DATA_FIM",
         ],
         acoes: [
             {
                 nome: "Remover",
-                texto: "Mudar Status",
+                texto: "Remover da Obra",
                 cor: "danger",
                 callback: (id) => removerFuncionario(id),
             },

@@ -71,11 +71,20 @@ class EpiController extends Controller
                 'dataMaterial' => 'required|date',
                 'fornecedorEPI' => 'required|integer',
                 'quantidadeEPI' => 'required|integer|min:0',
+            ],[
+                'ca.unique' => 'O CA informado já está cadastrado para outro EPI.',
+                'dataValidade.after' => 'A data de validade do EPI deve ser posterior à data de aquisição.',
             ]);
             if (date('Y-m-d') > $validatedData['dataValidade']) {
                 return response()->json([
                     'success' => false,
                     'message' => 'A data de aquisição não pode ser maior que a data de validade.'
+                ], 400);
+            }
+            if ($validatedData['dataMaterial'] < date('Y-m-d')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'A data de validade do material não pode ser maior que a data de aquisição do material.'
                 ], 400);
             }
             if ($validatedData) {

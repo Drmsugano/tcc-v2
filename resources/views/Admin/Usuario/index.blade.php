@@ -57,8 +57,26 @@
                         <!-- Senha -->
                         <div class="col">
                             <label for="senha" class="form-label fw-semibold text-secondary">Senha</label>
-                            <input type="password" class="form-control shadow-sm border" id="senha" name="SENHA"
-                                placeholder="Digite a senha" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control shadow-sm border" id="senha" name="SENHA"
+                                    placeholder="Digite a senha" required>
+                                <button type="button" class="btn btn-outline-secondary" id="senhaButton" onclick="toggleSenha()">
+                                    Ver Senha
+                                </button>
+                            </div>
+                            <script>
+                                function toggleSenha() {
+                                    const senhaInput = document.getElementById('senha');
+                                    const senhaButton = document.getElementById('senhaButton');
+                                    if (senhaInput.type === 'password') {
+                                        senhaInput.type = 'text';
+                                        senhaButton.innerHTML = 'Ocultar Senha';
+                                    } else {
+                                        senhaInput.type = 'password';
+                                        senhaButton.innerHTML = 'Ver Senha';
+                                    }
+                                }
+                            </script>
                         </div>
 
                         <!-- Permissões -->

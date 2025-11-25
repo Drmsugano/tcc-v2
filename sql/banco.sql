@@ -114,6 +114,7 @@ CREATE TABLE `USUARIOS` (
   `DATA_CADASTRO` date DEFAULT (curdate()),
   `HORA_CADASTRO` time DEFAULT (curtime()),
   `IS_DELETED` tinyint(1) DEFAULT '0',
+  `EMAIL_VERIFICADO` tinyint(1) DEFAULT '0',
   `EMPRESA_ID` int NOT NULL,
   `PUBLIC_ID` varchar(255) NOT NULL,
   PRIMARY KEY (`ID`),

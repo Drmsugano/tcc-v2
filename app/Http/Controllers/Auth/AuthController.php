@@ -20,10 +20,24 @@ class AuthController extends Controller
             ->with(['empresa', 'permissoes'])
             ->first();
         if (!$usuario || !Hash::check($request->senha, $usuario->PASSWORD)) {
-            session()->flush();
+            session()->forget(['jwt_token']);
             return response()->json([
                 'status' => 'error',
                 'message' => 'Usuário ou senha incorretos.'
+            ], 200);
+        }
+        if ($usuario->EMAIL_VERIFICADO === 0) {
+           session()->forget(['jwt_token']);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Usuário não verificado. Por favor, verifique seu email.'
+            ], 200);
+        }
+        if($usuario->IS_DELETED === 1){
+            session()->forget(['jwt_token']);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Usuário desativado. Contate o administrador do sistema.'
             ], 200);
         }
         $usuario->load(['permissoes', 'empresa']);

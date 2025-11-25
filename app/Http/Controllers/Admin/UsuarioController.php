@@ -33,31 +33,111 @@ class UsuarioController extends Controller
         $permissao = Permissao::select('PUBLIC_ID', 'NOME_PERMISSAO')->get();
         return view("Admin.Usuario.index", compact("empresa", "listaUsuarios", "permissao"));
     }
-    public function store(UsuarioRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['PASSWORD'] = Hash::make($data['SENHA']);
-        $data['EMPRESA_ID'] = $request->user()->EMPRESA_ID;
-        $data['PUBLIC_ID'] = Str::uuid();
-        unset($data['SENHA'], $data['permissoes']);
+        $data = Validator::make($request->all(), [
+            'NOME' => 'required|string|max:255',
+            'USUARIO' => 'required|string|max:255|unique:USUARIOS,USUARIO',
+            'EMAIL' => 'required|email|max:255|unique:USUARIOS,EMAIL',
+            'SENHA' => 'required|string|min:8',
+            'permissoes' => 'required|array',
+            'permissoes.*' => 'uuid|exists:PERMISSOES,PUBLIC_ID'
+        ], [
+            'NOME.required' => 'O nome completo do usuário não foi digitado',
+            'EMAIL.required' => 'O email não foi informado',
+            'EMAIL.unique' => 'O email informado já foi encontrado na base de dados',
+            'USUARIO.required' => 'O usuário não foi informado',
+            'USUARIO.unique' => 'O usuário informado já foi encontrado na base de dados',
+            'SENHA.required' => 'A senha não foi informada',
+            'SENHA.min' => 'A senha deve ter no mínimo 8 caracteres',
+            'permissoes.required' => 'As permissões não foram informadas',
+            'permissoes.*.uuid' => 'ID de permissão inválido',
+            'permissoes.*.exists' => 'Permissão não encontrada na base de dados'
+        ]);
+        if ($data->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $data->errors(),
+                'status' => 422
+            ]);
+        }
+        $validos = $data->validated();
+        $validos['PASSWORD'] = Hash::make($validos['SENHA']);
+        $validos['EMPRESA_ID'] = $request->user()->EMPRESA_ID;
+        $validos['PUBLIC_ID'] = Str::uuid();
+        unset($validos['SENHA']); // tira a sujeira
+        // 'permissoes' não vai pro create mesmo, então pode deixar fora
         try {
-            if (Usuario::where('USUARIO', $data['USUARIO'])->exists()) {
-                return redirect()->route('admin.usuarios')
-                    ->with(['error' => 'Já existe um usuário com esse nome de usuário.'])
-                    ->withInput();
-            };
-            // Cria o usuário
-            $usuario = Usuario::create($data);
-            // Relaciona permissões
-            $permissoesId = Permissao::whereIn('PUBLIC_ID', $request->input('permissoes', []))
-                ->pluck('ID')
-                ->toArray();
-            $usuario->permissoes()->sync($permissoesId);
-            return redirect()->route('admin.usuarios')->with('success', 'Usuário cadastrado com sucesso!');
+            if (Usuario::where('USUARIO', $validos['USUARIO'])->exists()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Já existe um usuário com esse nome de usuário.',
+                    'status' => 422
+                ]);
+            }
+            if ($this->enviarEmailValidacao($validos['NOME'], $validos['EMAIL']) === false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erro ao enviar email de validação. Verifique as configurações de email do sistema.',
+                    'status' => 500
+                ]);
+            } else {
+                $usuario = Usuario::create($validos);
+                $permissoesId = Permissao::whereIn('PUBLIC_ID', $request->input('permissoes', []))
+                    ->pluck('ID')
+                    ->toArray();
+                $usuario->permissoes()->sync($permissoesId);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Usuário cadastrado com sucesso!',
+                ]);
+            }
         } catch (Exception $e) {
-            return redirect()->route('admin.usuarios')
-                ->with(['error' => 'Erro ao cadastrar usuário: ' . $e->getMessage()])
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Erro ao cadastrar usuário: ' . $e->getMessage(),
+                'status' => 500
+            ]);
+        }
+    }
+
+    public function atualizar(UsuarioRequest $request, $id)
+    {
+        try {
+            $usuario = Usuario::where('PUBLIC_ID', $id)->first();
+            if (!$usuario) {
+                return response()->json([
+                    'status' => "Erro",
+                    "mensagem" => "Usuário não encontrado",
+                ], 500);
+            }
+            $data = $request->validated();
+            if ($data->fails()) {
+                return response()->json([
+                    'success' => "false",
+                    "errors" => $data->errors(),
+                    'status' => 422
+                ]);
+            }
+            if (isset($data['SENHA']) && !empty($data['SENHA'])) {
+                $data['PASSWORD'] = Hash::make($data['SENHA']);
+            } else {
+                unset($data['SENHA']);
+            }
+            unset($data['SENHA']);
+            $usuario->update($data);
+            if (isset($data['permissoes'])) {
+                $permissoesId = Permissao::whereIn('PUBLIC_ID', $data['permissoes'])
+                    ->pluck('ID')
+                    ->toArray();
+                $usuario->permissoes()->sync($permissoesId);
+            }
+            return redirect()->route('admin.usuarios');
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => "Erro",
+                "mensagem" => "Erro de Servidor: " . $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -158,5 +238,23 @@ class UsuarioController extends Controller
             'links' => $usuarios->linkCollection()->all(),
         ]);
     }
-
+    public function enviarEmailValidacao($nome, $email)
+    {
+        try {
+            \Mail::to($email)->send(new \App\Mail\Validacao($nome, $email));
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+    public function validarEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $usuario = Usuario::where('EMAIL', $email)->first();
+        if ($usuario) {
+            Usuario::where('EMAIL', $email)->update(['EMAIL_VERIFICADO' => true]);
+            return true;
+        }
+        return false;
+    }
 }

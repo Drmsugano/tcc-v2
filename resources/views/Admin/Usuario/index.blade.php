@@ -6,45 +6,19 @@
         <div class="card shadow-lg mb-4 border-0">
             <div class="card-body">
                 <h5 class="card-title mb-4 text-primary fw-bold">Cadastrar Novo Usuário</h5>
-
-                @if(session('success'))
-                    <div class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                {{-- Mensagem de erro de operação --}}
-                @if(session('error'))
-                    <div class="alert alert-danger">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                {{-- Mensagens de erro de validação --}}
-                @if($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $erro)
-                                <li>{{ $erro }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <form action="{{ route('admin.usuarios.cadastrar') }}" method="POST" class="mb-3" autocomplete="off">
-                    @csrf
+                <form id="usuarioForm" method="POST" class="mb-3" autocomplete="off">
                     <div class="row g-4">
-                        <!-- Nome Completo -->
                         <div class="col-md-4">
                             <label for="nome" class="form-label fw-semibold text-secondary">Nome Completo</label>
                             <input type="text" class="form-control shadow-sm border" id="nome" name="NOME"
                                 value="{{ old('NOME') }}" placeholder="Digite o nome completo" autocomplete="off" required>
                         </div>
-
                         <!-- Usuário -->
                         <div class="col-md-4">
                             <label for="usuario" class="form-label fw-semibold text-secondary">Usuário</label>
                             <input type="text" class="form-control shadow-sm border" id="usuario" name="USUARIO"
-                                value="{{ old('USUARIO') }}" placeholder="Digite o nome de usuário" autocomplete="off" required>
+                                value="{{ old('USUARIO') }}" placeholder="Digite o nome de usuário" autocomplete="off"
+                                required>
                         </div>
 
                         <!-- E-mail -->
@@ -60,7 +34,8 @@
                             <div class="input-group">
                                 <input type="password" class="form-control shadow-sm border" id="senha" name="SENHA"
                                     placeholder="Digite a senha" required>
-                                <button type="button" class="btn btn-outline-secondary" id="senhaButton" onclick="toggleSenha()">
+                                <button type="button" class="btn btn-outline-secondary" id="senhaButton"
+                                    onclick="toggleSenha()">
                                     Ver Senha
                                 </button>
                             </div>
@@ -97,7 +72,7 @@
                         </div>
                         <!-- Botão -->
                         <div class="col-12 d-grid mt-3">
-                            <button type="submit" class="btn btn-primary btn-lg shadow-sm">
+                            <button class="btn btn-primary btn-lg shadow-sm" onclick="enviarFormulario(event)">
                                 Cadastrar Usuário
                             </button>
                         </div>
@@ -139,7 +114,8 @@
                                     <td class="text-center">
                                         <div class="d-flex">
                                             <div class="col">
-                                                <button onclick="location.href='Usuario/editar/{{ $usuario->PUBLIC_ID }}'" class="btn btn-sm btn-outline-warning me-1" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>Editar</button>
+                                                <button onclick="location.href='Usuario/editar/{{ $usuario->PUBLIC_ID }}'"
+                                                    class="btn btn-sm btn-outline-warning me-1" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>Editar</button>
                                             </div>
                                             <div class="col">
                                                 <form method="POST" class="d-inline">
@@ -167,4 +143,15 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/Utils/form.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+           window.usuarioForm = new Formulario("/Admin/Usuario", "cadastrar", "usuarioForm");
+        });
+        function enviarFormulario(event)
+        {
+            event.preventDefault();
+            window.usuarioForm.enviarFormulario(event);
+        }
+    </script>
 @endsection

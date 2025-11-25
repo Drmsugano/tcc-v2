@@ -48,6 +48,7 @@
             <p class="text-muted">Rosfield</p>
         </div>
         <form>
+            @csrf
             <div class="mb-3">
                 <label for="login" class="form-label">Login</label>
                 <div class="input-group">

@@ -21,6 +21,7 @@ Route::middleware(['web'])->group(function () {
         return session()->get('jwt_token') === null ? view('login') : redirect()->route('home');
     });
     Route::get('/login', fn() => view('login'))->name('login')->middleware('web');
+    Route::get('/validar', [UsuarioController::class, 'validarEmail'])->name('auth.validar')->middleware('web');
     Route::post('/auth/login', [AuthController::class, 'login'])->name('auth.login')->middleware('web');
     Route::middleware(['auth.jwt', 'inject.user'])->group(function () {
         Route::post('/Obras/trocar-obras', [ObrasController::class, 'trocar'])->name('obras.trocar');

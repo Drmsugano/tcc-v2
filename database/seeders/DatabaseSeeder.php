@@ -30,10 +30,7 @@ class DatabaseSeeder extends Seeder
         // -----------------------
         DB::table('PERMISSOES')->insert([
             ['NOME_PERMISSAO' => 'ADMIN', 'DESCRICAO' => 'Acesso total ao sistema', 'PUBLIC_ID' => Str::uuid()],
-            ['NOME_PERMISSAO' => 'USER', 'DESCRICAO' => 'Usuário comum', 'PUBLIC_ID' => Str::uuid()],
-            ['NOME' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações', 'PUBLIC_ID' => Str::uuid(),],
-            ['NOME_PERMISSAO' => 'ENGENHARIA', 'DESCRICAO' => 'Acesso ao módulo de engenharia', 'PUBLIC_ID' => Str::uuid()],
-            ['NOME_PERMISSAO' => 'MASTER', 'DESCRICAO' => 'Permissão master', 'PUBLIC_ID' => Str::uuid()]
+            ['NOME_PERMISSAO' => 'CONTROLE', 'DESCRICAO' => 'Acesso a controle de operações', 'PUBLIC_ID' => Str::uuid()],
         ]);
 
         // -----------------------
@@ -44,7 +41,8 @@ class DatabaseSeeder extends Seeder
             'PUBLIC_ID' => Str::uuid(),
             'USUARIO' => 'DRMSUGANO',
             'EMAIL' => 'drmsugano@outlook.com',
-            'PASSWORD' => Hash::make('123'),
+            'EMAIL_VERIFICADO' => true,
+            'PASSWORD' => Hash::make('12345678'),
             'EMPRESA_ID' => 1
         ]);
 
@@ -53,9 +51,7 @@ class DatabaseSeeder extends Seeder
         // -----------------------
         DB::table('USUARIO_PERMISSAO')->insert([
             ['USUARIO_ID' => 1, 'PERMISSAO_ID' => 1], // ADMIN
-            ['USUARIO_ID' => 1, 'PERMISSAO_ID' => 2], // USER
-            ['USUARIO_ID' => 1, 'PERMISSAO_ID' => 3], // CONTROLE
-            ['USUARIO_ID' => 1, 'PERMISSAO_ID' => 4], // ENGENHARIA
+            ['USUARIO_ID' => 1, 'PERMISSAO_ID' => 2], // CONTROLE
         ]);
 
         // -----------------------
@@ -112,10 +108,10 @@ class DatabaseSeeder extends Seeder
             ['NOME' => 'PDF', 'DESCRICAO' => 'Documento em formato PDF'],
         ]);
         DB::table('TIPO_FORNECEDOR')->insert([
-            ['NOME_TIPO' => 'MATERIAL DE CONSTRUÇÃO', 'DESCRICAO_TIPO' => 'Fornecedores de materiais de construção'],
-            ['NOME_TIPO' => 'EPI', 'DESCRICAO_TIPO' => 'Fornecedores de Equipamentos de Proteção Individual'],
-            ['NOME_TIPO' => 'FERRAMENTA', 'DESCRICAO_TIPO' => 'Fornecedores de ferramentas'],
-            ['NOME_TIPO' => 'MAQUINARIO', 'DESCRICAO_TIPO' => 'Fornecedores de maquinários'],
+            ['TIPO' => 'MATERIAL DE CONSTRUÇÃO', 'DESCRICAO_TIPO' => 'Fornecedores de materiais de construção'],
+            ['TIPO' => 'EPI', 'DESCRICAO_TIPO' => 'Fornecedores de Equipamentos de Proteção Individual'],
+            ['TIPO' => 'FERRAMENTA', 'DESCRICAO_TIPO' => 'Fornecedores de ferramentas'],
+            ['_TIPO' => 'MAQUINARIO', 'DESCRICAO_TIPO' => 'Fornecedores de maquinários'],
         ]);
     }
 }

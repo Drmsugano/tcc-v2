@@ -34,18 +34,16 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/auth/login", {
             method: "POST",
             body: formData,
+            credentials: "include",
             headers: {
-                "X-CSRF-TOKEN": document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content"),
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
             },
+        })  .then((response) => {
+            if (!response.ok) {
+                throw new Error("Credenciais inválidas");
+            }
+            return response.json();
         })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Credenciais inválidas");
-                }
-                return response.json();
-            })
             .then((data) => {
                 if (data.status !== "success") {
                     Swal.fire({

@@ -143,11 +143,9 @@ class UsuarioController extends Controller
                 $data['PASSWORD'] = Hash::make($data['SENHA']);
             }
             unset($data['SENHA']);
-
-            if ($request->input('EMAIL') !== $usuario->EMAIL) {
-                $data['EMAIL_VERIFICADO'] = false;
+            if($request->input('EMAIL') !== $usuario->EMAIL) {
+                $data['EMAIL_VERIFICADO'] = 0;
             }
-            // Atualizar usuário
             $usuario->update(array_merge($data));
             // Atualizar permissões
             if (isset($data['permissoes'])) {

@@ -7,7 +7,7 @@
             Valeu por criar sua conta! Para ativar tudo certinho, é só clicar no botão abaixo:
         </p>
         <div style="text-align: center; margin: 30px 0;">
-            <a href="http://127.0.0.1/validar?email={{ urlencode($email) }}"
+            <a href="http://{{ request()->getHost() }}/validar?email={{ urlencode($email) }}"
                 style="background: #4a7dfc; color: #fff; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-size: 16px; font-weight: bold; display: inline-block;">
                 Validar Email
             </a>

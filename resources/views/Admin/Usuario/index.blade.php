@@ -112,23 +112,26 @@
                                         @endforeach
                                     </td>
                                     <td class="text-center">
-                                        <div class="d-flex">
-                                            <div class="col">
-                                                <button onclick="location.href='Usuario/editar/{{ $usuario->PUBLIC_ID }}'"
-                                                    class="btn btn-sm btn-outline-warning me-1" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>Editar</button>
-                                            </div>
-                                            <div class="col">
-                                                <form method="POST" class="d-inline">
-                                                    @csrf
-                                                    <button type="submit"
-                                                        formaction="{{ route('admin.usuarios.status', $usuario->PUBLIC_ID) }}"
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('Tem certeza que deseja deletar este usuário?');"
-                                                        {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>
-                                                        {{ $usuario->IS_DELETED == 1 ? 'Ativar' : 'Desativar' }}
-                                                    </button>
-                                                </form>
-                                            </div>
+                                        <div class="d-flex justify-content-center gap-1">
+                                            <button onclick="location.href='Usuario/editar/{{ $usuario->PUBLIC_ID }}'"
+                                                class="btn btn-sm btn-outline-warning" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>
+                                                Editar
+                                            </button>
+                                            @if ($usuario->EMAIL_VERIFICADO === 0)
+                                                <button class="btn btn-sm btn-outline-info"
+                                                    onclick="reenvio('{{ $usuario->EMAIL }}')">
+                                                    Reenviar
+                                                </button>
+                                            @endif
+                                            <form method="POST" class="d-inline">
+                                                @csrf
+                                                <button type="submit"
+                                                    formaction="{{ route('admin.usuarios.status', $usuario->PUBLIC_ID) }}"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Tem certeza que deseja deletar este usuário?');" {{ $usuarioView['ID'] == $usuario->ID ? 'disabled' : '' }}>
+                                                    {{ $usuario->IS_DELETED == 1 ? 'Ativar' : 'Desativar' }}
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>
@@ -146,12 +149,36 @@
     <script src="{{ asset('js/Utils/form.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-           window.usuarioForm = new Formulario("/Admin/Usuario", "cadastrar", "usuarioForm");
+            window.usuarioForm = new Formulario("/Admin/Usuario", "cadastrar", "usuarioForm");
         });
-        function enviarFormulario(event)
-        {
+        function enviarFormulario(event) {
             event.preventDefault();
             window.usuarioForm.enviarFormulario(event);
+        }
+        function reenvio(email) {
+            if (confirm('Deseja reenviar o e-mail de verificação para ' + email + '?')) {
+                Swal.fire({
+                    title: 'Enviando e-mail de verificação...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                        fetch(`/Admin/Usuario/reenviarVerificacaoPorEmail?email=${encodeURIComponent(email)}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                Swal.close();
+                                if (data.success === true) {
+                                    Swal.fire('Sucesso', 'E-mail de verificação reenviado com sucesso!', 'success');
+                                } else {
+                                    Swal.fire('Erro', data.message || 'Ocorreu um erro ao reenviar o e-mail.', 'error');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.close();
+                                Swal.fire('Erro', 'Ocorreu um erro ao reenviar o e-mail.', 'error');
+                            });
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                })
+            }
         }
     </script>
 @endsection

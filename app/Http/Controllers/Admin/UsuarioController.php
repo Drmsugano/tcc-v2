@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Mail;
 class UsuarioController extends Controller
 {
     public function meuPerfil(Request $request)
@@ -241,11 +241,28 @@ class UsuarioController extends Controller
     public function enviarEmailValidacao($nome, $email)
     {
         try {
-            \Mail::to($email)->send(new \App\Mail\Validacao($nome, $email));
+            Mail::to($email)->send(new \App\Mail\Validacao($nome, $email));
             return true;
         } catch (Exception $e) {
             return false;
         }
+    }
+    public function reenviarEmail(Request $request)
+    {
+        $email = $request->query('email');
+        $usuario = Usuario::where('EMAIL', $email)->first();
+        if ($usuario) {
+            if ($this->enviarEmailValidacao($usuario->NOME, $usuario->EMAIL)) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Email de validação reenviado com sucesso!',
+                ]);
+            }
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Erro ao reenviar email de validação.',
+        ]);
     }
     public function validarEmail(Request $request)
     {
@@ -253,8 +270,8 @@ class UsuarioController extends Controller
         $usuario = Usuario::where('EMAIL', $email)->first();
         if ($usuario) {
             Usuario::where('EMAIL', $email)->update(['EMAIL_VERIFICADO' => true]);
-            return true;
+            return view('mail.sucesso');
         }
-        return false;
+        return view('mail.erro');
     }
 }

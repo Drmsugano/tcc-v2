@@ -19,11 +19,13 @@ class EpiController extends Controller
                 'id' => 'required|string',
                 'nomeEPI' => 'required|string|max:255',
                 'descricaoEPI' => 'nullable|string',
-                'ca' => 'required|string|max:100',
+                'ca' => 'required|string|max:100|unique:EPI,CA,'. $request->id .',PUBLIC_ID',
                 'dataValidadeMaterial' => 'required|date',
                 'dataValidade' => 'required|date',
                 'fornecedorEPI' => 'required|integer',
                 'quantidadeEstoque' => 'required|integer|min:0',
+            ],[
+                'ca.unique' => 'O CA informado já está cadastrado para outro EPI.',
             ]);
             if (date('Y-m-d') > $validatedData['dataValidade']) {
                 return response()->json([

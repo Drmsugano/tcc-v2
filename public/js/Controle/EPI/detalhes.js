@@ -72,7 +72,7 @@ function procurarCA(ca) {
                             text: "O EPI associado a este CA está vencido.",
                             icon: "warning",
                         });
-                        document.getElementById("btnSalvarEPI").disabled = true;
+                        document.getElementById("btnSalvarAlteracoes").disabled = true;
                         return;
                     }
                 } else {
@@ -93,7 +93,7 @@ function procurarCA(ca) {
             } else {
                 document.getElementById("dataValidade").value = "";
             }
-            const btnSalvar = document.getElementById("btnEditarEPI");
+            const btnSalvar = document.getElementById("btnSalvarAlteracoes");
             btnSalvar.disabled = false;
             const novoBotao = btnSalvar.cloneNode(true);
             btnSalvar.parentNode.replaceChild(novoBotao, btnSalvar);

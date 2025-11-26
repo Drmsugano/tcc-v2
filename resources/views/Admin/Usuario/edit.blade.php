@@ -5,7 +5,7 @@
         <!-- Card do Formulário -->
         <div class="card shadow-lg mb-4 border-0">
             <div class="card-body">
-                <h5 class="card-title mb-4 text-primary fw-bold">Cadastrar Novo Usuário</h5>
+                <h5 class="card-title mb-4 text-primary fw-bold">Editar Usuário {{ $usuario->NOME }}</h5>
                 <form id="form-update" method="POST" autocomplete="off">
                     @csrf
                     <div class="row g-4">
@@ -29,7 +29,7 @@
                             <label for="senha" class="form-label fw-semibold text-secondary">Senha</label>
                             <div class="input-group">
                                 <input type="password" class="form-control shadow-sm border" id="senha" name="SENHA"
-                                    placeholder="Digite a senha" required>
+                                    placeholder="Digite a senha" value="{{ $usuario->SENHA }}">
                                 <button type="button" class="btn btn-outline-secondary" id="senhaButton"
                                     onclick="toggleSenha()">
                                     Ver Senha
@@ -66,7 +66,7 @@
                         </div>
                         <!-- Botão -->
                         <div class="col-12 d-grid mt-3">
-                            <button  class="btn btn-primary btn-lg shadow-sm" onclick="enviarFormulario">
+                            <button class="btn btn-primary btn-lg shadow-sm" onclick="enviarFormulario(event)">
                                 Editar Usuário
                             </button>
                         </div>
@@ -75,4 +75,14 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/Utils/form.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            window.usuarioForm = new Formulario("/Admin/Usuario", "update", "form-update");
+        });
+        function enviarFormulario(event) {
+            event.preventDefault();
+            window.usuarioForm.enviarFormulario(event);
+        }
+    </script>
 @endsection

@@ -35,6 +35,7 @@ Route::middleware(['web'])->group(function () {
                 Route::get('/getDados', [UsuarioController::class, 'getDados']);
                 Route::get('/editar/{id}', [UsuarioController::class, 'editar'])->name('admin.usuarios.editar');
                 Route::get('/reenviarVerificacaoPorEmail', [UsuarioController::class, 'reenviarEmail'])->name('admin.usuarios.reenviarVerificacaoPorEmail');
+                Route::post('/update', [UsuarioController::class, 'update'])->name('admin.usuarios.update');
                 Route::post('/cadastrar', [UsuarioController::class, 'store'])->name('admin.usuarios.cadastrar');
                 Route::post('/status/{id}', [UsuarioController::class, 'desativarAtivar'])->name('admin.usuarios.status');
             });

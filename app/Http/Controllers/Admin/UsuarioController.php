@@ -101,24 +101,42 @@ class UsuarioController extends Controller
         }
     }
 
-    public function atualizar(UsuarioRequest $request, $id)
+    public function update(Request $request)
     {
         try {
-            $usuario = Usuario::where('PUBLIC_ID', $id)->first();
+            $usuario = Usuario::where('PUBLIC_ID', $request->input('PUBLIC_ID'))->first();
             if (!$usuario) {
                 return response()->json([
                     'status' => "Erro",
                     "mensagem" => "Usuário não encontrado",
                 ], 500);
             }
-            $data = $request->validated();
-            if ($data->fails()) {
+            $validate = Validator::make($request->all(), [
+                'NOME' => 'required|string|max:255',
+                'USUARIO' => 'required|string|max:255|unique:USUARIOS,USUARIO,' . $usuario->ID,
+                'EMAIL' => 'required|email|max:255|unique:USUARIOS,EMAIL,' . $usuario->ID,
+                'SENHA' => 'nullable|string|min:8',
+                'permissoes' => 'required|array',
+                'permissoes.*' => 'integer|exists:PERMISSOES,ID'
+            ], [
+                'NOME.required' => 'O nome completo do usuário não foi digitado',
+                'EMAIL.required' => 'O email não foi informado',
+                'EMAIL.unique' => 'O email informado já foi encontrado na base de dados',
+                'USUARIO.required' => 'O usuário não foi informado',
+                'USUARIO.unique' => 'O usuário informado já foi encontrado na base de dados',
+                'SENHA.min' => 'A senha deve ter no mínimo 8 caracteres',
+                'permissoes.required' => 'As permissões não foram informadas',
+                'permissoes.*.integer' => 'ID de permissão inválido',
+                'permissoes.*.exists' => 'Permissão não encontrada na base de dados'
+            ]);
+            if ($validate->fails()) {
                 return response()->json([
                     'success' => "false",
-                    "errors" => $data->errors(),
+                    "errors" => $validate->errors(),
                     'status' => 422
                 ]);
             }
+            $data = $validate->validated();
             if (isset($data['SENHA']) && !empty($data['SENHA'])) {
                 $data['PASSWORD'] = Hash::make($data['SENHA']);
             } else {
@@ -132,7 +150,10 @@ class UsuarioController extends Controller
                     ->toArray();
                 $usuario->permissoes()->sync($permissoesId);
             }
-            return redirect()->route('admin.usuarios');
+            return response()->json([
+                'status' => "Sucesso",
+                "mensagem" => "Usuário atualizado com sucesso",
+            ]);
         } catch (Exception $e) {
             return response()->json([
                 'status' => "Erro",

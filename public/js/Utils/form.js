@@ -20,15 +20,21 @@ class Formulario {
 
     enviarFormulario(event) {
         event.preventDefault();
-
+        swal.fire({
+            title: "Enviando...",
+            text: "Por favor, aguarde.",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                swal.showLoading();
+            }
+        });
         const form = document.getElementById(this.formId);
         if (!form) {
             console.error(`Formulário com ID '${this.formId}' não encontrado.`);
             return;
         }
-
         const dados = new FormData(form);
-
         fetch(`${this.urlBase}/${this.params}`, {
             method: "POST",
             headers: {
@@ -47,6 +53,8 @@ class Formulario {
                 }
             })
             .then((data) => {
+                swal.close();
+                // Se sucesso, mostra mensagem e recarrega tabela ou redireciona
                 if (data.success) {
                     swal.fire({
                         title: "Sucesso",

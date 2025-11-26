@@ -74,13 +74,13 @@ class DocumentacaoObraController extends Controller
             $tipoDocId = $request->TIPO_DOCUMENTO_ID;
             $extensao = $request->file('arquivo')->getClientOriginalExtension();
             if ($tipoDocId == 1 && !in_array(strtolower($extensao), ['xlsx', 'xls', 'xlsm'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser XLSX']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser XLSX, XLS ou XLSM'], 422);
             }
             if ($tipoDocId == 2 && !in_array(strtolower($extensao), ['doc', 'docx', 'docm'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser DOC ou DOCX ou DOCM']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser DOC, DOCX ou DOCM'], 422);
             }
             if ($tipoDocId == 3 && !in_array(strtolower($extensao), ['pdf'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser PDF']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser PDF'], 422);
             }
             $obraId = Obra::select('ID')->where('PUBLIC_ID', cache()->get('obra_id'))->value('ID');
             $path = $request->file('arquivo')->store("obras/{$obraId}/documentos", 'public');
@@ -145,13 +145,13 @@ class DocumentacaoObraController extends Controller
             $tipoDocId = $request->TIPO_DOCUMENTO_ID;
             $extensao = $request->file('arquivo')->getClientOriginalExtension();
             if ($tipoDocId == 1 && !in_array(strtolower($extensao), ['xlsx', 'xls', 'xlsm'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser XLSX']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser XLSX, XLS ou XLSM'], 422);
             }
             if ($tipoDocId == 2 && !in_array(strtolower($extensao), ['doc', 'docx', 'docm'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser DOC ou DOCX ou DOCM']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser DOC, DOCX ou DOCM'], 422);
             }
             if ($tipoDocId == 3 && !in_array(strtolower($extensao), ['pdf'])) {
-                return response()->json(['errors' => ['arquivo' => 'O arquivo precisa ser PDF']], 422);
+                return response()->json(['message' => 'O arquivo precisa ser PDF'], 422);
             }
             $relativePath = $documento->CAMINHO;
             if (Storage::disk('public')->exists($relativePath)) {

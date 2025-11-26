@@ -28,8 +28,8 @@
                         <div class="col">
                             <label for="senha" class="form-label fw-semibold text-secondary">Senha</label>
                             <div class="input-group">
-                                <input type="password" class="form-control shadow-sm border" id="senha" name="SENHA"
-                                    placeholder="Digite a senha" value="{{ $usuario->SENHA }}">
+                                <input type="password" class="form-control" id="senha" name="SENHA"
+                                    placeholder="Digite a nova senha (opcional)">
                                 <button type="button" class="btn btn-outline-secondary" id="senhaButton"
                                     onclick="toggleSenha()">
                                     Ver Senha

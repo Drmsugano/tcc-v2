@@ -104,12 +104,12 @@ class UsuarioController extends Controller
     public function update(Request $request)
     {
         try {
-            $usuario = Usuario::where('PUBLIC_ID', $request->input('PUBLIC_ID'))->first();
+            $usuario = Usuario::where('PUBLIC_ID', $request->PUBLIC_ID)->first();
             if (!$usuario) {
                 return response()->json([
                     'status' => "Erro",
-                    "mensagem" => "Usuário não encontrado",
-                ], 500);
+                    'mensagem' => "Usuário não encontrado",
+                ], 404);
             }
             $validate = Validator::make($request->all(), [
                 'NOME' => 'required|string|max:255',
@@ -128,39 +128,43 @@ class UsuarioController extends Controller
                 'permissoes.required' => 'As permissões não foram informadas',
                 'permissoes.*.integer' => 'ID de permissão inválido',
                 'permissoes.*.exists' => 'Permissão não encontrada na base de dados'
-            ]);
+            ]
+        );
             if ($validate->fails()) {
                 return response()->json([
-                    'success' => "false",
-                    "errors" => $validate->errors(),
+                    'success' => false,
+                    'errors' => $validate->errors(),
                     'status' => 422
                 ]);
             }
             $data = $validate->validated();
-            if (isset($data['SENHA']) && !empty($data['SENHA'])) {
+            // Atualizar senha se enviada
+            if (!empty($data['SENHA'])) {
                 $data['PASSWORD'] = Hash::make($data['SENHA']);
-            } else {
-                unset($data['SENHA']);
             }
             unset($data['SENHA']);
-            $usuario->update($data);
+
+            if ($request->input('EMAIL') !== $usuario->EMAIL) {
+                $data['EMAIL_VERIFICADO'] = false;
+            }
+            // Atualizar usuário
+            $usuario->update(array_merge($data));
+            // Atualizar permissões
             if (isset($data['permissoes'])) {
-                $permissoesId = Permissao::whereIn('PUBLIC_ID', $data['permissoes'])
-                    ->pluck('ID')
-                    ->toArray();
-                $usuario->permissoes()->sync($permissoesId);
+                $usuario->permissoes()->sync($data['permissoes']);
             }
             return response()->json([
-                'status' => "Sucesso",
-                "mensagem" => "Usuário atualizado com sucesso",
+                'success' => true,
+                'message' => "Usuário atualizado com sucesso",
             ]);
         } catch (Exception $e) {
             return response()->json([
-                'status' => "Erro",
-                "mensagem" => "Erro de Servidor: " . $e->getMessage(),
+                'success' => false,
+                'mensagem' => "Erro de Servidor: " . $e->getMessage(),
             ], 500);
         }
     }
+
 
     public function desativarAtivar($id, Request $request)
     {
@@ -180,12 +184,11 @@ class UsuarioController extends Controller
             }
             $usuario->IS_DELETED = !$usuario->IS_DELETED;
             $usuario->save();
-            $status = $usuario->IS_DELETED ? 'desativado' : 'ativado';
             return redirect()->route('admin.usuarios');
         } catch (Exception $e) {
             return response()->json([
-                'status' => "Erro",
-                "mensagem" => "Erro de Servidor: " . $e->getMessage(),
+                'success' => false,
+                "message" => "Erro de Servidor: " . $e->getMessage(),
             ], 500);
         }
     }
